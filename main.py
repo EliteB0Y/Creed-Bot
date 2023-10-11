@@ -7,6 +7,7 @@ from pymongo import MongoClient
 class MyBot(commands.Bot):
     #Declare Bot variables here (can be accessed in cogs using self.client.variable)
     launch_time = datetime.utcnow()
+    wtpList = []
     disabledCogs = [] #add cogs.test here
     inviteurl = ""
     boxrateconfig = {"base": 1, "unbase": 0.8, "other": 5}
