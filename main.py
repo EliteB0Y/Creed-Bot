@@ -2,12 +2,13 @@ import os, discord, asyncio
 from discord.ext import commands
 from datetime import datetime
 from pymongo import MongoClient
-#import secret
+import secret
 
 class MyBot(commands.Bot):
     #Declare Bot variables here (can be accessed in cogs using self.client.variable)
     launch_time = datetime.utcnow()
     wtpList = []
+    activeQuiz = []
     disabledCogs = [] #add cogs.namehere to disable
     inviteurl = ""
     boxrateconfig = {"base": 1, "unbase": 0.8, "other": 5}
@@ -44,7 +45,7 @@ class MyBot(commands.Bot):
 async def get_prefix(client, message):
     if not message.guild:
         return commands.when_mentioned_or(*("",))(client, message)
-    prefixes = client.db.get_collection("prefixes")
+    prefixes = client.db.get_collection("prefixes_cb")
     p = prefixes.find_one({"serverid": message.guild.id})
     if p:
         pf = p["prefix"]

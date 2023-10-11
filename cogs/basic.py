@@ -1,4 +1,4 @@
-import discord, os, random, requests, async_cse, asyncio, io
+import discord, random, asyncio, io
 from discord.ext import commands
 
 class Basic(commands.Cog):
@@ -10,7 +10,7 @@ class Basic(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
-        prefixes = self.client.db.get_collection("prefixes")
+        prefixes = self.client.db.get_collection("prefixes_cb")
         p = prefixes.find_one({"serverid": guild.id})
         if not p:
             prefixes.insert_one({"serverid": guild.id, "prefix": "!"})
@@ -21,7 +21,7 @@ class Basic(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
-        prefixes = self.client.db.get_collection("prefixes")
+        prefixes = self.client.db.get_collection("prefixes_cb")
         p = prefixes.find_one({"serverid": guild.id})
         if p:
             prefixes.delete_one({"serverid": guild.id})
@@ -50,7 +50,7 @@ class Basic(commands.Cog):
                 await x.edit(embed = embed)
             else:
                 if any(i == msg.content.lower() for i in ["y", "yes", "confirm"]):
-                    prefixes = self.client.db.get_collection("prefixes")
+                    prefixes = self.client.db.get_collection("prefixes_cb")
                     p = prefixes.find_one({"serverid": ctx.guild.id})
                     prefixes.update_one({"serverid": ctx.guild.id}, {"$set": {"prefix": new_prefix}})
                     desc = f"{self.client.emotes.get('accepted','')} Command prefix changed to {self.client.emotes.get('arrowright','**')} {new_prefix} {self.client.emotes.get('arrowleft','**')}"

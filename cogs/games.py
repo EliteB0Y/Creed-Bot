@@ -53,7 +53,7 @@ class Games(commands.Cog):
                     
                 
             def check(message):
-                return message.author == ctx.author
+                return message.author == ctx.author and message.channel.id == ctx.channel.id
         
             try:
                 msg = await self.client.wait_for('message', timeout = time_left, check = check)
@@ -136,7 +136,7 @@ class Games(commands.Cog):
         await ctx.send(embed=embed)
         
         def check(message):
-            return message.author == ctx.author
+            return message.author == ctx.author and message.channel.id == ctx.channel.id
         
         for i in range(5):
             try:
@@ -213,7 +213,7 @@ class Games(commands.Cog):
                 return
 
             self.client.activeQuiz.append(ctx.guild.id)
-            await ctx.send(f"A quiz will start in few seconds. First to {points_to_win} point wins!")
+            await ctx.send(f"A quiz will start in few seconds. First to {points_to_win} point wins!\n`skip` - To skip the question. \n`quit` - To end the quiz. ")
             await asyncio.sleep(5)
 
         
@@ -237,12 +237,13 @@ class Games(commands.Cog):
             _ = await ctx.send(quiz)
 
             def check(message):
-                if message.content.lower() == answer.lower():
-                    return True
-                elif message.content.lower() == "skip" and message.author == ctx.author:
-                    return True
-                elif message.content.lower() == "quit" and message.author == ctx.author:
-                    return True
+                if message.channel.id == ctx.channel.id:
+                    if message.content.lower() == answer.lower():
+                        return True
+                    elif message.content.lower() == "skip" and message.author == ctx.author:
+                        return True
+                    elif message.content.lower() == "quit" and message.author == ctx.author:
+                        return True
 
             try:
                 msg = await self.client.wait_for('message',check=check, timeout=60)

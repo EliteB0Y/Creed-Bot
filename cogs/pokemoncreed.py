@@ -1,4 +1,4 @@
-import discord, os, mechanicalsoup, asyncio, json, aiohttp
+import discord, mechanicalsoup, asyncio, json, aiohttp
 from discord.ext import commands, menus
 
 class BoxMenu(menus.Menu):
