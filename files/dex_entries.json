@@ -1,0 +1,1742 @@
+{
+    "Bulbasaur": [
+        "There is a plant seed on its back right from the day this Pokemon is born. The seed slowly grows larger.",
+        "While it is young, it uses the nutrients that are stored in the seed on its back in order to grow."
+    ],
+    "Ivysaur": [
+        "When the bulb on its back grows large, it appears to lose the ability to stand on its hind legs.",
+        "Exposure to sunlight adds to its strength. Sunlight also makes the bud on its back grow larger."
+    ],
+    "Venusaur": [
+        "Its plant blooms when it is absorbing solar energy. It stays on the move to seek sunlight.",
+        "A bewitching aroma wafts from its flower. The fragrance becalms those engaged in a battle."
+    ],
+    "Charmander": [
+        "It has a preference for hot things. When it rains, steam is said to spout from the tip of its tail.",
+        "From the time it is born, a flame burns at the tip of its tail. Its life would end if the flame were to go out."
+    ],
+    "Charmeleon": [
+        "It has a barbaric nature. In battle, it whips its fiery tail around and slashes away with sharp claws.",
+        "If it becomes agitated during battle, it spouts intense flames, incinerating its surroundings."
+    ],
+    "Charizard": [
+        "It spits fire that is hot enough to melt boulders. It may cause forest fires by blowing flames.",
+        "Its wings can carry this Pokemon close to an altitude of 4,600 feet. It blows out fire at very high temperatures."
+    ],
+    "Squirtle": [
+        "When it retracts its long neck into its shell, it squirts out water with vigorous force.",
+        "When it feels threatened, it draws its limbs inside its shell and sprays water from its mouth."
+    ],
+    "Wartortle": [
+        "It is recognized as a symbol of longevity. If its shell has algae on it, that Wartortle is very old.",
+        "It cleverly controls its furry ears and tail to maintain its balance while swimming."
+    ],
+    "Blastoise": [
+        "It crushes its foe under its heavy body to cause fainting. In a pinch, it will withdraw inside its shell.",
+        "The rocket cannons on its shell fire jets of water capable of punching holes through thick steel."
+    ],
+    "Caterpie": [
+        "For protection, it releases a horrible stench from the antenna on its head to drive away enemies.",
+        "Its short feet are tipped with suction pads that enable it to tirelessly climb slopes and walls."
+    ],
+    "Metapod": [
+        "It is waiting for the moment to evolve. At this stage, it can only harden, so it remains motionless to avoid attack.",
+        "Even though it is encased in a sturdy shell, the body inside is tender. It can't withstand a harsh attack."
+    ],
+    "Butterfree": [
+        "In battle, it flaps its wings at great speed to release highly toxic dust into the air.",
+        "It collects honey every day. It rubs honey onto the hairs on its legs to carry it back to its nest."
+    ],
+    "Pikachu": [
+        "Pikachu that can generate powerful electricity have cheek sacs that are extra soft and super stretchy.",
+        "When Pikachu meet, they'll touch their tails together and exchange electricity through them as a form of greeting."
+    ],
+    "Raichu": [
+        "Its long tail serves as a ground to protect itself from its own high-voltage power.",
+        "If its electric pouches run empty, it raises its tail to gather electricity from the atmosphere."
+    ],
+    "Clefairy": [
+        "It is said that happiness will come to those who see a gathering of Clefairy dancing under a full moon.",
+        "Its adorable behavior and cry make it highly popular. However, this cute Pokemon is rarely found."
+    ],
+    "Clefable": [
+        "A timid fairy Pokemon that is rarely seen, it will run and hide the moment it senses people.",
+        "Their ears are sensitive enough to hear a pin drop from over a mile away, so they're usually found in quiet places."
+    ],
+    "Vulpix": [
+        "While young, it has six gorgeous tails. When it grows, several new tails are sprouted.",
+        "As each tail grows, its fur becomes more lustrous. When held, it feels slightly warm."
+    ],
+    "Ninetales": [
+        "It is said to live 1,000 years, and each of its tails is loaded with supernatural powers.",
+        "Very smart and very vengeful. Grabbing one of its many tails could result in a 1,000-year curse."
+    ],
+    "Oddish": [
+        "If exposed to moonlight, it starts to move. It roams far and wide at night to scatter its seeds.",
+        "During the day, it stays in the cold underground to avoid the sun. It grows by bathing in moonlight."
+    ],
+    "Gloom": [
+        "Its pistils exude an incredibly foul odor. The horrid stench can cause fainting at a distance of 1.25 miles.",
+        "What appears to be drool is actually sweet honey. It is very sticky and clings stubbornly if touched."
+    ],
+    "Vileplume": [
+        "It has the world's largest petals. With every step, the petals shake out heavy clouds of toxic pollen.",
+        "The larger its petals, the more toxic pollen it contains. Its big head is heavy and hard to hold up."
+    ],
+    "Diglett": [
+        "If a Diglett digs through a field, it leaves the soil perfectly tilled and ideal for planting crops.",
+        "It burrows through the ground at a shallow depth. It leaves raised earth in its wake, making it easy to spot."
+    ],
+    "Dugtrio": [
+        "A team of Diglett triplets. It triggers huge earthquakes by burrowing 60 miles underground.",
+        "These Diglett triplets dig over 60 miles below sea level. No one knows what it's like underground."
+    ],
+    "Meowth": [
+        "It loves to collect shiny things. If it's in a good mood, it might even let its Trainer have a look at its hoard of treasures.",
+        "It washes its face regularly to keep the coin on its forehead spotless. It doesn't get along with Galarian Meowth."
+    ],
+    "Persian": [
+        "Getting this prideful Pokemon to warm up to you takes a lot of effort, and it will claw at you the moment it gets annoyed.",
+        "Its elegant and refined behavior clashes with that of the barbaric Perrserker. The relationship between the two is one of mutual disdain."
+    ],
+    "Growlithe": [
+        "It has a brave and trustworthy nature. It fearlessly stands up to bigger and stronger foes.",
+        "Extremely loyal, it will fearlessly bark at any opponent to protect its own Trainer from harm."
+    ],
+    "Arcanine": [
+        "The sight of it running over 6,200 miles in a single day and night has captivated many people.",
+        "A Pokemon that has long been admired for its beauty. It runs agilely as if on wings."
+    ],
+    "Machop": [
+        "Its whole body is composed of muscles. Even though it's the size of a human child, it can hurl 100 grown-ups.",
+        "Always brimming with power, it passes time by lifting boulders. Doing so makes it even stronger."
+    ],
+    "Machoke": [
+        "Its muscular body is so powerful, it must wear a power-save belt to be able to regulate its motions.",
+        "Its formidable body never gets tired. It helps people by doing work such as the moving of heavy goods."
+    ],
+    "Machamp": [
+        "It quickly swings its four arms to rock its opponents with ceaseless punches and chops from all angles.",
+        "With four arms that react more quickly than it can think, it can execute many punches at once."
+    ],
+    "Ponyta": [
+        "It can't run properly when it's newly born. As it races around with others of its kind, its legs grow stronger.",
+        "If you've been accepted by Ponyta, its burning mane is mysteriously no longer hot to the touch."
+    ],
+    "Rapidash": [
+        "This Pokemon can be seen galloping through fields at speeds of up to 150 mph, its fiery mane fluttering in the wind.",
+        "The fastest runner becomes the leader, and it decides the herd's pace and direction of travel."
+    ],
+    "Farfetch'd": [
+        "The stalk this Pokemon carries in its wings serves as a sword to cut down opponents. In a dire situation, the stalk can also serve as food.",
+        "They use a plant stalk as a weapon, but not all of them use it in the same way. Several distinct styles of stalk fighting have been observed."
+    ],
+    "Shellder": [
+        "It swims facing backward by opening and closing its two-piece shell. It is surprisingly fast.",
+        "Its hard shell repels any kind of attack. It is vulnerable only when its shell is open."
+    ],
+    "Cloyster": [
+        "Its shell is extremely hard. It cannot be shattered, even with a bomb. The shell opens only when it is attacking.",
+        "Once it slams its shell shut, it is impossible to open, even by those with superior strength."
+    ],
+    "Gastly": [
+        "Born from gases, anyone would faint if engulfed by its gaseous body, which contains poison.",
+        "With its gas-like body, it can sneak into any place it desires. However, it can be blown away by wind."
+    ],
+    "Haunter": [
+        "Its tongue is made of gas. If licked, its victim starts shaking constantly until death eventually comes.",
+        "If you get the feeling of being watched in darkness when nobody is around, Haunter is there."
+    ],
+    "Gengar": [
+        "On the night of a full moon, if shadows move on their own and laugh, it must be Gengar's doing.",
+        "It is said to emerge from darkness to steal the lives of those who become lost in mountains."
+    ],
+    "Onix": [
+        "As it digs through the ground, it absorbs many hard objects. This is what makes its body so solid.",
+        "It rapidly bores through the ground at 50 mph by squirming and twisting its massive, rugged body."
+    ],
+    "Krabby": [
+        "It can be found near the sea. The large pincers grow back if they are torn out of their sockets.",
+        "If it senses danger approaching, it cloaks itself with bubbles from its mouth so it will look bigger."
+    ],
+    "Kingler": [
+        "Its large and hard pincer has 10,000-horsepower strength. However, being so big, it is unwieldy to move.",
+        "Its oversized claw is very powerful, but when it's not in battle, the claw just gets in the way."
+    ],
+    "Hitmonlee": [
+        "This amazing Pokemon has an awesome sense of balance. It can kick in succession from any position.",
+        "The legs freely contract and stretch. The stretchy legs allow it to hit a distant foe with a rising kick."
+    ],
+    "Hitmonchan": [
+        "Its punches slice the air. They are launched at such high speed, even a slight graze could cause a burn.",
+        "Its punches slice the air. However, it seems to need a short break after fighting for three minutes."
+    ],
+    "Koffing": [
+        "Its body is full of poisonous gas. It floats into garbage dumps, seeking out the fumes of raw, rotting trash.",
+        "It adores polluted air. Some claim that Koffing used to be more plentiful in the Galar region than they are now."
+    ],
+    "Weezing": [
+        "It mixes gases between its two bodies. It's said that these Pokemon were seen all over the Galar region back in the day.",
+        "It can't suck in air quite as well as a Galarian Weezing, but the toxins it creates are more potent than those of its counterpart."
+    ],
+    "Rhyhorn": [
+        "Strong, but not too bright, this Pokemon can shatter even a skyscraper with its charging tackles.",
+        "It can remember only one thing at a time. Once it starts rushing, it forgets why it started."
+    ],
+    "Rhydon": [
+        "It begins walking on its hind legs after evolution. It can punch holes through boulders with its horn.",
+        "Protected by an armor-like hide, it is capable of living in molten lava of 3,600 degrees Fahrenheit."
+    ],
+    "Goldeen": [
+        "Its dorsal, pectoral, and tail fins wave elegantly in water. That is why it is known as the Water Dancer.",
+        "Its dorsal and pectoral fins are strongly developed like muscles. It can swim at a speed of five knots."
+    ],
+    "Seaking": [
+        "In autumn, its body becomes more fatty in preparing to propose to a mate. It takes on beautiful colors.",
+        "Using its horn, it bores holes in riverbed boulders, making nests to prevent its eggs from washing away."
+    ],
+    "Mr. Mime": [
+        "The broadness of its hands may be no coincidence - many scientists believe its palms became enlarged specifically for pantomiming.",
+        "It's known for its top-notch pantomime skills. It protects itself from all sorts of attacks by emitting auras from its fingers to create walls."
+    ],
+    "Magikarp": [
+        "It is virtually worthless in terms of both power and speed. It is the most weak and pathetic Pokemon in the world.",
+        "This weak and pathetic Pokemon gets easily pushed along rivers when there are strong currents."
+    ],
+    "Gyarados": [
+        "It has an extremely aggressive nature. The Hyper Beam it shoots from its mouth totally incinerates all targets.",
+        "Once it begins to rampage, a Gyarados will burn everything down, even in a harsh storm."
+    ],
+    "Lapras": [
+        "A smart and kindhearted Pokemon, it glides across the surface of the sea while its beautiful song echoes around it.",
+        "Crossing icy seas is no issue for this cold-resistant Pokemon. Its smooth skin is a little cool to the touch."
+    ],
+    "Ditto": [
+        "It can reconstitute its entire cellular structure to change into what it sees, but it returns to normal when it relaxes.",
+        "When it encounters another Ditto, it will move faster than normal to duplicate that opponent exactly."
+    ],
+    "Eevee": [
+        "It has the ability to alter the composition of its body to suit its surrounding environment.",
+        "Thanks to its unstable genetic makeup, this special Pokemon conceals many different possible evolutions."
+    ],
+    "Vaporeon": [
+        "When Vaporeon's fins begin to vibrate, it is a sign that rain will come within a few hours.",
+        "Its body's cellular structure is similar to the molecular composition of water. It can melt invisibly in water."
+    ],
+    "Jolteon": [
+        "If it is angered or startled, the fur all over its body bristles like sharp needles that pierce foes.",
+        "It accumulates negative ions in the atmosphere to blast out 10,000-volt lightning bolts."
+    ],
+    "Flareon": [
+        "Once it has stored up enough heat, this Pokemon's body temperature can reach up to 1,700 degrees Fahrenheit.",
+        "It stores some of the air it inhales in its internal flame pouch, which heats it to over 3,000 degrees Fahrenheit."
+    ],
+    "Snorlax": [
+        "It is not satisfied unless it eats over 880 pounds of food every day. When it is done eating, it goes promptly to sleep.",
+        "This Pokemon's stomach is so strong, even eating moldy or rotten food will not affect it."
+    ],
+    "Mewtwo": [
+        "Created from the DNA of Mew, this Pokemon is a dangerous combination of overwhelming power and a savage heart.",
+        "The research efforts of a certain scientist ultimately resulted in this Pokemon. Its powers are dedicated to battling."
+    ],
+    "Mew": [
+        "It's very intelligent and can use an incredible variety of moves. Many believe that all other Pokemon are descendants of this one.",
+        "This mythical Pokemon is said to be extinct, but sightings of it are still being reported to this day."
+    ],
+    "Hoothoot": [
+        "It always stands on one foot. It changes feet so fast, the movement can rarely be seen.",
+        "It begins to hoot at the same time every day. Some Trainers use them in place of clocks."
+    ],
+    "Noctowl": [
+        "Its eyes are specially developed to enable it to see clearly even in murky darkness and minimal light.",
+        "When it needs to think, it rotates its head 180 degrees to sharpen its intellectual power."
+    ],
+    "Chinchou": [
+        "Its antennae, which evolved from a fin, have both positive and negative charges flowing through them.",
+        "On the dark ocean floor, its only means of communication is its constantly flashing lights."
+    ],
+    "Lanturn": [
+        "The light it emits is so bright that it can illuminate the sea's surface from a depth of over three miles.",
+        "This Pokemon flashes a bright light that blinds its prey. This creates an opening for it to deliver an electrical attack."
+    ],
+    "Pichu": [
+        "Despite its small size, it can zap even adult humans. However, if it does so, it also surprises itself.",
+        "The electric sacs in its cheeks are small. If even a little electricity leaks, it becomes shocked."
+    ],
+    "Cleffa": [
+        "According to local rumors, Cleffa are often seen in places where shooting stars have fallen.",
+        "Because of its unusual, starlike silhouette, people believe that it came here on a meteor."
+    ],
+    "Togepi": [
+        "The shell seems to be filled with joy. It is said that it will share good luck when treated kindly.",
+        "It is considered to be a symbol of good luck. Its shell is said to be filled with happiness."
+    ],
+    "Togetic": [
+        "They say that it will appear before kindhearted, caring people and shower them with happiness.",
+        "It grows dispirited if it is not with kind people. It can float in midair without moving its wings."
+    ],
+    "Natu": [
+        "It is extremely good at climbing tree trunks and likes to eat the new sprouts on the trees.",
+        "Because its wings aren't yet fully grown, it has to hop to get around. It is always staring at something."
+    ],
+    "Xatu": [
+        "They say that it stays still and quiet because it is seeing both the past and future at the same time.",
+        "This odd Pokemon can see both the past and the future. It eyes the sun's movement all day."
+    ],
+    "Bellossom": [
+        "Plentiful in the tropics. When it dances, its petals rub together and make a pleasant ringing sound.",
+        "Bellossom gather at times and appear to dance. They say that the dance is a ritual to summon the sun."
+    ],
+    "Sudowoodo": [
+        "If a tree branch shakes when there is no wind, it's a Sudowoodo, not a tree. It hides from the rain.",
+        "It disguises itself as a tree to avoid attack. It hates water, so it will disappear if it starts raining."
+    ],
+    "Wooper": [
+        "This Pokemon lives in cold water. It will leave the water to search for food when it gets cold outside.",
+        "When walking on land, it covers its body with a poisonous film that keeps its skin from dehydrating."
+    ],
+    "Quagsire": [
+        "It has an easygoing nature. It doesn't care if it bumps its head on boats and boulders while swimming.",
+        "Its body is always slimy. It often bangs its head on the river bottom as it swims but seems not to care."
+    ],
+    "Espeon": [
+        "By reading air currents, it can predict things such as the weather or its foe's next move.",
+        "It unleashes psychic power from the orb on its forehead. When its power is exhausted, the orb grows dull and dark."
+    ],
+    "Umbreon": [
+        "When this Pokemon becomes angry, its pores secrete a poisonous sweat, which it sprays at its opponent's eyes.",
+        "On the night of a full moon, or when it gets excited, the ring patterns on its body glow yellow."
+    ],
+    "Wobbuffet": [
+        "It hates light and shock. If attacked, it inflates its body to pump up its counterstrike.",
+        "To keep its pitch-black tail hidden, it lives quietly in the darkness. It is never first to attack."
+    ],
+    "Steelix": [
+        "It is said that if an Onix lives for over 100 years, its composition changes to become diamond-like.",
+        "It is thought its body transformed as a result of iron accumulating internally from swallowing soil."
+    ],
+    "Qwilfish": [
+        "When faced with a larger opponent, it swallows as much water as it can to match the opponent's size.",
+        "The small spikes covering its body developed from scales. They inject a toxin that causes fainting."
+    ],
+    "Shuckle": [
+        "It stores berries inside its shell. To avoid attacks, it hides beneath rocks and remains completely still.",
+        "The berries stored in its vaselike shell eventually become a thick, pulpy juice."
+    ],
+    "Sneasel": [
+        "Its paws conceal sharp claws. If attacked, it suddenly extends the claws and startles its enemy.",
+        "It has a cunning yet savage disposition. It waits for parents to leave their nests, and then it sneaks in to steal their eggs."
+    ],
+    "Swinub": [
+        "It rubs its snout on the ground to find and dig up food. It sometimes discovers hot springs.",
+        "If it smells something enticing, it dashes off headlong to find the source of the aroma."
+    ],
+    "Piloswine": [
+        "If it charges at an enemy, the hairs on its back stand up straight. It is very sensitive to sound.",
+        "Although its legs are short, its rugged hooves prevent it from slipping, even on icy ground."
+    ],
+    "Corsola": [
+        "It will regrow any branches that break off its head. People keep particularly beautiful Corsola branches as charms to promote safe childbirth.",
+        "These Pokemon live in warm seas. In prehistoric times, many lived in the oceans around the Galar region as well."
+    ],
+    "Remoraid": [
+        "The water they shoot from their mouths can hit moving prey from more than 300 feet away.",
+        "Using its dorsal fin as a suction pad, it clings to a Mantine's underside to scavenge for leftovers."
+    ],
+    "Octillery": [
+        "It has a tendency to want to be in holes. It prefers rock crags or pots and sprays ink from them before attacking.",
+        "It traps enemies with its suction-cupped tentacles, then smashes them with its rock-hard head."
+    ],
+    "Delibird": [
+        "It carries food all day long. There are tales about lost people who were saved by the food it had.",
+        "It has a generous habit of sharing its food with people and Pokemon, so it's always scrounging around for more food."
+    ],
+    "Mantine": [
+        "If it builds up enough speed swimming, it can jump out above the waves and glide for over 300 feet.",
+        "As it majestically swims, it doesn't care if Remoraid attach to it to scavenge for its leftovers."
+    ],
+    "Tyrogue": [
+        "It is always bursting with energy. To make itself stronger, it keeps on fighting even if it loses.",
+        "Even though it is small, it can't be ignored because it will slug any handy target without warning."
+    ],
+    "Hitmontop": [
+        "It launches kicks while spinning. If it spins at high speed, it may bore its way into the ground.",
+        "After doing a handstand to throw off the opponent's timing, it presents its fancy kick moves."
+    ],
+    "Larvitar": [
+        "Born deep underground, it comes aboveground and becomes a pupa once it has finished eating the surrounding soil.",
+        "It feeds on soil. After it has eaten a large mountain, it will fall asleep so it can grow."
+    ],
+    "Pupitar": [
+        "Even sealed in its shell, it can move freely. Hard and fast, it has outstanding destructive power.",
+        "It will not stay still, even while it's a pupa. It already has arms and legs under its solid shell."
+    ],
+    "Tyranitar": [
+        "Its body can't be harmed by any sort of attack, so it is very eager to make challenges against enemies.",
+        "The quakes caused when it walks make even great mountains crumble and change the surrounding terrain."
+    ],
+    "Celebi": [
+        "This Pokemon has the ability to move through time. Records describing it as a forest deity can be found from many different eras.",
+        "This Pokemon traveled through time to come from the future. It bolsters grass and trees with its own strength, and it can heal wounds, too."
+    ],
+    "Zigzagoon": [
+        "It marks its territory by rubbing its bristly fur on trees. This variety of Zigzagoon is friendlier and calmer than the kind native to Galar.",
+        "Zigzagoon that adapted to regions outside Galar acquired this appearance. If you've lost something, this Pokemon can likely find it."
+    ],
+    "Linoone": [
+        "Its fur is strong and supple. Shaving brushes made with shed Linoone hairs are highly prized.",
+        "It uses its explosive speed and razor-sharp claws to bring down prey. Running along winding paths is not its strong suit."
+    ],
+    "Lotad": [
+        "It searches about for clean water. If it does not drink water for too long, the leaf on its head wilts.",
+        "Its leaf grew too large for it to live on land. That is how it began to live floating in the water."
+    ],
+    "Lombre": [
+        "It is nocturnal and becomes active at nightfall. It feeds on aquatic mosses that grow in the riverbed.",
+        "It lives at the water's edge where it is sunny. It sleeps on a bed of water grass by day and becomes active at night."
+    ],
+    "Ludicolo": [
+        "The rhythm of bright, festive music activates Ludicolo's cells, making it more powerful.",
+        "If it hears festive music, it begins moving in rhythm in order to amplify its power."
+    ],
+    "Seedot": [
+        "If it remains still, it looks just like a real nut. It delights in surprising foraging Pokemon.",
+        "It attaches itself to a tree branch using the top of its head. Strong winds can sometimes make it fall."
+    ],
+    "Nuzleaf": [
+        "It lives deep in forests. With the leaf on its head, it makes a flute whose song makes listeners uneasy.",
+        "They live in holes bored in large trees. The sound of Nuzleaf's grass flute fills listeners with dread."
+    ],
+    "Shiftry": [
+        "A Pokemon that was feared as a forest guardian. It can read the foe's mind and take preemptive action.",
+        "It lives quietly in the deep forest. It is said to create chilly winter winds with the fans it holds."
+    ],
+    "Wingull": [
+        "It makes its nest on sheer cliffs. Riding the sea breeze, it glides up into the expansive skies.",
+        "It soars on updrafts without flapping its wings. It makes a nest on sheer cliffs at the sea's edge."
+    ],
+    "Pelipper": [
+        "It is a messenger of the skies, carrying small Pokemon and eggs to safety in its bill.",
+        "Skimming the water's surface, it dips its large bill in the sea, scoops up food and water, and carries it."
+    ],
+    "Ralts": [
+        "It is highly attuned to the emotions of people and Pokemon. It hides if it senses hostility.",
+        "If its horns capture the warm feelings of people or Pokemon, its body warms up slightly."
+    ],
+    "Kirlia": [
+        "If its Trainer becomes happy, it overflows with energy, dancing joyously while spinning about.",
+        "It has a psychic power that enables it to distort the space around it and see into the future."
+    ],
+    "Gardevoir": [
+        "It has the power to predict the future. Its power peaks when it is protecting its Trainer.",
+        "To protect its Trainer, it will expend all its psychic power to create a small black hole."
+    ],
+    "Nincada": [
+        "Because it lived almost entirely underground, it is nearly blind. It uses its antennae instead.",
+        "It can sometimes live underground for more than 10 years. It absorbs nutrients from the roots of trees."
+    ],
+    "Ninjask": [
+        "Its cry leaves a lasting headache if heard for too long. It moves so quickly that it is almost invisible.",
+        "This Pokemon is so quick, it is said to be able to avoid any attack. It loves to feed on tree sap."
+    ],
+    "Shedinja": [
+        "A most peculiar Pokemon that somehow appears in a Poke Ball when a Nincada evolves.",
+        "A strange Pokemon - it flies without moving its wings, has a hollow shell for a body, and does not breathe."
+    ],
+    "Sableye": [
+        "This Pokemon is feared. When its gemstone eyes begin to glow with a sinister shine, it's believed that Sableye will steal people's spirits away.",
+        "It feeds on gemstone crystals. In darkness, its eyes sparkle with the glitter of jewels."
+    ],
+    "Mawile": [
+        "It uses its docile-looking face to lull foes into complacency, then bites with its huge, relentless jaws.",
+        "It chomps with its gaping mouth. Its huge jaws are actually steel horns that have been transformed."
+    ],
+    "Electrike": [
+        "It stores static electricity in its fur for discharging. It gives off sparks if a storm approaches.",
+        "It stores electricity in its fur. It gives off sparks from all over its body in seasons when the air is dry."
+    ],
+    "Manectric": [
+        "It stimulates its own muscles with electricity, so it can move quickly. It eases its soreness with electricity, too, so it can recover quickly as well.",
+        "It rarely appears before people. It is said to nest where lightning has fallen."
+    ],
+    "Roselia": [
+        "Its flowers give off a relaxing fragrance. The stronger its aroma, the healthier the Roselia is.",
+        "It uses the different poisons in each hand separately when it attacks. The stronger its aroma, the healthier it is."
+    ],
+    "Wailmer": [
+        "It shows off by spraying jets of seawater from the nostrils above its eyes. It eats a solid ton of Wishiwashi every day.",
+        "When it sucks in a large volume of seawater, it becomes like a big, bouncy ball. It eats a ton of food daily."
+    ],
+    "Wailord": [
+        "It can sometimes knock out opponents with the shock created by breaching and crashing its big body onto the water.",
+        "Its immense size is the reason for its popularity. Wailord watching is a favorite sightseeing activity in various parts of the world."
+    ],
+    "Torkoal": [
+        "It burns coal inside its shell for energy. It blows out black soot if it is endangered.",
+        "You find abandoned coal mines full of them. They dig tirelessly in search of coal."
+    ],
+    "Trapinch": [
+        "Its nest is a sloped, bowl-like pit in the desert. Once something has fallen in, there is no escape.",
+        "It makes an inescapable conical pit and lies in wait at the bottom for prey to come tumbling down."
+    ],
+    "Vibrava": [
+        "The ultrasonic waves it generates by rubbing its two wings together cause severe headaches.",
+        "To help make its wings grow, it dissolves quantities of prey in its digestive juices and guzzles them down every day."
+    ],
+    "Flygon": [
+        "This Pokemon hides in the heart of sandstorms it creates and seldom appears where people can see it.",
+        "It is nicknamed the Desert Spirit because the flapping of its wings sounds like a woman singing."
+    ],
+    "Lunatone": [
+        "The phase of the moon apparently has some effect on its power. It's active on the night of a full moon.",
+        "It was discovered at the site of a meteor strike 40 years ago. Its stare can lull its foes to sleep."
+    ],
+    "Solrock": [
+        "When it rotates itself, it gives off light similar to the sun, thus blinding its foes.",
+        "Solar energy is the source of its power, so it is strong during the daytime. When it spins, its body shines."
+    ],
+    "Barboach": [
+        "Its slimy body is hard to grasp. In one region, it is said to have been born from hardened mud.",
+        "It probes muddy riverbeds with its two long whiskers. A slimy film protects its body."
+    ],
+    "Whiscash": [
+        "It makes its nest at the bottom of swamps. It will eat anything - if it is alive, Whiscash will eat it.",
+        "It claims a large swamp to itself. If a foe comes near it, it sets off tremors by thrashing around."
+    ],
+    "Corphish": [
+        "No matter how dirty the water in the river, it will adapt and thrive. It has a strong will to survive.",
+        "It was originally a Pokemon from afar that escaped to the wild. It can adapt to the dirtiest river."
+    ],
+    "Crawdaunt": [
+        "A rough customer that wildly flails its giant claws. It is said to be extremely hard to raise.",
+        "A brutish Pokemon that loves to battle. It will crash itself into any foe that approaches its nest."
+    ],
+    "Baltoy": [
+        "It moves while spinning around on its single foot. Some Baltoy have been seen spinning on their heads.",
+        "It was discovered in ancient ruins. While moving, it constantly spins. It stands on one foot even when asleep."
+    ],
+    "Claydol": [
+        "This mysterious Pokemon started life as an ancient clay figurine made over 20,000 years ago.",
+        "It appears to have been born from clay dolls made by ancient people. It uses telekinesis to float and move."
+    ],
+    "Feebas": [
+        "Although unattractive and unpopular, this Pokemon's marvelous vitality has made it a subject of research.",
+        "It is a shabby and ugly Pokemon. However, it is very hardy and can survive on little water."
+    ],
+    "Milotic": [
+        "Milotic has provided inspiration to many artists. It has even been referred to as the most beautiful Pokemon of all.",
+        "It's said that a glimpse of a Milotic and its beauty will calm any hostile emotions you're feeling."
+    ],
+    "Duskull": [
+        "If it finds bad children who won't listen to their parents, it will spirit them away - or so it's said.",
+        "Making itself invisible, it silently sneaks up to prey. It has the ability to slip through thick walls."
+    ],
+    "Dusclops": [
+        "Its body is entirely hollow. When it opens its mouth, it sucks everything in as if it were a black hole.",
+        "It seeks drifting will-o'-the-wisps and sucks them into its empty body. What happens inside is a mystery."
+    ],
+    "Wynaut": [
+        "It tends to move in a pack. Individuals squash against one another to toughen their spirits.",
+        "It tends to move in a pack with others. They cluster in a tight group to sleep in a cave."
+    ],
+    "Snorunt": [
+        "It's said that if they are seen at midnight, they'll cause heavy snow. They eat snow and ice to survive.",
+        "It can only survive in cold areas. It bounces happily around, even in environments as cold as minus 150 degrees Fahrenheit."
+    ],
+    "Glalie": [
+        "It has a body of ice that won't melt, even with fire. It can instantly freeze moisture in the atmosphere.",
+        "It can instantly freeze moisture in the atmosphere. It uses this power to freeze its foes."
+    ],
+    "Jirachi": [
+        "Once every 1,000 years, the singing of a pure voice will rouse this Pokemon from its near- perpetual slumber. It wakes for only seven days.",
+        "It's believed that when this Pokemon wakes from its 1,000-year slumber, it will grant any wishes written on the notes attached to its head."
+    ],
+    "Budew": [
+        "The pollen it releases contains poison. If this Pokemon is raised on clean water, the poison's toxicity is increased.",
+        "This Pokemon is highly sensitive to temperature changes. When its bud starts to open, that means spring is right around the corner."
+    ],
+    "Roserade": [
+        "After captivating opponents with its sweet scent, it lashes them with its thorny whips.",
+        "The poison in its right hand is quick acting. The poison in its left hand is slow acting. Both are life threatening."
+    ],
+    "Combee": [
+        "The members of the trio spend all their time together. Each one has a slightly different taste in nectar.",
+        "It ceaselessly gathers nectar from sunrise to sundown, all for the sake of Vespiquen and the swarm."
+    ],
+    "Vespiquen": [
+        "It skillfully commands its grubs in battles with its enemies. The grubs are willing to risk their lives to defend Vespiquen.",
+        "Vespiquen that give off more pheromones have larger swarms of Combee attendants."
+    ],
+    "Cherubi": [
+        "It nimbly dashes about to avoid getting pecked by bird Pokemon that would love to make off with its small, nutrient-rich storage ball.",
+        "The deeper a Cherubi's red, the more nutrients it has stockpiled in its body. And the sweeter and tastier its small ball!"
+    ],
+    "Cherrim": [
+        "As a bud, it barely moves. It sits still, placidly waiting for sunlight to appear.",
+        "Its folded petals are pretty tough. Bird Pokemon can peck at them all they want, and Cherrim won't be bothered at all."
+    ],
+    "Shellos": [
+        "This Pokemon's habitat shapes its physique. According to some theories, life in warm ocean waters causes this variation to develop.",
+        "Subjecting this Pokemon to a strong force causes it to secrete a strange purple fluid. Though harmless, the fluid is awfully sticky."
+    ],
+    "Gastrodon": [
+        "Its search for food sometimes leads it onto land, where it leaves behind a sticky trail of slime as it passes through.",
+        "The softness of its body helps disperse the force of impacts, so although its body is uncommonly squishy, it's also surprisingly resilient."
+    ],
+    "Drifloon": [
+        "Perhaps seeking company, it approaches children. However, it often quickly runs away again when the children play too roughly with it.",
+        "The gathering of many souls gave rise to this Pokemon. During humid seasons, they seem to appear in abundance."
+    ],
+    "Drifblim": [
+        "Some say this Pokemon is a collection of souls burdened with regrets, silently drifting through the dusk.",
+        "It grabs people and Pokemon and carries them off somewhere. Where do they go? Nobody knows."
+    ],
+    "Stunky": [
+        "From its rear, it sprays a foul-smelling liquid at opponents. It aims for their faces, and it can hit them from over 16 feet away.",
+        "If it lifts its tail and points its rear at you, beware. It's about to spray you with a fluid stinky enough to make you faint."
+    ],
+    "Skuntank": [
+        "In its belly, it reserves stinky fluid that it shoots from its tail during battle. As this Pokemon's diet varies, so does the stench of its fluid.",
+        "It digs holes in the ground to make its nest. The stench of the fluid it lets fly from the tip of its tail is extremely potent."
+    ],
+    "Bronzor": [
+        "It appears in ancient ruins. The pattern on its body doesn't come from any culture in the Galar region, so it remains shrouded in mystery.",
+        "Polishing Bronzor to a shine makes its surface reflect the truth, according to common lore. Be that as it may, Bronzor hates being polished."
+    ],
+    "Bronzong": [
+        "Some believe it to be a deity that summons rain clouds. When angered, it lets out a warning cry that rings out like the tolling of a bell.",
+        "Many scientists suspect that this Pokemon originated outside the Galar region, based on the patterns on its body."
+    ],
+    "Bonsly": [
+        "It expels both sweat and tears from its eyes. The sweat is a little salty, while the tears have a slight bitterness.",
+        "This Pokemon lives in dry, rocky areas. As its green spheres dry out, their dull luster increases."
+    ],
+    "Mime Jr.": [
+        "It mimics everyone it sees, but it puts extra effort into copying the graceful dance steps of Mr. Rime as practice.",
+        "It looks for a Mr. Rime that's a good dancer and carefully copies the Mr. Rime's steps like an apprentice."
+    ],
+    "Munchlax": [
+        "Stuffing itself with vast amounts of food is its only concern. Whether the food is rotten or fresh, yummy or tasteless - it does not care.",
+        "It stores food beneath its fur. It might share just one bite, but only if it really trusts you."
+    ],
+    "Riolu": [
+        "It's exceedingly energetic, with enough stamina to keep running all through the night. Taking it for walks can be a challenging experience.",
+        "It can use waves called auras to gauge how others are feeling. These same waves can also tell this Pokemon about the state of the environment."
+    ],
+    "Lucario": [
+        "It controls waves known as auras, which are powerful enough to pulverize huge rocks. It uses these waves to take down its prey.",
+        "It can tell what people are thinking. Only Trainers who have justice in their hearts can earn this Pokemon's trust."
+    ],
+    "Hippopotas": [
+        "It moves through the sands with its mouth open, swallowing sand along with its prey. It gets rid of the sand by spouting it from its nose.",
+        "This Pokemon is active during the day and passes the cold desert nights burrowed snugly into the sand."
+    ],
+    "Hippowdon": [
+        "Stones can get stuck in the ports on their bodies. Dwebble help dislodge such stones, so Hippowdon look after these Pokemon.",
+        "When roused to violence by its rage, it spews out the quantities of sand it has swallowed and whips up a sandstorm."
+    ],
+    "Skorupi": [
+        "After burrowing into the sand, it waits patiently for prey to come near. This Pokemon and Sizzlipede share common descent.",
+        "It attacks using the claws on its tail. Once locked in its grip, its prey is unable to move as this Pokemon's poison seeps in."
+    ],
+    "Drapion": [
+        "Its poison is potent, but it rarely sees use. This Pokemon prefers to use physical force instead, going on rampages with its car-crushing strength.",
+        "It's so vicious that it's called the Sand Demon. Yet when confronted by Hippowdon, Drapion keeps a low profile and will never pick a fight."
+    ],
+    "Croagunk": [
+        "It makes frightening noises with its poison-filled cheek sacs. When opponents flinch, Croagunk hits them with a poison jab.",
+        "Once diluted, its poison becomes medicinal. This Pokemon came into popularity after a pharmaceutical company chose it as a mascot."
+    ],
+    "Toxicroak": [
+        "It bounces toward opponents and gouges them with poisonous claws. No more than a scratch is needed to knock out its adversaries.",
+        "It booms out a victory croak when its prey goes down in defeat. This Pokemon and Seismitoad are related species."
+    ],
+    "Mantyke": [
+        "Mantyke living in Galar seem to be somewhat sluggish. The colder waters of the seas in this region may be the cause.",
+        "It swims along with a school of Remoraid, and they'll all fight together to repel attackers."
+    ],
+    "Snover": [
+        "It lives on snowy mountains. It sinks its legs into the snow to absorb water and keep its own temperature down.",
+        "The berries that grow around its belly are like ice pops. Galarian Darumaka absolutely love these berries."
+    ],
+    "Abomasnow": [
+        "If it sees any packs of Darumaka going after Snover, it chases them off, swinging its sizable arms like hammers.",
+        "This Pokemon is known to bring blizzards. A shake of its massive body is enough to cause whiteout conditions."
+    ],
+    "Weavile": [
+        "They attack their quarry in packs. Prey as large as Mamoswine easily fall to the teamwork of a group of Weavile.",
+        "With its claws, it leaves behind signs for its friends to find. The number of distinct signs is said to be over 500."
+    ],
+    "Rhyperior": [
+        "It can load up to three projectiles per arm into the holes in its hands. What launches out of those holes could be either rocks or Roggenrola.",
+        "It relies on its carapace to deflect incoming attacks and throw its enemy off balance. As soon as that happens, it drives its drill into the foe."
+    ],
+    "Togekiss": [
+        "These Pokemon are never seen anywhere near conflict or turmoil. In recent times, they've hardly been seen at all.",
+        "Known as a bringer of blessings, it's been depicted on good-luck charms since ancient times."
+    ],
+    "Leafeon": [
+        "Galarians favor the distinctive aroma that drifts from this Pokemon's leaves. There's a popular perfume made using that scent.",
+        "This Pokemon's tail is blade sharp, with a fantastic cutting edge that can slice right though large trees."
+    ],
+    "Glaceon": [
+        "Any who become captivated by the beauty of the snowfall that Glaceon creates will be frozen before they know it.",
+        "The coldness emanating from Glaceon causes powdery snow to form, making it quite a popular Pokemon at ski resorts."
+    ],
+    "Mamoswine": [
+        "This Pokemon can be spotted in wall paintings from as far back as 10,000 years ago. For a while, it was thought to have gone extinct.",
+        "It looks strong, and that's exactly what it is. As the weather grows colder, its ice tusks grow longer, thicker, and more impressive."
+    ],
+    "Gallade": [
+        "True to its honorable-warrior image, it uses the blades on its elbows only in defense of something or someone.",
+        "Sharply attuned to others' wishes for help, this Pokemon seeks out those in need and aids them in battle."
+    ],
+    "Dusknoir": [
+        "At the bidding of transmissions from the spirit world, it steals people and Pokemon away. No one knows whether it has a will of its own.",
+        "With the mouth on its belly, Dusknoir swallows its target whole. The soul is the only thing eaten -  Dusknoir disgorges the body before departing."
+    ],
+    "Froslass": [
+        "After a woman met her end on a snowy mountain, her regrets lingered on. From them, this Pokemon was born. Its favorite food is frozen souls.",
+        "It spits out cold air of nearly minus 60 degrees Fahrenheit to freeze its quarry. It brings frozen prey back to its lair and neatly lines them up."
+    ],
+    "Rotom": [
+        "One boy's invention led to the development of many different machines that take advantage of Rotom's unique capabilities.",
+        "With a body made of plasma, it can inhabit all sorts of machines. It loves to surprise others."
+    ],
+    "Purrloin": [
+        "It steals things from people just to amuse itself with their frustration. A rivalry exists between this Pokemon and Nickit.",
+        "Opponents that get drawn in by its adorable behavior come away with stinging scratches from its claws and stinging pride from its laughter."
+    ],
+    "Liepard": [
+        "Don't be fooled by its gorgeous fur and elegant figure. This is a moody and vicious Pokemon.",
+        "This stealthy Pokemon sneaks up behind prey without making any sound at all. It competes with Thievul for territory."
+    ],
+    "Munna": [
+        "Late at night, it appears beside people's pillows. As it feeds on dreams, the patterns on its body give off a faint glow.",
+        "It eats dreams and releases mist. The mist is pink when it's eating a good dream, and black when it's eating a nightmare."
+    ],
+    "Musharna": [
+        "When dark mists emanate from its body, don't get too near. If you do, your nightmares will become reality.",
+        "It drowses and dreams all the time. It's best to leave it be if it's just woken up, as it's a terrible grump when freshly roused from sleep."
+    ],
+    "Pidove": [
+        "Where people go, these Pokemon follow. If you're scattering food for them, be careful -  several hundred of them can gather at once.",
+        "It's forgetful and not very bright, but many Trainers love it anyway for its friendliness and sincerity."
+    ],
+    "Tranquill": [
+        "It can fly moderately quickly. No matter how far it travels, it can always find its way back to its master and its nest.",
+        "These bright Pokemon have acute memories. Apparently delivery workers often choose them as their partners."
+    ],
+    "Unfezant": [
+        "Unfezant are exceptional fliers. The females are known for their stamina, while the males outclass them in terms of speed.",
+        "This Pokemon is intelligent and intensely proud. People will sit up and take notice if you become the Trainer of one."
+    ],
+    "Roggenrola": [
+        "It's as hard as steel, but apparently a long soak in water will cause it to soften a bit.",
+        "When it detects a noise, it starts to move. The energy core inside it makes this Pokemon slightly warm to the touch."
+    ],
+    "Boldore": [
+        "If you see its orange crystals start to glow, be wary. It's about to fire off bursts of energy.",
+        "It relies on sound in order to monitor what's in its vicinity. When angered, it will attack without ever changing the direction it's facing."
+    ],
+    "Gigalith": [
+        "This hardy Pokemon can often be found on construction sites and in mines, working alongside people and Copperajah.",
+        "Although its energy blasts can blow away a dump truck, they have a limitation -  they can only be fired when the sun is out."
+    ],
+    "Woobat": [
+        "While inside a cave, if you look up and see lots of heart-shaped marks lining the walls, it's evidence that Woobat live there.",
+        "It emits ultrasonic waves as it flutters about, searching for its prey - bug Pokemon."
+    ],
+    "Swoobat": [
+        "Emitting powerful sound waves tires it out. Afterward, it won't be able to fly for a little while.",
+        "The auspicious shape of this Pokemon's nose apparently led some regions to consider Swoobat a symbol of good luck."
+    ],
+    "Drilbur": [
+        "It brings its claws together and whirls around at high speed before rushing toward its prey.",
+        "It's a digger, using its claws to burrow through the ground. It causes damage to vegetable crops, so many farmers have little love for it."
+    ],
+    "Excadrill": [
+        "It's not uncommon for tunnels that appear to have formed naturally to actually be a result of Excadrill's rampant digging.",
+        "Known as the Drill King, this Pokemon can tunnel through the terrain at speeds of over 90 mph."
+    ],
+    "Timburr": [
+        "It loves helping out with construction projects. It loves it so much that if rain causes work to halt, it swings its log around and throws a tantrum.",
+        "Timburr that have started carrying logs that are about three times their size are nearly ready to evolve."
+    ],
+    "Gurdurr": [
+        "It shows off its muscles to Machoke and other Gurdurr. If it fails to measure up to the other Pokemon, it lies low for a little while.",
+        "Gurdurr excels at demolition - construction is not its forte. In any case, there's skill in the way this Pokemon wields its metal beam."
+    ],
+    "Conkeldurr": [
+        "Concrete mixed by Conkeldurr is much more durable than normal concrete, even when the compositions of the two materials are the same.",
+        "When going all out, this Pokemon throws aside its concrete pillars and leaps at opponents to pummel them with its fists."
+    ],
+    "Tympole": [
+        "Graceful ripples running across the water's surface are a sure sign that Tympole are singing in high-pitched voices below.",
+        "It uses sound waves to communicate with others of its kind. People and other Pokemon species can't hear its cries of warning."
+    ],
+    "Palpitoad": [
+        "It weakens its prey with sound waves intense enough to cause headaches, then entangles them with its sticky tongue.",
+        "On occasion, their cries are sublimely pleasing to the ear. Palpitoad with larger lumps on their bodies can sing with a wider range of sounds."
+    ],
+    "Seismitoad": [
+        "The vibrating of the bumps all over its body causes earthquake-like tremors. Seismitoad and Croagunk are similar species.",
+        "This Pokemon is popular among the elderly, who say the vibrations of its lumps are great for massages."
+    ],
+    "Throh": [
+        "It performs throwing moves with first-rate skill. Over the course of many battles, Throh's belt grows darker as it absorbs its wearer's sweat.",
+        "They train in groups of five. Any member that can't keep up will discard its belt and leave the group."
+    ],
+    "Sawk": [
+        "If you see a Sawk training in the mountains in its single-minded pursuit of strength, it's best to quietly pass by.",
+        "The karate chops of a Sawk that's trained itself to the limit can cleave the ocean itself."
+    ],
+    "Cottonee": [
+        "It shoots cotton from its body to protect itself. If it gets caught up in hurricane-strength winds, it can get sent to the other side of the Earth.",
+        "Weaving together the cotton of both Cottonee and Eldegoss produces exquisite cloth that's highly prized by many luxury brands."
+    ],
+    "Whimsicott": [
+        "It scatters cotton all over the place as a prank. If it gets wet, it'll become too heavy to move and have no choice but to answer for its mischief.",
+        "As long as this Pokemon bathes in sunlight, its cotton keeps growing. If too much cotton fluff builds up, Whimsicott tears it off and scatters it."
+    ],
+    "Basculin": [
+        "Anglers love the fight this Pokemon puts up on the hook. And there are always more to catch -  many people release them into lakes illicitly.",
+        "In the past, it often appeared on the dinner table. The meat of red-striped Basculin is on the fatty side, and it's more popular with the youth."
+    ],
+    "Darumaka": [
+        "It derives its power from fire burning inside its body. If the fire dwindles, this Pokemon will immediately fall asleep.",
+        "This popular symbol of good fortune will never fall over in its sleep, no matter how it's pushed or pulled."
+    ],
+    "Darmanitan": [
+        "The thick arms of this hot-blooded Pokemon can deliver punches capable of obliterating a dump truck.",
+        "This Pokemon's power level rises along with the temperature of its fire, which can reach 2,500 degrees Fahrenheit."
+    ],
+    "Maractus": [
+        "With noises that could be mistaken for the rattles of maracas, it creates an upbeat rhythm, startling bird Pokemon and making them fly off in a hurry.",
+        "Once each year, this Pokemon scatters its seeds. They're jam-packed with nutrients, making them a precious food source out in the desert."
+    ],
+    "Dwebble": [
+        "When it finds a stone appealing, it creates a hole inside it and uses it as its home. This Pokemon is the natural enemy of Roggenrola and Rolycoly.",
+        "It first tries to find a rock to live in, but if there are no suitable rocks to be found, Dwebble may move in to the ports of a Hippowdon."
+    ],
+    "Crustle": [
+        "This highly territorial Pokemon prefers dry climates. It won't come out of its boulder on rainy days.",
+        "Its thick claws are its greatest weapons. They're mighty enough to crack Rhyperior's carapace."
+    ],
+    "Scraggy": [
+        "If it locks eyes with you, watch out! Nothing and no one is safe from the reckless headbutts of this troublesome Pokemon.",
+        "It protects itself with its durable skin. It's thought that this Pokemon will evolve once its skin has completely stretched out."
+    ],
+    "Scrafty": [
+        "As halfhearted as this Pokemon's kicks may seem, they pack enough power to shatter Conkeldurr's concrete pillars.",
+        "While mostly known for having the temperament of an aggressive ruffian, this Pokemon takes very good care of its family, friends, and territory."
+    ],
+    "Sigilyph": [
+        "Psychic power allows these Pokemon to fly. Some say they were the guardians of an ancient city. Others say they were the guardians' emissaries.",
+        "A discovery was made in the desert where Sigilyph fly. The ruins of what may have been an ancient city were found beneath the sands."
+    ],
+    "Yamask": [
+        "It wanders through ruins by night, carrying a mask that's said to have been the face it had when it was still human.",
+        "The spirit of a person from a bygone age became this Pokemon. It rambles through ruins, searching for someone who knows its face."
+    ],
+    "Cofagrigus": [
+        "This Pokemon has a body of sparkling gold. People say it no longer remembers that it was once human.",
+        "There are many depictions of Cofagrigus decorating ancient tombs. They're symbols of the wealth that kings of bygone eras had."
+    ],
+    "Trubbish": [
+        "Its favorite places are unsanitary ones. If you leave trash lying around, you could even find one of these Pokemon living in your room.",
+        "This Pokemon was born from a bag stuffed with trash. Galarian Weezing relish the fumes belched by Trubbish."
+    ],
+    "Garbodor": [
+        "This Pokemon eats trash, which turns into poison inside its body. The main component of the poison depends on what sort of trash was eaten.",
+        "The toxic liquid it launches from its right arm is so virulent that it can kill a weakened creature instantly."
+    ],
+    "Minccino": [
+        "The way it brushes away grime with its tail can be helpful when cleaning. But its focus on spotlessness can make cleaning more of a hassle.",
+        "They pet each other with their tails as a form of greeting. Of the two, the one whose tail is fluffier is a bit more boastful."
+    ],
+    "Cinccino": [
+        "Its body secretes oil that this Pokemon spreads over its nest as a coating to protect it from dust. Cinccino won't tolerate even a speck of the stuff.",
+        "A special oil that seeps through their fur helps them avoid attacks. The oil fetches a high price at market."
+    ],
+    "Gothita": [
+        "Though they're still only babies, there's psychic power stored in their ribbonlike feelers, and sometimes they use that power to fight.",
+        "Even when nobody seems to be around, Gothita can still be heard making a muted cry. Many believe it's speaking to something only it can see."
+    ],
+    "Gothorita": [
+        "It's said that when stars shine in the night sky, this Pokemon will spirit away sleeping children. Some call it the Witch of Punishment.",
+        "On nights when the stars shine, this Pokemon's psychic power is at its strongest. It's unknown just what link Gothorita has to the greater universe."
+    ],
+    "Gothitelle": [
+        "It has tremendous psychic power, but it dislikes conflict. It's also able to predict the future based on the movement of the stars.",
+        "A criminal who was shown his fate by a Gothitelle went missing that same day and was never seen again."
+    ],
+    "Solosis": [
+        "It communicates with others telepathically. Its body is encapsulated in liquid, but if it takes a heavy blow, the liquid will leak out.",
+        "Many say that the special liquid covering this Pokemon's body would allow it to survive in the vacuum of space."
+    ],
+    "Duosion": [
+        "Its psychic power can supposedly cover a range of more than half a mile - but only if its two brains can agree with each other.",
+        "Its brain has split into two, and the two halves rarely think alike. Its actions are utterly unpredictable."
+    ],
+    "Reuniclus": [
+        "While it could use its psychic abilities in battle, this Pokemon prefers to swing its powerful arms around to beat opponents into submission.",
+        "It's said that drinking the liquid surrounding Reuniclus grants wisdom. Problem is, the liquid is highly toxic to anything besides Reuniclus itself."
+    ],
+    "Vanillite": [
+        "Unable to survive in hot areas, it makes itself comfortable by breathing out air cold enough to cause snow. It burrows into the snow to sleep.",
+        "Supposedly, this Pokemon was born from an icicle. It spews out freezing air at minus 58 degrees Fahrenheit to make itself more comfortable."
+    ],
+    "Vanillish": [
+        "By drinking pure water, it grows its icy body. This Pokemon can be hard to find on days with warm, sunny weather.",
+        "It blasts enemies with cold air reaching minus 148 degrees Fahrenheit, freezing them solid. But it spares their lives afterward - it's a kind Pokemon."
+    ],
+    "Vanilluxe": [
+        "When its anger reaches a breaking point, this Pokemon unleashes a fierce blizzard that freezes every creature around it, be they friend or foe.",
+        "People believe this Pokemon formed when two Vanillish stuck together. Its body temperature is roughly 21 degrees Fahrenheit."
+    ],
+    "Karrablast": [
+        "Its strange physiology reacts to electrical energy in interesting ways. The presence of a Shelmet will cause this Pokemon to evolve.",
+        "It spits a liquid from its mouth to melt through Shelmet's shell. Karrablast doesn't eat the shell -  it eats only the contents."
+    ],
+    "Escavalier": [
+        "They use shells they've stolen from Shelmet to arm and protect themselves. They're very popular Pokemon in the Galar region.",
+        "It charges its enemies, lances at the ready. An image of one of its duels is captured in a famous painting of Escavalier clashing with Sirfetch'd."
+    ],
+    "Frillish": [
+        "It envelops its prey in its veillike arms and draws it down to the deeps, five miles below the ocean's surface.",
+        "Legend has it that the residents of a sunken ancient city changed into these Pokemon."
+    ],
+    "Jellicent": [
+        "Most of this Pokemon's body composition is identical to sea water. It makes sunken ships its lair.",
+        "Whenever a full moon hangs in the night sky, schools of Jellicent gather near the surface of the sea, waiting for their prey to appear."
+    ],
+    "Joltik": [
+        "Joltik can be found clinging to other Pokemon. It's soaking up static electricity because it can't produce a charge on its own.",
+        "Joltik latch on to other Pokemon and suck out static electricity. They're often found sticking to Yamper's hindquarters."
+    ],
+    "Galvantula": [
+        "It launches electrified fur from its abdomen as its means of attack. Opponents hit by the fur could be in for three full days and nights of paralysis.",
+        "It lays traps of electrified threads near the nests of bird Pokemon, aiming to snare chicks that are not yet good at flying."
+    ],
+    "Ferroseed": [
+        "It defends itself by launching spikes, but its aim isn't very good at first. Only after a lot of practice will it improve.",
+        "Mossy caves are their preferred dwellings. Enzymes contained in mosses help Ferroseed's spikes grow big and strong."
+    ],
+    "Ferrothorn": [
+        "This Pokemon scrapes its spikes across rocks, and then uses the tips of its feelers to absorb the nutrients it finds within the stone.",
+        "Its spikes are harder than steel. This Pokemon crawls across rock walls by stabbing the spikes on its feelers into the stone."
+    ],
+    "Klink": [
+        "The two minigears that compose this Pokemon are closer than twins. They mesh well only with each other.",
+        "It's suspected that Klink were the inspiration behind ancient people's invention of the first gears."
+    ],
+    "Klang": [
+        "When Klang goes all out, the minigear links up perfectly with the outer part of the big gear, and this Pokemon's rotation speed increases sharply.",
+        "Many companies in the Galar region choose Klang as their logo. This Pokemon is considered the symbol of industrial technology."
+    ],
+    "Klinklang": [
+        "From its spikes, it launches powerful blasts of electricity. Its red core contains an enormous amount of energy.",
+        "The three gears that compose this Pokemon spin at high speed. Its new spiked gear isn't a living creature."
+    ],
+    "Elgyem": [
+        "If this Pokemon stands near a TV, strange scenery will appear on the screen. That scenery is said to be from its home.",
+        "This Pokemon was discovered about 50 years ago. Its highly developed brain enables it to exert its psychic powers."
+    ],
+    "Beheeyem": [
+        "Whenever a Beheeyem visits a farm, a Dubwool mysteriously disappears.",
+        "Sometimes found drifting above wheat fields, this Pokemon can control the memories of its opponents."
+    ],
+    "Litwick": [
+        "The flame on its head keeps its body slightly warm. This Pokemon takes lost children by the hand to guide them to the spirit world.",
+        "The younger the life this Pokemon absorbs, the brighter and eerier the flame on its head burns."
+    ],
+    "Lampent": [
+        "This Pokemon appears just before someone passes away, so it's feared as an emissary of death.",
+        "It lurks in cities, pretending to be a lamp. Once it finds someone whose death is near, it will trail quietly after them."
+    ],
+    "Chandelure": [
+        "This Pokemon haunts dilapidated mansions. It sways its arms to hypnotize opponents with the ominous dancing of its flames.",
+        "In homes illuminated by Chandelure instead of lights, funerals were a constant occurrence- or so it's said."
+    ],
+    "Axew": [
+        "These Pokemon nest in the ground and use their tusks to crush hard berries. Crushing berries is also how they test each other's strength.",
+        "They play with each other by knocking their large tusks together. Their tusks break sometimes, but they grow back so quickly that it isn't a concern."
+    ],
+    "Fraxure": [
+        "After battle, this Pokemon carefully sharpens its tusks on river rocks. It needs to take care of its tusks-if one breaks, it will never grow back.",
+        "Its skin is as hard as a suit of armor. Fraxure's favorite strategy is to tackle its opponents, stabbing them with its tusks at the same time."
+    ],
+    "Haxorus": [
+        "Its resilient tusks are its pride and joy. It licks up dirt to take in the minerals it needs to keep its tusks in top condition.",
+        "While usually kindhearted, it can be terrifying if angered. Tusks that can slice through steel beams are how Haxorus deals with its adversaries."
+    ],
+    "Cubchoo": [
+        "When this Pokemon is in good health, its snot becomes thicker and stickier. It will smear its snot on anyone it doesn't like.",
+        "It sniffles before performing a move, using its frosty snot to provide an icy element to any move that needs it."
+    ],
+    "Beartic": [
+        "It swims through frigid seas, searching for prey. From its frozen breath, it forms icy fangs that are harder than steel.",
+        "It swims energetically through frigid seas. When it gets tired, it freezes the seawater with its breath so it can rest on the ice."
+    ],
+    "Shelmet": [
+        "When attacked, it tightly shuts the lid of its shell. This reaction fails to protect it from Karrablast, however, because they can still get into the shell.",
+        "It has a strange physiology that responds to electricity. When together with Karrablast, Shelmet evolves for some reason."
+    ],
+    "Accelgor": [
+        "It moves with blinding speed and lobs poison at foes. Featuring Accelgor as a main character is a surefire way to make a movie or comic popular.",
+        "Discarding its shell made it nimble. To keep itself from dehydrating, it wraps its body in bands of membrane."
+    ],
+    "Stunfisk": [
+        "Thanks to bacteria that lived in the mud flats with it, this Pokemon developed the organs it uses to generate electricity.",
+        "For some reason, this Pokemon smiles slightly when it emits a strong electric current from the yellow markings on its body."
+    ],
+    "Golett": [
+        "They were sculpted from clay in ancient times. No one knows why, but some of them are driven to continually line up boulders.",
+        "This Pokemon was created from clay. It received orders from its master many thousands of years ago, and it still follows those orders to this day."
+    ],
+    "Golurk": [
+        "Artillery platforms built into the walls of ancient castles served as perches from which Golurk could fire energy beams.",
+        "There's a theory that inside Golurk is a perpetual motion machine that produces limitless energy, but this belief hasn't been proven."
+    ],
+    "Pawniard": [
+        "It uses river stones to maintain the cutting edges of the blades covering its body. These sharpened blades allow it to bring down opponents.",
+        "A pack of these Pokemon forms to serve a Bisharp boss. Each Pawniard trains diligently, dreaming of one day taking the lead."
+    ],
+    "Bisharp": [
+        "It's accompanied by a large retinue of Pawniard. Bisharp keeps a keen eye on its minions, ensuring none of them even think of double-crossing it.",
+        "Violent conflicts erupt between Bisharp and Fraxure over places where sharpening stones can be found."
+    ],
+    "Rufflet": [
+        "If it spies a strong Pokemon, Rufflet can't resist challenging it to a battle. But if Rufflet loses, it starts bawling.",
+        "A combative Pokemon, it's ready to pick a fight with anyone. It has talons that can crush hard berries."
+    ],
+    "Braviary": [
+        "Known for its bravery and pride, this majestic Pokemon is often seen as a motif for various kinds of emblems.",
+        "Because this Pokemon is hotheaded and belligerent, it's Corviknight that's taken the role of transportation in Galar."
+    ],
+    "Vullaby": [
+        "It wears a bone to protect its rear. It often squabbles with others of its kind over particularly comfy bones.",
+        "Vullaby grow quickly. Bones that have gotten too small for older Vullaby to wear often get passed down to younger ones in the nest."
+    ],
+    "Mandibuzz": [
+        "Although it's a bit of a ruffian, this Pokemon will take lost Vullaby under its wing and care for them till they're ready to leave the nest.",
+        "They adorn themselves with bones. There seem to be fashion trends among them, as different bones come into and fall out of popularity."
+    ],
+    "Heatmor": [
+        "There's a hole in its tail that allows it to draw in the air it needs to keep its fire burning. If the hole gets blocked, this Pokemon will fall ill.",
+        "A flame serves as its tongue, melting through the hard shell of Durant so that Heatmor can devour their insides."
+    ],
+    "Durant": [
+        "They lay their eggs deep inside their nests. When attacked by Heatmor, they retaliate using their massive mandibles.",
+        "With their large mandibles, these Pokemon can crunch their way through rock. They work together to protect their eggs from Sandaconda."
+    ],
+    "Deino": [
+        "When it encounters something, its first urge is usually to bite it. If it likes what it tastes, it will commit the associated scent to memory.",
+        "Because it can't see, this Pokemon is constantly biting at everything it touches, trying to keep track of its surroundings."
+    ],
+    "Zweilous": [
+        "While hunting for prey, Zweilous wanders its territory, its two heads often bickering over which way to go.",
+        "Their two heads will fight each other over a single piece of food. Zweilous are covered in scars even without battling others."
+    ],
+    "Hydreigon": [
+        "There are a slew of stories about villages that were destroyed by Hydreigon. It bites anything that moves.",
+        "The three heads take turns sinking their teeth into the opponent. Their attacks won't slow until their target goes down."
+    ],
+    "Cobalion": [
+        "This Pokemon appears in a legend alongside Terrakion and Virizion, fighting against humans in defense of the Unova region's Pokemon.",
+        "From the moment it's born, this Pokemon radiates the air of a leader. Its presence will calm even vicious foes."
+    ],
+    "Terrakion": [
+        "It has phenomenal power. It will mercilessly crush anyone or anything that bullies small Pokemon.",
+        "In Unovan legend, Terrakion battled against humans in an effort to protect other Pokemon."
+    ],
+    "Virizion": [
+        "A legend tells of this Pokemon working together with Cobalion and Terrakion to protect the Pokemon of the Unova region.",
+        "It darts around opponents with a flurry of quick movements, slicing them up with its horns."
+    ],
+    "Reshiram": [
+        "Flames spew from its tail as it flies through the sky like a jet airplane. It's said that this Pokemon will scorch the world.",
+        "According to myth, if people ignore truth and let themselves become consumed by greed, Reshiram will arrive to burn their kingdoms down."
+    ],
+    "Zekrom": [
+        "When the interior part of its tail spins like a motor, Zekrom can generate many bolts of lightning to blast its surroundings.",
+        "Mythology tells us that if people lose the righteousness in their hearts, their kingdoms will be razed by Zekrom's lightning."
+    ],
+    "Kyurem": [
+        "Dwelling within it is a power even greater than that of Reshiram or Zekrom, but the extreme cold keeps that power bound.",
+        "It appears that this Pokemon uses its powers over ice to freeze its own body in order to stabilize its cellular structure."
+    ],
+    "Keldeo": [
+        "Cobalion, Terrakion, and Virizion taught this Pokemon how to fight. It dashes across the world, seeking more opportunities to further its training.",
+        "They say that Keldeo must survive harsh battles and fully develop the horn on its forehead before this Pokemon's true power will awaken."
+    ],
+    "Bunnelby": [
+        "It excels at digging holes. Using its ears, it can dig a nest 33 feet deep in one night.",
+        "It's very sensitive to danger. The sound of Corviknight's flapping will have Bunnelby digging a hole to hide underground in moments."
+    ],
+    "Diggersby": [
+        "With power equal to an excavator, it can dig through dense bedrock. It's a huge help during tunnel construction.",
+        "The fur on its belly retains heat exceptionally well. People used to make heavy winter clothing from fur shed by this Pokemon."
+    ],
+    "Pancham": [
+        "It chooses a Pangoro as its master and then imitates its master's actions. This is how it learns to battle and hunt for prey.",
+        "Wanting to make sure it's taken seriously, Pancham's always giving others a glare. But if it's not focusing, it ends up smiling."
+    ],
+    "Pangoro": [
+        "This Pokemon is quick to anger, and it has no problem using its prodigious strength to get its way. It lives for duels against Obstagoon.",
+        "Using its leaf, Pangoro can predict the moves of its opponents. It strikes with punches that can turn a dump truck into scrap with just one hit."
+    ],
+    "Espurr": [
+        "Though Espurr's expression never changes, behind that blank stare is an intense struggle to contain its devastating psychic power.",
+        "There's enough psychic power in Espurr to send a wrestler flying, but because this power can't be controlled, Espurr finds it troublesome."
+    ],
+    "Meowstic": [
+        "Revealing the eyelike patterns on the insides of its ears will unleash its psychic powers. It normally keeps the patterns hidden, however.",
+        "The defensive instinct of the males is strong. It's when they're protecting themselves or their partners that they unleash their full power."
+    ],
+    "Honedge": [
+        "Honedge's soul once belonged to a person who was killed a long time ago by the sword that makes up Honedge's body.",
+        "The blue eye on the sword's handguard is the true body of Honedge. With its old cloth, it drains people's lives away."
+    ],
+    "Doublade": [
+        "Honedge evolves into twins. The two blades rub together to emit a metallic sound that unnerves opponents.",
+        "The two swords employ a strategy of rapidly alternating between offense and defense to bring down their prey."
+    ],
+    "Aegislash": [
+        "In this defensive stance, Aegislash uses its steel body and a force field of spectral power to reduce the damage of any attack.",
+        "Its potent spectral powers allow it to manipulate others. It once used its powers to force people and Pokemon to build a kingdom to its liking."
+    ],
+    "Spritzee": [
+        "A scent pouch within this Pokemon's body allows it to create various scents. A change in its diet will alter the fragrance it produces.",
+        "The scent its body gives off enraptures those who smell it. Noble ladies had no shortage of love for Spritzee."
+    ],
+    "Aromatisse": [
+        "The scent that constantly emits from its fur is so powerful that this Pokemon's companions will eventually lose their sense of smell.",
+        "The scents Aromatisse can produce range from sweet smells that bolster allies to foul smells that sap an opponent's will to fight."
+    ],
+    "Swirlix": [
+        "It eats its own weight in sugar every day. If it doesn't get enough sugar, it becomes incredibly grumpy.",
+        "The sweet smell of cotton candy perfumes Swirlix's fluffy fur. This Pokemon spits out sticky string to tangle up its enemies."
+    ],
+    "Slurpuff": [
+        "By taking in a person's scent, it can sniff out their mental and physical condition. It's hoped that this skill will have many medical applications.",
+        "Slurpuff's fur contains a lot of air, making it soft to the touch and lighter than it looks."
+    ],
+    "Inkay": [
+        "It spins while making its luminescent spots flash. These spots allow it to communicate with others by using different patterns of light.",
+        "By exposing foes to the blinking of its luminescent spots, Inkay demoralizes them, and then it seizes the chance to flee."
+    ],
+    "Malamar": [
+        "Gazing at its luminescent spots will quickly induce a hypnotic state, putting the observer under Malamar's control.",
+        "It's said that Malamar's hypnotic powers played a role in certain history-changing events."
+    ],
+    "Binacle": [
+        "After two Binacle find a suitably sized rock, they adhere themselves to it and live together. They cooperate to gather food during high tide.",
+        "If the two don't work well together, both their offense and defense fall apart. Without good teamwork, they won't survive."
+    ],
+    "Barbaracle": [
+        "Seven Binacle come together to form one Barbaracle. The Binacle that serves as the head gives orders to those serving as the limbs.",
+        "Having an eye on each palm allows it to keep watch in all directions. In a pinch, its limbs start to act on their own to ensure the enemy's defeat."
+    ],
+    "Helioptile": [
+        "When spread, the frills on its head act like solar panels, generating the power behind this Pokemon's electric moves.",
+        "The sun powers this Pokemon's electricity generation. Interruption of that process stresses Helioptile to the point of weakness."
+    ],
+    "Heliolisk": [
+        "A now-vanished desert culture treasured these Pokemon. Appropriately, when Heliolisk came to the Galar region, treasure came with them.",
+        "One Heliolisk basking in the sun with its frill outspread is all it would take to produce enough electricity to power a city."
+    ],
+    "Sylveon": [
+        "By releasing enmity-erasing waves from its ribbonlike feelers, Sylveon stops any conflict.",
+        "There's a Galarian fairy tale that describes a beautiful Sylveon vanquishing a dreadful dragon Pokemon."
+    ],
+    "Hawlucha": [
+        "It drives its opponents to exhaustion with its agile maneuvers, then ends the fight with a flashy finishing move.",
+        "It always strikes a pose before going for its finishing move. Sometimes opponents take advantage of that time to counterattack."
+    ],
+    "Goomy": [
+        "Because most of its body is water, it will dry up if the weather becomes too arid. It's considered the weakest dragon Pokemon.",
+        "Their horns are powerful sensors. As soon as Goomy pick up any sign of enemies, they go into hiding. This is how they've survived."
+    ],
+    "Sliggoo": [
+        "Although this Pokemon isn't very strong, its body is coated in a caustic slime that can melt through anything, so predators steer clear of it.",
+        "The lump on its back contains its tiny brain. It thinks only of food and escaping its enemies."
+    ],
+    "Goodra": [
+        "Sometimes it misunderstands instructions and appears dazed or bewildered. Many Trainers don't mind, finding this behavior to be adorable.",
+        "Its form of offense is forcefully stretching out its horns. The strikes land 100 times harder than any blow from a heavyweight boxer."
+    ],
+    "Phantump": [
+        "After a lost child perished in the forest, their spirit possessed a tree stump, causing the spirit's rebirth as this Pokemon.",
+        "With a voice like a human child's, it cries out to lure adults deep into the forest, getting them lost among the trees."
+    ],
+    "Trevenant": [
+        "People fear it due to a belief that it devours any who try to cut down trees in its forest, but to the Pokemon it shares its woods with, it's kind.",
+        "Small roots that extend from the tips of this Pokemon's feet can tie into the trees of the forest and give Trevenant control over them."
+    ],
+    "Pumpkaboo": [
+        "Spirits that wander this world are placed into Pumpkaboo's body. They're then moved on to the afterlife.",
+        "The light that streams out from the holes in the pumpkin can hypnotize and control the people and Pokemon that see it."
+    ],
+    "Gourgeist": [
+        "Eerie cries emanate from its body in the dead of night. The sounds are said to be the wails of spirits who are suffering in the afterlife.",
+        "In the darkness of a new-moon night, Gourgeist will come knocking. Whoever answers the door will be swept off to the afterlife."
+    ],
+    "Bergmite": [
+        "They chill the air around them to -150 degrees Fahrenheit, freezing the water in the air into ice that they use as armor.",
+        "This Pokemon lives in areas of frigid cold. It secures itself to the back of an Avalugg by freezing its feet in place."
+    ],
+    "Avalugg": [
+        "At high latitudes, this Pokemon can be found with clusters of Bergmite on its back as it swims among the icebergs.",
+        "As Avalugg moves about during the day, the cracks in its body deepen. The Pokemon's body returns to a pristine state overnight."
+    ],
+    "Noibat": [
+        "After nightfall, they emerge from the caves they nest in during the day. Using their ultrasonic waves, they go on the hunt for ripened fruit.",
+        "No wavelength of sound is beyond Noibat's ability to produce. The ultrasonic waves it generates can overcome much larger Pokemon."
+    ],
+    "Noivern": [
+        "Aggressive and cruel, this Pokemon will ruthlessly torment enemies that are helpless in the dark.",
+        "Flying through the darkness, it weakens enemies with ultrasonic waves that could crush stone. Its fangs finish the fight."
+    ],
+    "Rowlet": [
+        "At a distance, it launches its sharp feathers while flying about. If the enemy gets too close, Rowlet switches tactics and delivers vicious kicks.",
+        "During the day, it builds up energy via photosynthesis. At night, it flies silently through the sky, on the prowl for prey."
+    ],
+    "Dartrix": [
+        "It throws one knifelike feather after another at its enemies, and each one precisely strikes a weak point. These feathers are known as blade quills.",
+        "It never slacks when it comes to the task of cleaning its feathers. Thorough preening keeps it looking spiffy and its blade quills nice and sharp."
+    ],
+    "Decidueye": [
+        "As if wielding a bow, it launches the arrow quills hidden among the feathers of its wings. Decidueye's shots never miss.",
+        "In a tenth of a second, it can nock and fire an arrow quill, piercing an opponent's weak point before they notice what's happening."
+    ],
+    "Litten": [
+        "It spends even the smallest amount of downtime grooming its fur with its tongue. Loose fur gathers in its stomach and serves as fuel for fiery moves.",
+        "Trying to pet Litten before it trusts you will result in a nasty scratch from its sharp claws. Be careful."
+    ],
+    "Torracat": [
+        "In the midst of battle, the fire pouch on Torracat's neck rings like a bell and produces stronger flames than usual.",
+        "When facing a powerful enemy, Torracat's fighting spirit gets pumped up, and its fire bell blazes hotter."
+    ],
+    "Incineroar": [
+        "It excels at violent, no-holds-barred battles. The temperature of the flames that issue from its navel exceeds 3,600 degrees Fahrenheit.",
+        "Incineroar's rough and aggressive behavior is its most notable trait, but the way it helps out small Pokemon shows that it has a kind side as well."
+    ],
+    "Popplio": [
+        "It creates special bouncy balloons to send at its opponents. When the balloons pop, the sheer force of their bursting is what deals damage.",
+        "If Popplio want to create big, powerful balloons, they must be persistent. It takes daily practice for these Pokemon to develop their skills."
+    ],
+    "Brionne": [
+        "As if dancing, it artfully dodges the attacks of its enemies. All the while, it's busy forming a bunch of balloons to overwhelm its foes.",
+        "On nights when the sea is calm, Brionne dance with one another to the singing of the Primarina that's leading them."
+    ],
+    "Primarina": [
+        "With its mouth, it makes sonic waves that sound like beautiful singing. It uses the sonic waves to control its water balloons.",
+        "For Primarina, every battle's a stage. Its singing and the dancing of its balloons will mesmerize the audience."
+    ],
+    "Grubbin": [
+        "Its natural enemies, like Rookidee, may flee rather than risk getting caught in its large mandibles that can snap thick tree branches.",
+        "It uses its big jaws to dig nests into the forest floor, and it loves to feed on sweet tree sap."
+    ],
+    "Charjabug": [
+        "While its durable shell protects it from attacks, Charjabug strikes at enemies with jolts of electricity discharged from the tips of its jaws.",
+        "Its digestive processes convert the leaves it eats into electricity. An electric sac in its belly stores the electricity for later use."
+    ],
+    "Vikavolt": [
+        "It builds up electricity in its abdomen, focuses it through its jaws, and then fires the electricity off in concentrated beams.",
+        "If it carries a Charjabug to use as a spare battery, a flying Vikavolt can rapidly fire high-powered beams of electricity."
+    ],
+    "Cutiefly": [
+        "Nectar and pollen are its favorite fare. You can find Cutiefly hovering around Gossifleur, trying to get some of Gossifleur's pollen.",
+        "An opponent's aura can tell Cutiefly what that opponent's next move will be. Then Cutiefly can glide around the attack and strike back."
+    ],
+    "Ribombee": [
+        "It makes pollen puffs from pollen and nectar. The puffs' effects depend on the type of ingredients and how much of each one is used.",
+        "Ribombee absolutely hate getting wet or rained on. In the cloudy Galar region, they are very seldom seen."
+    ],
+    "Wishiwashi": [
+        "Individually, they're incredibly weak. It's by gathering up into schools that they're able to confront opponents.",
+        "When it senses danger, its eyes tear up. The sparkle of its tears signals other Wishiwashi to gather."
+    ],
+    "Mareanie": [
+        "The first symptom of its sting is numbness. The next is an itching sensation so intense that it's impossible to resist the urge to claw at your skin.",
+        "Unlike their Alolan counterparts, the Mareanie of the Galar region have not yet figured out that the branches of Corsola are delicious."
+    ],
+    "Toxapex": [
+        "To survive in the cold waters of Galar, this Pokemon forms a dome with its legs, enclosing its body so it can capture its own body heat.",
+        "Within the poison sac in its body is a poison so toxic that Pokemon as large as Wailord will still be suffering three days after it first takes effect."
+    ],
+    "Mudbray": [
+        "Loads weighing up to 50 times as much as its own body weight pose no issue for this Pokemon. It's skilled at making use of mud.",
+        "It eats dirt to create mud and smears this mud all over its feet, giving them the grip needed to walk on rough terrain without slipping."
+    ],
+    "Mudsdale": [
+        "Mud that hardens around a Mudsdale's legs sets harder than stone. It's so hard that it allows this Pokemon to scrap a truck with a single kick.",
+        "Mudsdale has so much stamina that it could carry over 10 tons across the Galar region without rest or sleep."
+    ],
+    "Dewpider": [
+        "It forms a water bubble at the rear of its body and then covers its head with it. Meeting another Dewpider means comparing water-bubble sizes.",
+        "Dewpider normally lives underwater. When it comes onto land in search of food, it takes water with it in the form of a bubble on its head."
+    ],
+    "Araquanid": [
+        "It launches water bubbles with its legs, drowning prey within the bubbles. This Pokemon can then take its time to savor its meal.",
+        "It acts as a caretaker for Dewpider, putting them inside its bubble and letting them eat any leftover food."
+    ],
+    "Morelull": [
+        "Pokemon living in the forest eat the delicious caps on Morelull's head. The caps regrow overnight.",
+        "Morelull live in forests that stay dark even during the day. They scatter flickering spores that put enemies to sleep."
+    ],
+    "Shiinotic": [
+        "Its flickering spores lure in prey and put them to sleep. Once this Pokemon has its prey snoozing, it drains their vitality with its fingertips.",
+        "If you see a light deep in a forest at night, don't go near. Shiinotic will make you fall fast asleep."
+    ],
+    "Salandit": [
+        "Its venom sacs produce a fluid that this Pokemon then heats up with the flame in its tail. This process creates Salandit's poisonous gas.",
+        "This sneaky Pokemon will slink behind its prey and immobilize it with poisonous gas before the prey even realizes Salandit is there."
+    ],
+    "Salazzle": [
+        "Only female Salazzle exist. They emit a gas laden with pheromones to captivate male Salandit.",
+        "The winner of competitions between Salazzle is decided by which one has the most male Salandit with it."
+    ],
+    "Stufful": [
+        "Its fluffy fur is a delight to pet, but carelessly reaching out to touch this Pokemon could result in painful retaliation.",
+        "The way it protects itself by flailing its arms may be an adorable sight, but stay well away. This is flailing that can snap thick tree trunks."
+    ],
+    "Bewear": [
+        "Once it accepts you as a friend, it tries to show its affection with a hug. Letting it do that is dangerous-it could easily shatter your bones.",
+        "The moves it uses to take down its prey would make a martial artist jealous. It tucks subdued prey under its arms to carry them to its nest."
+    ],
+    "Bounsweet": [
+        "Its body gives off a sweet, fruity scent that is extremely appetizing to bird Pokemon.",
+        "When under attack, it secretes a sweet and delicious sweat. The scent only calls more enemies to it."
+    ],
+    "Steenee": [
+        "As it twirls like a dancer, a sweet smell spreads out around it. Anyone who inhales the scent will feel a surge of happiness.",
+        "Any Corvisquire that pecks at this Pokemon will be greeted with a smack from its sepals followed by a sharp kick."
+    ],
+    "Tsareena": [
+        "This feared Pokemon has long, slender legs and a cruel heart. It shows no mercy as it stomps on its opponents.",
+        "A kick from the hardened tips of this Pokemon's legs leaves a wound in the opponent's body and soul that will never heal."
+    ],
+    "Oranguru": [
+        "With waves of its fan-made from leaves and its own fur-Oranguru skillfully gives instructions to other Pokemon.",
+        "It knows the forest inside and out. If it comes across a wounded Pokemon, Oranguru will gather medicinal herbs to treat it."
+    ],
+    "Passimian": [
+        "Displaying amazing teamwork, they follow the orders of their boss as they all help out in the search for their favorite berries.",
+        "Passimian live in groups of about 20, with each member performing an assigned role. Through cooperation, the group survives."
+    ],
+    "Wimpod": [
+        "It's nature's cleaner-it eats anything and everything, including garbage and rotten things. The ground near its nest is always clean.",
+        "Wimpod gather in swarms, constantly on the lookout for danger. They scatter the moment they detect an enemy's presence."
+    ],
+    "Golisopod": [
+        "It will do anything to win, taking advantage of every opening and finishing opponents off with the small claws on its front legs.",
+        "They live in sunken ships or in holes in the seabed. When Golisopod and Grapploct battle, the loser becomes the winner's meal."
+    ],
+    "Pyukumuku": [
+        "It lives in warm, shallow waters. If it encounters a foe, it will spit out its internal organs as a means to punch them.",
+        "It's covered in a slime that keeps its skin moist, allowing it to stay on land for days without drying up."
+    ],
+    "Type: Null": [
+        "Rumor has it that the theft of top-secret research notes led to a new instance of this Pokemon being created in the Galar region.",
+        "It was modeled after a mighty Pokemon of myth. The mask placed upon it limits its power in order to keep it under control."
+    ],
+    "Silvally": [
+        "A solid bond of trust between this Pokemon and its Trainer awakened the strength hidden within Silvally. It can change its type at will.",
+        "The final factor needed to release this Pokemon's true power was a strong bond with a Trainer it trusts."
+    ],
+    "Turtonator": [
+        "Explosive substances coat the shell on its back. Enemies that dare attack it will be blown away by an immense detonation.",
+        "Eating sulfur in its volcanic habitat is what causes explosive compounds to develop in its shell. Its droppings are also dangerously explosive."
+    ],
+    "Togedemaru": [
+        "With the long hairs on its back, this Pokemon takes in electricity from other electric Pokemon. It stores what it absorbs in an electric sac.",
+        "When it's in trouble, it curls up into a ball, makes its fur spikes stand on end, and then discharges electricity indiscriminately."
+    ],
+    "Mimikyu": [
+        "It wears a rag fashioned into a Pikachu costume in an effort to look less scary. Unfortunately, the costume only makes it creepier.",
+        "There was a scientist who peeked under Mimikyu's old rag in the name of research. The scientist died of a mysterious disease."
+    ],
+    "Drampa": [
+        "The mountains it calls home are nearly two miles in height. On rare occasions, it descends to play with the children living in the towns below.",
+        "Drampa is a kind and friendly Pokemon-up until it's angered. When that happens, it stirs up a gale and flattens everything around."
+    ],
+    "Dhelmise": [
+        "After a piece of seaweed merged with debris from a sunken ship, it was reborn as this ghost Pokemon.",
+        "After lowering its anchor, it waits for its prey. It catches large Wailord and drains their life-force."
+    ],
+    "Jangmo-o": [
+        "They learn to fight by smashing their head scales together. The dueling strengthens both their skills and their spirits.",
+        "Jangmo-o strikes its scales to communicate with others of its kind. Its scales are actually fur that's become as hard as metal."
+    ],
+    "Hakamo-o": [
+        "The scaleless, scarred parts of its body are signs of its strength. It shows them off to defeated opponents.",
+        "Before attacking its enemies, it clashes its scales together and roars. Its sharp claws shred the opposition."
+    ],
+    "Kommo-o": [
+        "It clatters its tail scales to unnerve opponents. This Pokemon will battle only those who stand steadfast in the face of this display.",
+        "Certain ruins have paintings of ancient warriors wearing armor made of Kommo-o scales."
+    ],
+    "Cosmog": [
+        "This Pokemon came from another universe. Its gaseous body is so light that even a gentle breeze can blow it away.",
+        "Cosmog is very curious but not very cautious, often placing itself in danger. If things start to look dicey, it teleports away."
+    ],
+    "Cosmoem": [
+        "The absorption of starlight fuels this Pokemon's growth. The shell that encases it is harder than any known material.",
+        "It sucks in dust from the air at an astounding rate, frantically building up energy within its core as preparation for evolution."
+    ],
+    "Solgaleo": [
+        "When light radiates from its body, this Pokemon could almost appear to be the sun. It will dispel any darkness and light up the world.",
+        "Solgaleo was once known as the Beast That Devours the Sun. Energy in the form of light radiates boundlessly from it."
+    ],
+    "Lunala": [
+        "Known as the Beast That Calls the Moon, this Pokemon lives by taking in any and all light and converting it into its own energy.",
+        "It steals the light from its surroundings and then becomes the full moon, showering its own light across the night sky."
+    ],
+    "Necrozma": [
+        "It survives by absorbing light. After a long time spent slumbering underground, impurities accumulated within it, causing its body to darken.",
+        "It needs light to survive, and it goes on a rampage seeking it out. Its laser beams will cut anything to pieces."
+    ],
+    "Marshadow": [
+        "By slipping into the shadow of a martial arts master and copying their movements, this Pokemon learned the ultimate techniques.",
+        "This Pokemon can conceal itself in any shadow, so it went undiscovered for a long time."
+    ],
+    "Zeraora": [
+        "It runs as fast as lightning strikes, shredding its opponents with its high-voltage claws.",
+        "Electricity sparks from the pads on its limbs. Wherever Zeraora runs, lightning flashes and thunder echoes."
+    ],
+    "Meltan": [
+        "It dissolves and eats metal. Circulating liquid metal within its body is how it generates energy.",
+        "They live as a group, but when the time comes, one strong Meltan will absorb all the others and evolve."
+    ],
+    "Melmetal": [
+        "At the end of its life-span, Melmetal will rust and fall apart. The small shards left behind will eventually be reborn as Meltan.",
+        "Centrifugal force is behind the punches of Melmetal's heavy hex-nut arms. Melmetal is said to deliver the strongest punches of all Pokemon."
+    ],
+    "Grookey": [
+        "When it uses its special stick to strike up a beat, the sound waves produced carry revitalizing energy to the plants and flowers in the area.",
+        "It attacks with rapid beats of its stick. As it strikes with amazing speed, it gets more and more pumped."
+    ],
+    "Thwackey": [
+        "The faster a Thwackey can beat out a rhythm with its two sticks, the more respect it wins from its peers.",
+        "When it's drumming out rapid beats in battle, it gets so caught up in the rhythm that it won't even notice that it's already knocked out its opponent."
+    ],
+    "Rillaboom": [
+        "By drumming, it taps into the power of its special tree stump. The roots of the stump follow its direction in battle.",
+        "The one with the best drumming techniques becomes the boss of the troop. It has a gentle disposition and values harmony among its group."
+    ],
+    "Scorbunny": [
+        "A warm-up of running around gets fire energy coursing through this Pokemon's body. Once that happens, it's ready to fight at full power.",
+        "It has special pads on the backs of its feet, and one on its nose. Once it's raring to fight, these pads radiate tremendous heat."
+    ],
+    "Raboot": [
+        "Its thick and fluffy fur protects it from the cold and enables it to use hotter fire moves.",
+        "It kicks berries right off the branches of trees and then juggles them with its feet, practicing its footwork."
+    ],
+    "Cinderace": [
+        "It juggles a pebble with its feet, turning it into a burning soccer ball. Its shots strike opponents hard and leave them scorched.",
+        "It's skilled at both offense and defense, and it gets pumped up when cheered on. But if it starts showboating, it could put itself in a tough spot."
+    ],
+    "Sobble": [
+        "When scared, this Pokemon cries. Its tears pack the chemical punch of 100 onions, and attackers won't be able to resist weeping.",
+        "When it gets wet, its skin changes color, and this Pokemon becomes invisible as if it were camouflaged."
+    ],
+    "Drizzile": [
+        "A clever combatant, this Pokemon battles using water balloons created with moisture secreted from its palms.",
+        "Highly intelligent but also very lazy, it keeps enemies out of its territory by laying traps everywhere."
+    ],
+    "Inteleon": [
+        "It has many hidden capabilities, such as fingertips that can shoot water and a membrane on its back that it can use to glide through the air.",
+        "Its nictitating membranes let it pick out foes' weak points so it can precisely blast them with water that shoots from its fingertips at Mach 3."
+    ],
+    "Skwovet": [
+        "Found throughout the Galar region, this Pokemon becomes uneasy if its cheeks are ever completely empty of berries.",
+        "It eats berries nonstop-a habit that has made it more resilient than it looks. It'll show up on farms, searching for yet more berries."
+    ],
+    "Greedent": [
+        "It stashes berries in its tail-so many berries that they fall out constantly. But this Pokemon is a bit slow-witted, so it doesn't notice the loss.",
+        "Common throughout the Galar region, this Pokemon has strong teeth and can chew through the toughest of berry shells."
+    ],
+    "Rookidee": [
+        "It will bravely challenge any opponent, no matter how powerful. This Pokemon benefits from every battle-even a defeat increases its strength a bit.",
+        "Jumping nimbly about, this small-bodied Pokemon takes advantage of even the slightest opportunity to disorient larger opponents."
+    ],
+    "Corvisquire": [
+        "Smart enough to use tools in battle, these Pokemon have been seen picking up rocks and flinging them or using ropes to wrap up enemies.",
+        "The lessons of many harsh battles have taught it how to accurately judge an opponent's strength."
+    ],
+    "Corviknight": [
+        "This Pokemon reigns supreme in the skies of the Galar region. The black luster of its steel body could drive terror into the heart of any foe.",
+        "With their great intellect and flying skills, these Pokemon very successfully act as the Galar region's airborne taxi service."
+    ],
+    "Blipbug": [
+        "A constant collector of information, this Pokemon is very smart. Very strong is what it isn't.",
+        "Often found in gardens, this Pokemon has hairs on its body that it uses to assess its surroundings."
+    ],
+    "Dottler": [
+        "It barely moves, but it's still alive. Hiding in its shell without food or water seems to have awakened its psychic powers.",
+        "As it grows inside its shell, it uses its psychic abilities to monitor the outside world and prepare for evolution."
+    ],
+    "Orbeetle": [
+        "It's famous for its high level of intelligence, and the large size of its brain is proof that it also possesses immense psychic power.",
+        "It emits psychic energy to observe and study what's around it-and what's around it can include things over six miles away."
+    ],
+    "Nickit": [
+        "Aided by the soft pads on its feet, it silently raids the food stores of other Pokemon. It survives off its ill-gotten gains.",
+        "Cunning and cautious, this Pokemon survives by stealing food from others. It erases its tracks with swipes of its tail as it makes off with its plunder."
+    ],
+    "Thievul": [
+        "It secretly marks potential targets with a scent. By following the scent, it stalks its targets and steals from them when they least expect it.",
+        "With a lithe body and sharp claws, it goes around stealing food and eggs. Boltund is its natural enemy."
+    ],
+    "Gossifleur": [
+        "It anchors itself in the ground with its single leg, then basks in the sun. After absorbing enough sunlight, its petals spread as it blooms brilliantly.",
+        "It whirls around in the wind while singing a joyous song. This delightful display has charmed many into raising this Pokemon."
+    ],
+    "Eldegoss": [
+        "The seeds attached to its cotton fluff are full of nutrients. It spreads them on the wind so that plants and other Pokemon can benefit from them.",
+        "The cotton on the head of this Pokemon can be spun into a glossy, gorgeous yarn-a Galar regional specialty."
+    ],
+    "Wooloo": [
+        "Its curly fleece is such an effective cushion that this Pokemon could fall off a cliff and stand right back up at the bottom, unharmed.",
+        "If its fleece grows too long, Wooloo won't be able to move. Cloth made with the wool of this Pokemon is surprisingly strong."
+    ],
+    "Dubwool": [
+        "Weave a carpet from its springy wool, and you end up with something closer to a trampoline. You'll start to bounce the moment you set foot on it.",
+        "Its majestic horns are meant only to impress the opposite gender. They never see use in battle."
+    ],
+    "Chewtle": [
+        "Apparently the itch of its teething impels it to snap its jaws at anything in front of it.",
+        "It starts off battles by attacking with its rock-hard horn, but as soon as the opponent flinches, this Pokemon bites down and never lets go."
+    ],
+    "Drednaw": [
+        "With jaws that can shear through steel rods, this highly aggressive Pokemon chomps down on its unfortunate prey.",
+        "This Pokemon rapidly extends its retractable neck to sink its sharp fangs into distant enemies and take them down."
+    ],
+    "Yamper": [
+        "This Pokemon is very popular as a herding dog in the Galar region. As it runs, it generates electricity from the base of its tail.",
+        "This gluttonous Pokemon only assists people with their work because it wants treats. As it runs, it crackles with electricity."
+    ],
+    "Boltund": [
+        "This Pokemon generates electricity and channels it into its legs to keep them going strong. Boltund can run nonstop for three full days.",
+        "It sends electricity through its legs to boost their strength. Running at top speed, it easily breaks 50 mph."
+    ],
+    "Rolycoly": [
+        "Most of its body has the same composition as coal. Fittingly, this Pokemon was first discovered in coal mines about 400 years ago.",
+        "It can race around like a unicycle, even on rough, rocky terrain. Burning coal sustains it."
+    ],
+    "Carkol": [
+        "It forms coal inside its body. Coal dropped by this Pokemon once helped fuel the lives of people in the Galar region.",
+        "By rapidly rolling its legs, it can travel at over 18 mph. The temperature of the flames it breathes exceeds 1,800 degrees Fahrenheit."
+    ],
+    "Coalossal": [
+        "It's usually peaceful, but the vandalism of mines enrages it. Offenders will be incinerated with flames that reach 2,700 degrees Fahrenheit.",
+        "While it's engaged in battle, its mountain of coal will burn bright red, sending off sparks that scorch the surrounding area."
+    ],
+    "Applin": [
+        "It spends its entire life inside an apple. It hides from its natural enemies, bird Pokemon, by pretending it's just an apple and nothing more.",
+        "As soon as it's born, it burrows into an apple. Not only does the apple serve as its food source, but the flavor of the fruit determines its evolution."
+    ],
+    "Flapple": [
+        "It ate a sour apple, and that induced its evolution. In its cheeks, it stores an acid capable of causing chemical burns.",
+        "It flies on wings of apple skin and spits a powerful acid. It can also change its shape into that of an apple."
+    ],
+    "Appletun": [
+        "Eating a sweet apple caused its evolution. A nectarous scent wafts from its body, luring in the bug Pokemon it preys on.",
+        "Its body is covered in sweet nectar, and the skin on its back is especially yummy. Children used to have it as a snack."
+    ],
+    "Silicobra": [
+        "As it digs, it swallows sand and stores it in its neck pouch. The pouch can hold more than 17 pounds of sand.",
+        "It spews sand from its nostrils. While the enemy is blinded, it burrows into the ground to hide."
+    ],
+    "Sandaconda": [
+        "When it contracts its body, over 220 pounds of sand sprays from its nose. If it ever runs out of sand, it becomes disheartened.",
+        "Its unique style of coiling allows it to blast sand out of its sand sac more efficiently."
+    ],
+    "Cramorant": [
+        "It's so strong that it can knock out some opponents in a single hit, but it also may forget what it's battling midfight.",
+        "This hungry Pokemon swallows Arrokuda whole. Occasionally, it makes a mistake and tries to swallow a Pokemon other than its preferred prey."
+    ],
+    "Arrokuda": [
+        "If it sees any movement around it, this Pokemon charges for it straightaway, leading with its sharply pointed jaw. It's very proud of that jaw.",
+        "After it's eaten its fill, its movements become extremely sluggish. That's when Cramorant swallows it up."
+    ],
+    "Barraskewda": [
+        "This Pokemon has a jaw that's as sharp as a spear and as strong as steel. Apparently Barraskewda's flesh is surprisingly tasty, too.",
+        "It spins its tail fins to propel itself, surging forward at speeds of over 100 knots before ramming prey and spearing into them."
+    ],
+    "Toxel": [
+        "It stores poison in an internal poison sac and secretes that poison through its skin. If you touch this Pokemon, a tingling sensation follows.",
+        "It manipulates the chemical makeup of its poison to produce electricity. The voltage is weak, but it can cause a tingling paralysis."
+    ],
+    "Toxtricity": [
+        "When this Pokemon sounds as if it's strumming a guitar, it's actually clawing at the protrusions on its chest to generate electricity.",
+        "This short-tempered and aggressive Pokemon chugs stagnant water to absorb any toxins it might contain."
+    ],
+    "Sizzlipede": [
+        "It stores flammable gas in its body and uses it to generate heat. The yellow sections on its belly get particularly hot.",
+        "It wraps prey up with its heated body, cooking them in its coils. Once they're well-done, it will voraciously nibble them down to the last morsel."
+    ],
+    "Centiskorch": [
+        "When it heats up, its body temperature reaches about 1,500 degrees Fahrenheit. It lashes its body like a whip and launches itself at enemies.",
+        "While its burning body is already dangerous on its own, this excessively hostile Pokemon also has large and very sharp fangs."
+    ],
+    "Clobbopus": [
+        "It's very curious, but its means of investigating things is to try to punch them with its tentacles. The search for food is what brings it onto land.",
+        "Its tentacles tear off easily, but it isn't alarmed when that happens-it knows they'll grow back. It's about as smart as a three-year-old."
+    ],
+    "Grapploct": [
+        "A body made up of nothing but muscle makes the grappling moves this Pokemon performs with its tentacles tremendously powerful.",
+        "Searching for an opponent to test its skills against, it emerges onto land. Once the battle is over, it returns to the sea."
+    ],
+    "Sinistea": [
+        "This Pokemon is said to have been born when a lonely spirit possessed a cold, leftover cup of tea.",
+        "The teacup in which this Pokemon makes its home is a famous piece of antique tableware. Many forgeries are in circulation."
+    ],
+    "Polteageist": [
+        "This species lives in antique teapots. Most pots are forgeries, but on rare occasions, an authentic work is found.",
+        "Leaving leftover black tea unattended is asking for this Pokemon to come along and pour itself into it, turning the tea into a new Polteageist."
+    ],
+    "Hatenna": [
+        "Via the protrusion on its head, it senses other creatures' emotions. If you don't have a calm disposition, it will never warm up to you.",
+        "If this Pokemon senses a strong emotion, it will run away as fast as it can. It prefers areas without people."
+    ],
+    "Hattrem": [
+        "No matter who you are, if you bring strong emotions near this Pokemon, it will silence you violently.",
+        "Using the braids on its head, it pummels foes to get them to quiet down. One blow from those braids would knock out a professional boxer."
+    ],
+    "Hatterene": [
+        "It emits psychic power strong enough to cause headaches as a deterrent to the approach of others.",
+        "If you're too loud around it, you risk being torn apart by the claws on its tentacle. This Pokemon is also known as the Forest Witch."
+    ],
+    "Impidimp": [
+        "Through its nose, it sucks in the emanations produced by people and Pokemon when they feel annoyed. It thrives off this negative energy.",
+        "It sneaks into people's homes, stealing things and feasting on the negative energy of the frustrated occupants."
+    ],
+    "Morgrem": [
+        "When it gets down on all fours as if to beg for forgiveness, it's trying to lure opponents in so that it can stab them with its spear-like hair.",
+        "With sly cunning, it tries to lure people into the woods. Some believe it to have the power to make crops grow."
+    ],
+    "Grimmsnarl": [
+        "With the hair wrapped around its body helping to enhance its muscles, this Pokemon can overwhelm even Machamp.",
+        "Its hairs work like muscle fibers. When its hairs unfurl, they latch on to opponents, ensnaring them as tentacles would."
+    ],
+    "Obstagoon": [
+        "Its voice is staggering in volume. Obstagoon has a tendency to take on a threatening posture and shout-this move is known as Obstruct.",
+        "It evolved after experiencing numerous fights. While crossing its arms, it lets out a shout that would make any opponent flinch."
+    ],
+    "Perrserker": [
+        "What appears to be an iron helmet is actually hardened hair. This Pokemon lives for the thrill of battle.",
+        "After many battles, it evolved dangerous claws that come together to form daggers when extended."
+    ],
+    "Cursola": [
+        "Its shell is overflowing with its heightened otherworldly energy. The ectoplasm serves as protection for this Pokemon's core spirit.",
+        "Be cautious of the ectoplasmic body surrounding its soul. You'll become stiff as stone if you touch it."
+    ],
+    "Sirfetch'd": [
+        "Only Farfetch'd that have survived many battles can attain this evolution. When this Pokemon's leek withers, it will retire from combat.",
+        "After deflecting attacks with its hard leaf shield, it strikes back with its sharp leek stalk. The leek stalk is both weapon and food."
+    ],
+    "Mr. Rime": [
+        "It's highly skilled at tap-dancing. It waves its cane of ice in time with its graceful movements.",
+        "Its amusing movements make it very popular. It releases its psychic power from the pattern on its belly."
+    ],
+    "Runerigus": [
+        "A powerful curse was woven into an ancient painting. After absorbing the spirit of a Yamask, the painting began to move.",
+        "Never touch its shadowlike body, or you'll be shown the horrific memories behind the picture carved into it."
+    ],
+    "Milcery": [
+        "This Pokemon was born from sweet-smelling particles in the air. Its body is made of cream.",
+        "They say that any patisserie visited by Milcery is guaranteed success and good fortune."
+    ],
+    "Alcremie": [
+        "When it trusts a Trainer, it will treat them to berries it's decorated with cream.",
+        "When Alcremie is content, the cream it secretes from its hands becomes sweeter and richer."
+    ],
+    "Falinks": [
+        "Five of them are troopers, and one is the brass. The brass's orders are absolute.",
+        "The six of them work together as one Pokemon. Teamwork is also their battle strategy, and they constantly change their formation as they fight."
+    ],
+    "Pincurchin": [
+        "It feeds on seaweed, using its teeth to scrape it off rocks. Electric current flows from the tips of its spines.",
+        "It stores electricity in each spine. Even if one gets broken off, it still continues to emit electricity for at least three hours."
+    ],
+    "Snom": [
+        "It spits out thread imbued with a frigid sort of energy and uses it to tie its body to branches, disguising itself as an icicle while it sleeps.",
+        "It eats snow that piles up on the ground. The more snow it eats, the bigger and more impressive the spikes on its back grow."
+    ],
+    "Frosmoth": [
+        "Icy scales fall from its wings like snow as it flies over fields and mountains. The temperature of its wings is less than -290 degrees Fahrenheit.",
+        "It shows no mercy to any who desecrate fields and mountains. It will fly around on its icy wings, causing a blizzard to chase offenders away."
+    ],
+    "Stonjourner": [
+        "It stands in grasslands, watching the sun's descent from zenith to horizon. This Pokemon has a talent for delivering dynamic kicks.",
+        "Once a year, on a specific date and at a specific time, they gather out of nowhere and form up in a circle."
+    ],
+    "Eiscue": [
+        "It drifted in on the flow of ocean waters from a frigid place. It keeps its head iced constantly to make sure it stays nice and cold.",
+        "This Pokemon keeps its heat-sensitive head cool with ice. It fishes for its food, dangling its single hair into the sea to lure in prey."
+    ],
+    "Indeedee": [
+        "It uses the horns on its head to sense the emotions of others. Males will act as valets for those they serve, looking after their every need.",
+        "Through its horns, it can pick up on the emotions of creatures around it. Positive emotions are the source of its strength."
+    ],
+    "Morpeko": [
+        "As it eats the seeds stored up in its pocket-like pouches, this Pokemon is not just satisfying its constant hunger. It's also generating electricity.",
+        "It carries electrically roasted seeds with it as if they're precious treasures. No matter how much it eats, it always gets hungry again in short order."
+    ],
+    "Cufant": [
+        "It digs up the ground with its trunk. It's also very strong, being able to carry loads of over five tons without any problem at all.",
+        "If a job requires serious strength, this Pokemon will excel at it. Its copper body tarnishes in the rain, turning a vibrant green color."
+    ],
+    "Copperajah": [
+        "They came over from another region long ago and worked together with humans. Their green skin is resistant to water.",
+        "These Pokemon live in herds. Their trunks have incredible grip strength, strong enough to crush giant rocks into powder."
+    ],
+    "Dracozolt": [
+        "In ancient times, it was unbeatable thanks to its powerful lower body, but it went extinct anyway after it depleted all its plant-based food sources.",
+        "The powerful muscles in its tail generate its electricity. Compared to its lower body, its upper half is entirely too small."
+    ],
+    "Arctozolt": [
+        "The shaking of its freezing upper half is what generates its electricity. It has a hard time walking around.",
+        "This Pokemon lived on prehistoric seashores and was able to preserve food with the ice on its body. It went extinct because it moved so slowly."
+    ],
+    "Dracovish": [
+        "Powerful legs and jaws made it the apex predator of its time. Its own overhunting of its prey was what drove it to extinction.",
+        "Its mighty legs are capable of running at speeds exceeding 40 mph, but this Pokemon can't breathe unless it's underwater."
+    ],
+    "Arctovish": [
+        "Though it's able to capture prey by freezing its surroundings, it has trouble eating the prey afterward because its mouth is on top of its head.",
+        "The skin on its face is impervious to attack, but breathing difficulties made this Pokemon go extinct anyway."
+    ],
+    "Duraludon": [
+        "Its body resembles polished metal, and it's both lightweight and strong. The only drawback is that it rusts easily.",
+        "The special metal that composes its body is very light, so this Pokemon has considerable agility. It lives in caves because it dislikes the rain."
+    ],
+    "Dreepy": [
+        "After being reborn as a ghost Pokemon, Dreepy wanders the areas it used to inhabit back when it was alive in prehistoric seas.",
+        "If this weak Pokemon is by itself, a mere child could defeat it. But if Dreepy has friends to help it train, it can evolve and become much stronger."
+    ],
+    "Drakloak": [
+        "It's capable of flying faster than 120 mph. It battles alongside Dreepy and dotes on them until they successfully evolve.",
+        "Without a Dreepy to place on its head and care for, it gets so uneasy it'll try to substitute any Pokemon it finds for the missing Dreepy."
+    ],
+    "Dragapult": [
+        "When it isn't battling, it keeps Dreepy in the holes on its horns. Once a fight starts, it launches the Dreepy like supersonic missiles.",
+        "Apparently the Dreepy inside Dragapult's horns eagerly look forward to being launched out at Mach speeds."
+    ],
+    "Zacian": [
+        "Known as a legendary hero, this Pokemon absorbs metal particles, transforming them into a weapon it uses to battle.",
+        "This Pokemon has slumbered for many years. Some say it's Zamazenta's elder sister-others say the two Pokemon are rivals."
+    ],
+    "Zamazenta": [
+        "In times past, it worked together with a king of the people to save the Galar region. It absorbs metal that it then uses in battle.",
+        "This Pokemon slept for aeons while in the form of a statue. It was asleep for so long, people forgot that it ever existed."
+    ],
+    "Eternatus": [
+        "The core on its chest absorbs energy emanating from the lands of the Galar region. This energy is what allows Eternatus to stay active.",
+        "It was inside a meteorite that fell 20,000 years ago. There seems to be a connection between this Pokemon and the Dynamax phenomenon."
+    ]
+}

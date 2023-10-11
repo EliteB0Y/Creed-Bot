@@ -1,0 +1,4487 @@
+{
+    "1": {
+        "name": "bulbasaur",
+        "original": "001.png",
+        "wtp": "001x.png"
+    },
+    "2": {
+        "name": "ivysaur",
+        "original": "002.png",
+        "wtp": "002x.png"
+    },
+    "3": {
+        "name": "venusaur",
+        "original": "003.png",
+        "wtp": "003x.png"
+    },
+    "4": {
+        "name": "charmander",
+        "original": "004.png",
+        "wtp": "004x.png"
+    },
+    "5": {
+        "name": "charmeleon",
+        "original": "005.png",
+        "wtp": "005x.png"
+    },
+    "6": {
+        "name": "charizard",
+        "original": "006.png",
+        "wtp": "006x.png"
+    },
+    "7": {
+        "name": "squirtle",
+        "original": "007.png",
+        "wtp": "007x.png"
+    },
+    "8": {
+        "name": "wartortle",
+        "original": "008.png",
+        "wtp": "008x.png"
+    },
+    "9": {
+        "name": "blastoise",
+        "original": "009.png",
+        "wtp": "009x.png"
+    },
+    "10": {
+        "name": "caterpie",
+        "original": "010.png",
+        "wtp": "010x.png"
+    },
+    "11": {
+        "name": "metapod",
+        "original": "011.png",
+        "wtp": "011x.png"
+    },
+    "12": {
+        "name": "butterfree",
+        "original": "012.png",
+        "wtp": "012x.png"
+    },
+    "13": {
+        "name": "weedle",
+        "original": "013.png",
+        "wtp": "013x.png"
+    },
+    "14": {
+        "name": "kakuna",
+        "original": "014.png",
+        "wtp": "014x.png"
+    },
+    "15": {
+        "name": "beedrill",
+        "original": "015.png",
+        "wtp": "015x.png"
+    },
+    "16": {
+        "name": "pidgey",
+        "original": "016.png",
+        "wtp": "016x.png"
+    },
+    "17": {
+        "name": "pidgeotto",
+        "original": "017.png",
+        "wtp": "017x.png"
+    },
+    "18": {
+        "name": "pidgeot",
+        "original": "018.png",
+        "wtp": "018x.png"
+    },
+    "19": {
+        "name": "rattata",
+        "original": "019.png",
+        "wtp": "019x.png"
+    },
+    "20": {
+        "name": "raticate",
+        "original": "020.png",
+        "wtp": "020x.png"
+    },
+    "21": {
+        "name": "spearow",
+        "original": "021.png",
+        "wtp": "021x.png"
+    },
+    "22": {
+        "name": "fearow",
+        "original": "022.png",
+        "wtp": "022x.png"
+    },
+    "23": {
+        "name": "ekans",
+        "original": "023.png",
+        "wtp": "023x.png"
+    },
+    "24": {
+        "name": "arbok",
+        "original": "024.png",
+        "wtp": "024x.png"
+    },
+    "25": {
+        "name": "pikachu",
+        "original": "025.png",
+        "wtp": "025x.png"
+    },
+    "26": {
+        "name": "raichu",
+        "original": "026.png",
+        "wtp": "026x.png"
+    },
+    "27": {
+        "name": "sandshrew",
+        "original": "027.png",
+        "wtp": "027x.png"
+    },
+    "28": {
+        "name": "sandslash",
+        "original": "028.png",
+        "wtp": "028x.png"
+    },
+    "29": {
+        "name": "nidoran-f",
+        "original": "029.png",
+        "wtp": "029x.png"
+    },
+    "30": {
+        "name": "nidorina",
+        "original": "030.png",
+        "wtp": "030x.png"
+    },
+    "31": {
+        "name": "nidoqueen",
+        "original": "031.png",
+        "wtp": "031x.png"
+    },
+    "32": {
+        "name": "nidoran-m",
+        "original": "032.png",
+        "wtp": "032x.png"
+    },
+    "33": {
+        "name": "nidorino",
+        "original": "033.png",
+        "wtp": "033x.png"
+    },
+    "34": {
+        "name": "nidoking",
+        "original": "034.png",
+        "wtp": "034x.png"
+    },
+    "35": {
+        "name": "clefairy",
+        "original": "035.png",
+        "wtp": "035x.png"
+    },
+    "36": {
+        "name": "clefable",
+        "original": "036.png",
+        "wtp": "036x.png"
+    },
+    "37": {
+        "name": "vulpix",
+        "original": "037.png",
+        "wtp": "037x.png"
+    },
+    "38": {
+        "name": "ninetales",
+        "original": "038.png",
+        "wtp": "038x.png"
+    },
+    "39": {
+        "name": "jigglypuff",
+        "original": "039.png",
+        "wtp": "039x.png"
+    },
+    "40": {
+        "name": "wigglytuff",
+        "original": "040.png",
+        "wtp": "040x.png"
+    },
+    "41": {
+        "name": "zubat",
+        "original": "041.png",
+        "wtp": "041x.png"
+    },
+    "42": {
+        "name": "golbat",
+        "original": "042.png",
+        "wtp": "042x.png"
+    },
+    "43": {
+        "name": "oddish",
+        "original": "043.png",
+        "wtp": "043x.png"
+    },
+    "44": {
+        "name": "gloom",
+        "original": "044.png",
+        "wtp": "044x.png"
+    },
+    "45": {
+        "name": "vileplume",
+        "original": "045.png",
+        "wtp": "045x.png"
+    },
+    "46": {
+        "name": "paras",
+        "original": "046.png",
+        "wtp": "046x.png"
+    },
+    "47": {
+        "name": "parasect",
+        "original": "047.png",
+        "wtp": "047x.png"
+    },
+    "48": {
+        "name": "venonat",
+        "original": "048.png",
+        "wtp": "048x.png"
+    },
+    "49": {
+        "name": "venomoth",
+        "original": "049.png",
+        "wtp": "049x.png"
+    },
+    "50": {
+        "name": "diglett",
+        "original": "050.png",
+        "wtp": "050x.png"
+    },
+    "51": {
+        "name": "dugtrio",
+        "original": "051.png",
+        "wtp": "051x.png"
+    },
+    "52": {
+        "name": "meowth",
+        "original": "052.png",
+        "wtp": "052x.png"
+    },
+    "53": {
+        "name": "persian",
+        "original": "053.png",
+        "wtp": "053x.png"
+    },
+    "54": {
+        "name": "psyduck",
+        "original": "054.png",
+        "wtp": "054x.png"
+    },
+    "55": {
+        "name": "golduck",
+        "original": "055.png",
+        "wtp": "055x.png"
+    },
+    "56": {
+        "name": "mankey",
+        "original": "056.png",
+        "wtp": "056x.png"
+    },
+    "57": {
+        "name": "primeape",
+        "original": "057.png",
+        "wtp": "057x.png"
+    },
+    "58": {
+        "name": "growlithe",
+        "original": "058.png",
+        "wtp": "058x.png"
+    },
+    "59": {
+        "name": "arcanine",
+        "original": "059.png",
+        "wtp": "059x.png"
+    },
+    "60": {
+        "name": "poliwag",
+        "original": "060.png",
+        "wtp": "060x.png"
+    },
+    "61": {
+        "name": "poliwhirl",
+        "original": "061.png",
+        "wtp": "061x.png"
+    },
+    "62": {
+        "name": "poliwrath",
+        "original": "062.png",
+        "wtp": "062x.png"
+    },
+    "63": {
+        "name": "abra",
+        "original": "063.png",
+        "wtp": "063x.png"
+    },
+    "64": {
+        "name": "kadabra",
+        "original": "064.png",
+        "wtp": "064x.png"
+    },
+    "65": {
+        "name": "alakazam",
+        "original": "065.png",
+        "wtp": "065x.png"
+    },
+    "66": {
+        "name": "machop",
+        "original": "066.png",
+        "wtp": "066x.png"
+    },
+    "67": {
+        "name": "machoke",
+        "original": "067.png",
+        "wtp": "067x.png"
+    },
+    "68": {
+        "name": "machamp",
+        "original": "068.png",
+        "wtp": "068x.png"
+    },
+    "69": {
+        "name": "bellsprout",
+        "original": "069.png",
+        "wtp": "069x.png"
+    },
+    "70": {
+        "name": "weepinbell",
+        "original": "070.png",
+        "wtp": "070x.png"
+    },
+    "71": {
+        "name": "victreebel",
+        "original": "071.png",
+        "wtp": "071x.png"
+    },
+    "72": {
+        "name": "tentacool",
+        "original": "072.png",
+        "wtp": "072x.png"
+    },
+    "73": {
+        "name": "tentacruel",
+        "original": "073.png",
+        "wtp": "073x.png"
+    },
+    "74": {
+        "name": "geodude",
+        "original": "074.png",
+        "wtp": "074x.png"
+    },
+    "75": {
+        "name": "graveler",
+        "original": "075.png",
+        "wtp": "075x.png"
+    },
+    "76": {
+        "name": "golem",
+        "original": "076.png",
+        "wtp": "076x.png"
+    },
+    "77": {
+        "name": "ponyta",
+        "original": "077.png",
+        "wtp": "077x.png"
+    },
+    "78": {
+        "name": "rapidash",
+        "original": "078.png",
+        "wtp": "078x.png"
+    },
+    "79": {
+        "name": "slowpoke",
+        "original": "079.png",
+        "wtp": "079x.png"
+    },
+    "80": {
+        "name": "slowbro",
+        "original": "080.png",
+        "wtp": "080x.png"
+    },
+    "81": {
+        "name": "magnemite",
+        "original": "081.png",
+        "wtp": "081x.png"
+    },
+    "82": {
+        "name": "magneton",
+        "original": "082.png",
+        "wtp": "082x.png"
+    },
+    "83": {
+        "name": "farfetchd",
+        "original": "083.png",
+        "wtp": "083x.png"
+    },
+    "84": {
+        "name": "doduo",
+        "original": "084.png",
+        "wtp": "084x.png"
+    },
+    "85": {
+        "name": "dodrio",
+        "original": "085.png",
+        "wtp": "085x.png"
+    },
+    "86": {
+        "name": "seel",
+        "original": "086.png",
+        "wtp": "086x.png"
+    },
+    "87": {
+        "name": "dewgong",
+        "original": "087.png",
+        "wtp": "087x.png"
+    },
+    "88": {
+        "name": "grimer",
+        "original": "088.png",
+        "wtp": "088x.png"
+    },
+    "89": {
+        "name": "muk",
+        "original": "089.png",
+        "wtp": "089x.png"
+    },
+    "90": {
+        "name": "shellder",
+        "original": "090.png",
+        "wtp": "090x.png"
+    },
+    "91": {
+        "name": "cloyster",
+        "original": "091.png",
+        "wtp": "091x.png"
+    },
+    "92": {
+        "name": "gastly",
+        "original": "092.png",
+        "wtp": "092x.png"
+    },
+    "93": {
+        "name": "haunter",
+        "original": "093.png",
+        "wtp": "093x.png"
+    },
+    "94": {
+        "name": "gengar",
+        "original": "094.png",
+        "wtp": "094x.png"
+    },
+    "95": {
+        "name": "onix",
+        "original": "095.png",
+        "wtp": "095x.png"
+    },
+    "96": {
+        "name": "drowzee",
+        "original": "096.png",
+        "wtp": "096x.png"
+    },
+    "97": {
+        "name": "hypno",
+        "original": "097.png",
+        "wtp": "097x.png"
+    },
+    "98": {
+        "name": "krabby",
+        "original": "098.png",
+        "wtp": "098x.png"
+    },
+    "99": {
+        "name": "kingler",
+        "original": "099.png",
+        "wtp": "099x.png"
+    },
+    "100": {
+        "name": "voltorb",
+        "original": "100.png",
+        "wtp": "100x.png"
+    },
+    "101": {
+        "name": "electrode",
+        "original": "101.png",
+        "wtp": "101x.png"
+    },
+    "102": {
+        "name": "exeggcute",
+        "original": "102.png",
+        "wtp": "102x.png"
+    },
+    "103": {
+        "name": "exeggutor",
+        "original": "103.png",
+        "wtp": "103x.png"
+    },
+    "104": {
+        "name": "cubone",
+        "original": "104.png",
+        "wtp": "104x.png"
+    },
+    "105": {
+        "name": "marowak",
+        "original": "105.png",
+        "wtp": "105x.png"
+    },
+    "106": {
+        "name": "hitmonlee",
+        "original": "106.png",
+        "wtp": "106x.png"
+    },
+    "107": {
+        "name": "hitmonchan",
+        "original": "107.png",
+        "wtp": "107x.png"
+    },
+    "108": {
+        "name": "lickitung",
+        "original": "108.png",
+        "wtp": "108x.png"
+    },
+    "109": {
+        "name": "koffing",
+        "original": "109.png",
+        "wtp": "109x.png"
+    },
+    "110": {
+        "name": "weezing",
+        "original": "110.png",
+        "wtp": "110x.png"
+    },
+    "111": {
+        "name": "rhyhorn",
+        "original": "111.png",
+        "wtp": "111x.png"
+    },
+    "112": {
+        "name": "rhydon",
+        "original": "112.png",
+        "wtp": "112x.png"
+    },
+    "113": {
+        "name": "chansey",
+        "original": "113.png",
+        "wtp": "113x.png"
+    },
+    "114": {
+        "name": "tangela",
+        "original": "114.png",
+        "wtp": "114x.png"
+    },
+    "115": {
+        "name": "kangaskhan",
+        "original": "115.png",
+        "wtp": "115x.png"
+    },
+    "116": {
+        "name": "horsea",
+        "original": "116.png",
+        "wtp": "116x.png"
+    },
+    "117": {
+        "name": "seadra",
+        "original": "117.png",
+        "wtp": "117x.png"
+    },
+    "118": {
+        "name": "goldeen",
+        "original": "118.png",
+        "wtp": "118x.png"
+    },
+    "119": {
+        "name": "seaking",
+        "original": "119.png",
+        "wtp": "119x.png"
+    },
+    "120": {
+        "name": "staryu",
+        "original": "120.png",
+        "wtp": "120x.png"
+    },
+    "121": {
+        "name": "starmie",
+        "original": "121.png",
+        "wtp": "121x.png"
+    },
+    "122": {
+        "name": "mr-mime",
+        "original": "122.png",
+        "wtp": "122x.png"
+    },
+    "123": {
+        "name": "scyther",
+        "original": "123.png",
+        "wtp": "123x.png"
+    },
+    "124": {
+        "name": "jynx",
+        "original": "124.png",
+        "wtp": "124x.png"
+    },
+    "125": {
+        "name": "electabuzz",
+        "original": "125.png",
+        "wtp": "125x.png"
+    },
+    "126": {
+        "name": "magmar",
+        "original": "126.png",
+        "wtp": "126x.png"
+    },
+    "127": {
+        "name": "pinsir",
+        "original": "127.png",
+        "wtp": "127x.png"
+    },
+    "128": {
+        "name": "tauros",
+        "original": "128.png",
+        "wtp": "128x.png"
+    },
+    "129": {
+        "name": "magikarp",
+        "original": "129.png",
+        "wtp": "129x.png"
+    },
+    "130": {
+        "name": "gyarados",
+        "original": "130.png",
+        "wtp": "130x.png"
+    },
+    "131": {
+        "name": "lapras",
+        "original": "131.png",
+        "wtp": "131x.png"
+    },
+    "132": {
+        "name": "ditto",
+        "original": "132.png",
+        "wtp": "132x.png"
+    },
+    "133": {
+        "name": "eevee",
+        "original": "133.png",
+        "wtp": "133x.png"
+    },
+    "134": {
+        "name": "vaporeon",
+        "original": "134.png",
+        "wtp": "134x.png"
+    },
+    "135": {
+        "name": "jolteon",
+        "original": "135.png",
+        "wtp": "135x.png"
+    },
+    "136": {
+        "name": "flareon",
+        "original": "136.png",
+        "wtp": "136x.png"
+    },
+    "137": {
+        "name": "porygon",
+        "original": "137.png",
+        "wtp": "137x.png"
+    },
+    "138": {
+        "name": "omanyte",
+        "original": "138.png",
+        "wtp": "138x.png"
+    },
+    "139": {
+        "name": "omastar",
+        "original": "139.png",
+        "wtp": "139x.png"
+    },
+    "140": {
+        "name": "kabuto",
+        "original": "140.png",
+        "wtp": "140x.png"
+    },
+    "141": {
+        "name": "kabutops",
+        "original": "141.png",
+        "wtp": "141x.png"
+    },
+    "142": {
+        "name": "aerodactyl",
+        "original": "142.png",
+        "wtp": "142x.png"
+    },
+    "143": {
+        "name": "snorlax",
+        "original": "143.png",
+        "wtp": "143x.png"
+    },
+    "144": {
+        "name": "articuno",
+        "original": "144.png",
+        "wtp": "144x.png"
+    },
+    "145": {
+        "name": "zapdos",
+        "original": "145.png",
+        "wtp": "145x.png"
+    },
+    "146": {
+        "name": "moltres",
+        "original": "146.png",
+        "wtp": "146x.png"
+    },
+    "147": {
+        "name": "dratini",
+        "original": "147.png",
+        "wtp": "147x.png"
+    },
+    "148": {
+        "name": "dragonair",
+        "original": "148.png",
+        "wtp": "148x.png"
+    },
+    "149": {
+        "name": "dragonite",
+        "original": "149.png",
+        "wtp": "149x.png"
+    },
+    "150": {
+        "name": "mewtwo",
+        "original": "150.png",
+        "wtp": "150x.png"
+    },
+    "151": {
+        "name": "mew",
+        "original": "151.png",
+        "wtp": "151x.png"
+    },
+    "152": {
+        "name": "chikorita",
+        "original": "152.png",
+        "wtp": "152x.png"
+    },
+    "153": {
+        "name": "bayleef",
+        "original": "153.png",
+        "wtp": "153x.png"
+    },
+    "154": {
+        "name": "meganium",
+        "original": "154.png",
+        "wtp": "154x.png"
+    },
+    "155": {
+        "name": "cyndaquil",
+        "original": "155.png",
+        "wtp": "155x.png"
+    },
+    "156": {
+        "name": "quilava",
+        "original": "156.png",
+        "wtp": "156x.png"
+    },
+    "157": {
+        "name": "typhlosion",
+        "original": "157.png",
+        "wtp": "157x.png"
+    },
+    "158": {
+        "name": "totodile",
+        "original": "158.png",
+        "wtp": "158x.png"
+    },
+    "159": {
+        "name": "croconaw",
+        "original": "159.png",
+        "wtp": "159x.png"
+    },
+    "160": {
+        "name": "feraligatr",
+        "original": "160.png",
+        "wtp": "160x.png"
+    },
+    "161": {
+        "name": "sentret",
+        "original": "161.png",
+        "wtp": "161x.png"
+    },
+    "162": {
+        "name": "furret",
+        "original": "162.png",
+        "wtp": "162x.png"
+    },
+    "163": {
+        "name": "hoothoot",
+        "original": "163.png",
+        "wtp": "163x.png"
+    },
+    "164": {
+        "name": "noctowl",
+        "original": "164.png",
+        "wtp": "164x.png"
+    },
+    "165": {
+        "name": "ledyba",
+        "original": "165.png",
+        "wtp": "165x.png"
+    },
+    "166": {
+        "name": "ledian",
+        "original": "166.png",
+        "wtp": "166x.png"
+    },
+    "167": {
+        "name": "spinarak",
+        "original": "167.png",
+        "wtp": "167x.png"
+    },
+    "168": {
+        "name": "ariados",
+        "original": "168.png",
+        "wtp": "168x.png"
+    },
+    "169": {
+        "name": "crobat",
+        "original": "169.png",
+        "wtp": "169x.png"
+    },
+    "170": {
+        "name": "chinchou",
+        "original": "170.png",
+        "wtp": "170x.png"
+    },
+    "171": {
+        "name": "lanturn",
+        "original": "171.png",
+        "wtp": "171x.png"
+    },
+    "172": {
+        "name": "pichu",
+        "original": "172.png",
+        "wtp": "172x.png"
+    },
+    "173": {
+        "name": "cleffa",
+        "original": "173.png",
+        "wtp": "173x.png"
+    },
+    "174": {
+        "name": "igglybuff",
+        "original": "174.png",
+        "wtp": "174x.png"
+    },
+    "175": {
+        "name": "togepi",
+        "original": "175.png",
+        "wtp": "175x.png"
+    },
+    "176": {
+        "name": "togetic",
+        "original": "176.png",
+        "wtp": "176x.png"
+    },
+    "177": {
+        "name": "natu",
+        "original": "177.png",
+        "wtp": "177x.png"
+    },
+    "178": {
+        "name": "xatu",
+        "original": "178.png",
+        "wtp": "178x.png"
+    },
+    "179": {
+        "name": "mareep",
+        "original": "179.png",
+        "wtp": "179x.png"
+    },
+    "180": {
+        "name": "flaaffy",
+        "original": "180.png",
+        "wtp": "180x.png"
+    },
+    "181": {
+        "name": "ampharos",
+        "original": "181.png",
+        "wtp": "181x.png"
+    },
+    "182": {
+        "name": "bellossom",
+        "original": "182.png",
+        "wtp": "182x.png"
+    },
+    "183": {
+        "name": "marill",
+        "original": "183.png",
+        "wtp": "183x.png"
+    },
+    "184": {
+        "name": "azumarill",
+        "original": "184.png",
+        "wtp": "184x.png"
+    },
+    "185": {
+        "name": "sudowoodo",
+        "original": "185.png",
+        "wtp": "185x.png"
+    },
+    "186": {
+        "name": "politoed",
+        "original": "186.png",
+        "wtp": "186x.png"
+    },
+    "187": {
+        "name": "hoppip",
+        "original": "187.png",
+        "wtp": "187x.png"
+    },
+    "188": {
+        "name": "skiploom",
+        "original": "188.png",
+        "wtp": "188x.png"
+    },
+    "189": {
+        "name": "jumpluff",
+        "original": "189.png",
+        "wtp": "189x.png"
+    },
+    "190": {
+        "name": "aipom",
+        "original": "190.png",
+        "wtp": "190x.png"
+    },
+    "191": {
+        "name": "sunkern",
+        "original": "191.png",
+        "wtp": "191x.png"
+    },
+    "192": {
+        "name": "sunflora",
+        "original": "192.png",
+        "wtp": "192x.png"
+    },
+    "193": {
+        "name": "yanma",
+        "original": "193.png",
+        "wtp": "193x.png"
+    },
+    "194": {
+        "name": "wooper",
+        "original": "194.png",
+        "wtp": "194x.png"
+    },
+    "195": {
+        "name": "quagsire",
+        "original": "195.png",
+        "wtp": "195x.png"
+    },
+    "196": {
+        "name": "espeon",
+        "original": "196.png",
+        "wtp": "196x.png"
+    },
+    "197": {
+        "name": "umbreon",
+        "original": "197.png",
+        "wtp": "197x.png"
+    },
+    "198": {
+        "name": "murkrow",
+        "original": "198.png",
+        "wtp": "198x.png"
+    },
+    "199": {
+        "name": "slowking",
+        "original": "199.png",
+        "wtp": "199x.png"
+    },
+    "200": {
+        "name": "misdreavus",
+        "original": "200.png",
+        "wtp": "200x.png"
+    },
+    "201": {
+        "name": "unown",
+        "original": "201.png",
+        "wtp": "201x.png"
+    },
+    "202": {
+        "name": "wobbuffet",
+        "original": "202.png",
+        "wtp": "202x.png"
+    },
+    "203": {
+        "name": "girafarig",
+        "original": "203.png",
+        "wtp": "203x.png"
+    },
+    "204": {
+        "name": "pineco",
+        "original": "204.png",
+        "wtp": "204x.png"
+    },
+    "205": {
+        "name": "forretress",
+        "original": "205.png",
+        "wtp": "205x.png"
+    },
+    "206": {
+        "name": "dunsparce",
+        "original": "206.png",
+        "wtp": "206x.png"
+    },
+    "207": {
+        "name": "gligar",
+        "original": "207.png",
+        "wtp": "207x.png"
+    },
+    "208": {
+        "name": "steelix",
+        "original": "208.png",
+        "wtp": "208x.png"
+    },
+    "209": {
+        "name": "snubbull",
+        "original": "209.png",
+        "wtp": "209x.png"
+    },
+    "210": {
+        "name": "granbull",
+        "original": "210.png",
+        "wtp": "210x.png"
+    },
+    "211": {
+        "name": "qwilfish",
+        "original": "211.png",
+        "wtp": "211x.png"
+    },
+    "212": {
+        "name": "scizor",
+        "original": "212.png",
+        "wtp": "212x.png"
+    },
+    "213": {
+        "name": "shuckle",
+        "original": "213.png",
+        "wtp": "213x.png"
+    },
+    "214": {
+        "name": "heracross",
+        "original": "214.png",
+        "wtp": "214x.png"
+    },
+    "215": {
+        "name": "sneasel",
+        "original": "215.png",
+        "wtp": "215x.png"
+    },
+    "216": {
+        "name": "teddiursa",
+        "original": "216.png",
+        "wtp": "216x.png"
+    },
+    "217": {
+        "name": "ursaring",
+        "original": "217.png",
+        "wtp": "217x.png"
+    },
+    "218": {
+        "name": "slugma",
+        "original": "218.png",
+        "wtp": "218x.png"
+    },
+    "219": {
+        "name": "magcargo",
+        "original": "219.png",
+        "wtp": "219x.png"
+    },
+    "220": {
+        "name": "swinub",
+        "original": "220.png",
+        "wtp": "220x.png"
+    },
+    "221": {
+        "name": "piloswine",
+        "original": "221.png",
+        "wtp": "221x.png"
+    },
+    "222": {
+        "name": "corsola",
+        "original": "222.png",
+        "wtp": "222x.png"
+    },
+    "223": {
+        "name": "remoraid",
+        "original": "223.png",
+        "wtp": "223x.png"
+    },
+    "224": {
+        "name": "octillery",
+        "original": "224.png",
+        "wtp": "224x.png"
+    },
+    "225": {
+        "name": "delibird",
+        "original": "225.png",
+        "wtp": "225x.png"
+    },
+    "226": {
+        "name": "mantine",
+        "original": "226.png",
+        "wtp": "226x.png"
+    },
+    "227": {
+        "name": "skarmory",
+        "original": "227.png",
+        "wtp": "227x.png"
+    },
+    "228": {
+        "name": "houndour",
+        "original": "228.png",
+        "wtp": "228x.png"
+    },
+    "229": {
+        "name": "houndoom",
+        "original": "229.png",
+        "wtp": "229x.png"
+    },
+    "230": {
+        "name": "kingdra",
+        "original": "230.png",
+        "wtp": "230x.png"
+    },
+    "231": {
+        "name": "phanpy",
+        "original": "231.png",
+        "wtp": "231x.png"
+    },
+    "232": {
+        "name": "donphan",
+        "original": "232.png",
+        "wtp": "232x.png"
+    },
+    "233": {
+        "name": "porygon2",
+        "original": "233.png",
+        "wtp": "233x.png"
+    },
+    "234": {
+        "name": "stantler",
+        "original": "234.png",
+        "wtp": "234x.png"
+    },
+    "235": {
+        "name": "smeargle",
+        "original": "235.png",
+        "wtp": "235x.png"
+    },
+    "236": {
+        "name": "tyrogue",
+        "original": "236.png",
+        "wtp": "236x.png"
+    },
+    "237": {
+        "name": "hitmontop",
+        "original": "237.png",
+        "wtp": "237x.png"
+    },
+    "238": {
+        "name": "smoochum",
+        "original": "238.png",
+        "wtp": "238x.png"
+    },
+    "239": {
+        "name": "elekid",
+        "original": "239.png",
+        "wtp": "239x.png"
+    },
+    "240": {
+        "name": "magby",
+        "original": "240.png",
+        "wtp": "240x.png"
+    },
+    "241": {
+        "name": "miltank",
+        "original": "241.png",
+        "wtp": "241x.png"
+    },
+    "242": {
+        "name": "blissey",
+        "original": "242.png",
+        "wtp": "242x.png"
+    },
+    "243": {
+        "name": "raikou",
+        "original": "243.png",
+        "wtp": "243x.png"
+    },
+    "244": {
+        "name": "entei",
+        "original": "244.png",
+        "wtp": "244x.png"
+    },
+    "245": {
+        "name": "suicune",
+        "original": "245.png",
+        "wtp": "245x.png"
+    },
+    "246": {
+        "name": "larvitar",
+        "original": "246.png",
+        "wtp": "246x.png"
+    },
+    "247": {
+        "name": "pupitar",
+        "original": "247.png",
+        "wtp": "247x.png"
+    },
+    "248": {
+        "name": "tyranitar",
+        "original": "248.png",
+        "wtp": "248x.png"
+    },
+    "249": {
+        "name": "lugia",
+        "original": "249.png",
+        "wtp": "249x.png"
+    },
+    "250": {
+        "name": "ho-oh",
+        "original": "250.png",
+        "wtp": "250x.png"
+    },
+    "251": {
+        "name": "celebi",
+        "original": "251.png",
+        "wtp": "251x.png"
+    },
+    "252": {
+        "name": "treecko",
+        "original": "252.png",
+        "wtp": "252x.png"
+    },
+    "253": {
+        "name": "grovyle",
+        "original": "253.png",
+        "wtp": "253x.png"
+    },
+    "254": {
+        "name": "sceptile",
+        "original": "254.png",
+        "wtp": "254x.png"
+    },
+    "255": {
+        "name": "torchic",
+        "original": "255.png",
+        "wtp": "255x.png"
+    },
+    "256": {
+        "name": "combusken",
+        "original": "256.png",
+        "wtp": "256x.png"
+    },
+    "257": {
+        "name": "blaziken",
+        "original": "257.png",
+        "wtp": "257x.png"
+    },
+    "258": {
+        "name": "mudkip",
+        "original": "258.png",
+        "wtp": "258x.png"
+    },
+    "259": {
+        "name": "marshtomp",
+        "original": "259.png",
+        "wtp": "259x.png"
+    },
+    "260": {
+        "name": "swampert",
+        "original": "260.png",
+        "wtp": "260x.png"
+    },
+    "261": {
+        "name": "poochyena",
+        "original": "261.png",
+        "wtp": "261x.png"
+    },
+    "262": {
+        "name": "mightyena",
+        "original": "262.png",
+        "wtp": "262x.png"
+    },
+    "263": {
+        "name": "zigzagoon",
+        "original": "263.png",
+        "wtp": "263x.png"
+    },
+    "264": {
+        "name": "linoone",
+        "original": "264.png",
+        "wtp": "264x.png"
+    },
+    "265": {
+        "name": "wurmple",
+        "original": "265.png",
+        "wtp": "265x.png"
+    },
+    "266": {
+        "name": "silcoon",
+        "original": "266.png",
+        "wtp": "266x.png"
+    },
+    "267": {
+        "name": "beautifly",
+        "original": "267.png",
+        "wtp": "267x.png"
+    },
+    "268": {
+        "name": "cascoon",
+        "original": "268.png",
+        "wtp": "268x.png"
+    },
+    "269": {
+        "name": "dustox",
+        "original": "269.png",
+        "wtp": "269x.png"
+    },
+    "270": {
+        "name": "lotad",
+        "original": "270.png",
+        "wtp": "270x.png"
+    },
+    "271": {
+        "name": "lombre",
+        "original": "271.png",
+        "wtp": "271x.png"
+    },
+    "272": {
+        "name": "ludicolo",
+        "original": "272.png",
+        "wtp": "272x.png"
+    },
+    "273": {
+        "name": "seedot",
+        "original": "273.png",
+        "wtp": "273x.png"
+    },
+    "274": {
+        "name": "nuzleaf",
+        "original": "274.png",
+        "wtp": "274x.png"
+    },
+    "275": {
+        "name": "shiftry",
+        "original": "275.png",
+        "wtp": "275x.png"
+    },
+    "276": {
+        "name": "taillow",
+        "original": "276.png",
+        "wtp": "276x.png"
+    },
+    "277": {
+        "name": "swellow",
+        "original": "277.png",
+        "wtp": "277x.png"
+    },
+    "278": {
+        "name": "wingull",
+        "original": "278.png",
+        "wtp": "278x.png"
+    },
+    "279": {
+        "name": "pelipper",
+        "original": "279.png",
+        "wtp": "279x.png"
+    },
+    "280": {
+        "name": "ralts",
+        "original": "280.png",
+        "wtp": "280x.png"
+    },
+    "281": {
+        "name": "kirlia",
+        "original": "281.png",
+        "wtp": "281x.png"
+    },
+    "282": {
+        "name": "gardevoir",
+        "original": "282.png",
+        "wtp": "282x.png"
+    },
+    "283": {
+        "name": "surskit",
+        "original": "283.png",
+        "wtp": "283x.png"
+    },
+    "284": {
+        "name": "masquerain",
+        "original": "284.png",
+        "wtp": "284x.png"
+    },
+    "285": {
+        "name": "shroomish",
+        "original": "285.png",
+        "wtp": "285x.png"
+    },
+    "286": {
+        "name": "breloom",
+        "original": "286.png",
+        "wtp": "286x.png"
+    },
+    "287": {
+        "name": "slakoth",
+        "original": "287.png",
+        "wtp": "287x.png"
+    },
+    "288": {
+        "name": "vigoroth",
+        "original": "288.png",
+        "wtp": "288x.png"
+    },
+    "289": {
+        "name": "slaking",
+        "original": "289.png",
+        "wtp": "289x.png"
+    },
+    "290": {
+        "name": "nincada",
+        "original": "290.png",
+        "wtp": "290x.png"
+    },
+    "291": {
+        "name": "ninjask",
+        "original": "291.png",
+        "wtp": "291x.png"
+    },
+    "292": {
+        "name": "shedinja",
+        "original": "292.png",
+        "wtp": "292x.png"
+    },
+    "293": {
+        "name": "whismur",
+        "original": "293.png",
+        "wtp": "293x.png"
+    },
+    "294": {
+        "name": "loudred",
+        "original": "294.png",
+        "wtp": "294x.png"
+    },
+    "295": {
+        "name": "exploud",
+        "original": "295.png",
+        "wtp": "295x.png"
+    },
+    "296": {
+        "name": "makuhita",
+        "original": "296.png",
+        "wtp": "296x.png"
+    },
+    "297": {
+        "name": "hariyama",
+        "original": "297.png",
+        "wtp": "297x.png"
+    },
+    "298": {
+        "name": "azurill",
+        "original": "298.png",
+        "wtp": "298x.png"
+    },
+    "299": {
+        "name": "nosepass",
+        "original": "299.png",
+        "wtp": "299x.png"
+    },
+    "300": {
+        "name": "skitty",
+        "original": "300.png",
+        "wtp": "300x.png"
+    },
+    "301": {
+        "name": "delcatty",
+        "original": "301.png",
+        "wtp": "301x.png"
+    },
+    "302": {
+        "name": "sableye",
+        "original": "302.png",
+        "wtp": "302x.png"
+    },
+    "303": {
+        "name": "mawile",
+        "original": "303.png",
+        "wtp": "303x.png"
+    },
+    "304": {
+        "name": "aron",
+        "original": "304.png",
+        "wtp": "304x.png"
+    },
+    "305": {
+        "name": "lairon",
+        "original": "305.png",
+        "wtp": "305x.png"
+    },
+    "306": {
+        "name": "aggron",
+        "original": "306.png",
+        "wtp": "306x.png"
+    },
+    "307": {
+        "name": "meditite",
+        "original": "307.png",
+        "wtp": "307x.png"
+    },
+    "308": {
+        "name": "medicham",
+        "original": "308.png",
+        "wtp": "308x.png"
+    },
+    "309": {
+        "name": "electrike",
+        "original": "309.png",
+        "wtp": "309x.png"
+    },
+    "310": {
+        "name": "manectric",
+        "original": "310.png",
+        "wtp": "310x.png"
+    },
+    "311": {
+        "name": "plusle",
+        "original": "311.png",
+        "wtp": "311x.png"
+    },
+    "312": {
+        "name": "minun",
+        "original": "312.png",
+        "wtp": "312x.png"
+    },
+    "313": {
+        "name": "volbeat",
+        "original": "313.png",
+        "wtp": "313x.png"
+    },
+    "314": {
+        "name": "illumise",
+        "original": "314.png",
+        "wtp": "314x.png"
+    },
+    "315": {
+        "name": "roselia",
+        "original": "315.png",
+        "wtp": "315x.png"
+    },
+    "316": {
+        "name": "gulpin",
+        "original": "316.png",
+        "wtp": "316x.png"
+    },
+    "317": {
+        "name": "swalot",
+        "original": "317.png",
+        "wtp": "317x.png"
+    },
+    "318": {
+        "name": "carvanha",
+        "original": "318.png",
+        "wtp": "318x.png"
+    },
+    "319": {
+        "name": "sharpedo",
+        "original": "319.png",
+        "wtp": "319x.png"
+    },
+    "320": {
+        "name": "wailmer",
+        "original": "320.png",
+        "wtp": "320x.png"
+    },
+    "321": {
+        "name": "wailord",
+        "original": "321.png",
+        "wtp": "321x.png"
+    },
+    "322": {
+        "name": "numel",
+        "original": "322.png",
+        "wtp": "322x.png"
+    },
+    "323": {
+        "name": "camerupt",
+        "original": "323.png",
+        "wtp": "323x.png"
+    },
+    "324": {
+        "name": "torkoal",
+        "original": "324.png",
+        "wtp": "324x.png"
+    },
+    "325": {
+        "name": "spoink",
+        "original": "325.png",
+        "wtp": "325x.png"
+    },
+    "326": {
+        "name": "grumpig",
+        "original": "326.png",
+        "wtp": "326x.png"
+    },
+    "327": {
+        "name": "spinda",
+        "original": "327.png",
+        "wtp": "327x.png"
+    },
+    "328": {
+        "name": "trapinch",
+        "original": "328.png",
+        "wtp": "328x.png"
+    },
+    "329": {
+        "name": "vibrava",
+        "original": "329.png",
+        "wtp": "329x.png"
+    },
+    "330": {
+        "name": "flygon",
+        "original": "330.png",
+        "wtp": "330x.png"
+    },
+    "331": {
+        "name": "cacnea",
+        "original": "331.png",
+        "wtp": "331x.png"
+    },
+    "332": {
+        "name": "cacturne",
+        "original": "332.png",
+        "wtp": "332x.png"
+    },
+    "333": {
+        "name": "swablu",
+        "original": "333.png",
+        "wtp": "333x.png"
+    },
+    "334": {
+        "name": "altaria",
+        "original": "334.png",
+        "wtp": "334x.png"
+    },
+    "335": {
+        "name": "zangoose",
+        "original": "335.png",
+        "wtp": "335x.png"
+    },
+    "336": {
+        "name": "seviper",
+        "original": "336.png",
+        "wtp": "336x.png"
+    },
+    "337": {
+        "name": "lunatone",
+        "original": "337.png",
+        "wtp": "337x.png"
+    },
+    "338": {
+        "name": "solrock",
+        "original": "338.png",
+        "wtp": "338x.png"
+    },
+    "339": {
+        "name": "barboach",
+        "original": "339.png",
+        "wtp": "339x.png"
+    },
+    "340": {
+        "name": "whiscash",
+        "original": "340.png",
+        "wtp": "340x.png"
+    },
+    "341": {
+        "name": "corphish",
+        "original": "341.png",
+        "wtp": "341x.png"
+    },
+    "342": {
+        "name": "crawdaunt",
+        "original": "342.png",
+        "wtp": "342x.png"
+    },
+    "343": {
+        "name": "baltoy",
+        "original": "343.png",
+        "wtp": "343x.png"
+    },
+    "344": {
+        "name": "claydol",
+        "original": "344.png",
+        "wtp": "344x.png"
+    },
+    "345": {
+        "name": "lileep",
+        "original": "345.png",
+        "wtp": "345x.png"
+    },
+    "346": {
+        "name": "cradily",
+        "original": "346.png",
+        "wtp": "346x.png"
+    },
+    "347": {
+        "name": "anorith",
+        "original": "347.png",
+        "wtp": "347x.png"
+    },
+    "348": {
+        "name": "armaldo",
+        "original": "348.png",
+        "wtp": "348x.png"
+    },
+    "349": {
+        "name": "feebas",
+        "original": "349.png",
+        "wtp": "349x.png"
+    },
+    "350": {
+        "name": "milotic",
+        "original": "350.png",
+        "wtp": "350x.png"
+    },
+    "351": {
+        "name": "castform",
+        "original": "351.png",
+        "wtp": "351x.png"
+    },
+    "352": {
+        "name": "kecleon",
+        "original": "352.png",
+        "wtp": "352x.png"
+    },
+    "353": {
+        "name": "shuppet",
+        "original": "353.png",
+        "wtp": "353x.png"
+    },
+    "354": {
+        "name": "banette",
+        "original": "354.png",
+        "wtp": "354x.png"
+    },
+    "355": {
+        "name": "duskull",
+        "original": "355.png",
+        "wtp": "355x.png"
+    },
+    "356": {
+        "name": "dusclops",
+        "original": "356.png",
+        "wtp": "356x.png"
+    },
+    "357": {
+        "name": "tropius",
+        "original": "357.png",
+        "wtp": "357x.png"
+    },
+    "358": {
+        "name": "chimecho",
+        "original": "358.png",
+        "wtp": "358x.png"
+    },
+    "359": {
+        "name": "absol",
+        "original": "359.png",
+        "wtp": "359x.png"
+    },
+    "360": {
+        "name": "wynaut",
+        "original": "360.png",
+        "wtp": "360x.png"
+    },
+    "361": {
+        "name": "snorunt",
+        "original": "361.png",
+        "wtp": "361x.png"
+    },
+    "362": {
+        "name": "glalie",
+        "original": "362.png",
+        "wtp": "362x.png"
+    },
+    "363": {
+        "name": "spheal",
+        "original": "363.png",
+        "wtp": "363x.png"
+    },
+    "364": {
+        "name": "sealeo",
+        "original": "364.png",
+        "wtp": "364x.png"
+    },
+    "365": {
+        "name": "walrein",
+        "original": "365.png",
+        "wtp": "365x.png"
+    },
+    "366": {
+        "name": "clamperl",
+        "original": "366.png",
+        "wtp": "366x.png"
+    },
+    "367": {
+        "name": "huntail",
+        "original": "367.png",
+        "wtp": "367x.png"
+    },
+    "368": {
+        "name": "gorebyss",
+        "original": "368.png",
+        "wtp": "368x.png"
+    },
+    "369": {
+        "name": "relicanth",
+        "original": "369.png",
+        "wtp": "369x.png"
+    },
+    "370": {
+        "name": "luvdisc",
+        "original": "370.png",
+        "wtp": "370x.png"
+    },
+    "371": {
+        "name": "bagon",
+        "original": "371.png",
+        "wtp": "371x.png"
+    },
+    "372": {
+        "name": "shelgon",
+        "original": "372.png",
+        "wtp": "372x.png"
+    },
+    "373": {
+        "name": "salamence",
+        "original": "373.png",
+        "wtp": "373x.png"
+    },
+    "374": {
+        "name": "beldum",
+        "original": "374.png",
+        "wtp": "374x.png"
+    },
+    "375": {
+        "name": "metang",
+        "original": "375.png",
+        "wtp": "375x.png"
+    },
+    "376": {
+        "name": "metagross",
+        "original": "376.png",
+        "wtp": "376x.png"
+    },
+    "377": {
+        "name": "regirock",
+        "original": "377.png",
+        "wtp": "377x.png"
+    },
+    "378": {
+        "name": "regice",
+        "original": "378.png",
+        "wtp": "378x.png"
+    },
+    "379": {
+        "name": "registeel",
+        "original": "379.png",
+        "wtp": "379x.png"
+    },
+    "380": {
+        "name": "latias",
+        "original": "380.png",
+        "wtp": "380x.png"
+    },
+    "381": {
+        "name": "latios",
+        "original": "381.png",
+        "wtp": "381x.png"
+    },
+    "382": {
+        "name": "kyogre",
+        "original": "382.png",
+        "wtp": "382x.png"
+    },
+    "383": {
+        "name": "groudon",
+        "original": "383.png",
+        "wtp": "383x.png"
+    },
+    "384": {
+        "name": "rayquaza",
+        "original": "384.png",
+        "wtp": "384x.png"
+    },
+    "385": {
+        "name": "jirachi",
+        "original": "385.png",
+        "wtp": "385x.png"
+    },
+    "386": {
+        "name": "deoxys",
+        "original": "386.png",
+        "wtp": "386x.png"
+    },
+    "387": {
+        "name": "turtwig",
+        "original": "387.png",
+        "wtp": "387x.png"
+    },
+    "388": {
+        "name": "grotle",
+        "original": "388.png",
+        "wtp": "388x.png"
+    },
+    "389": {
+        "name": "torterra",
+        "original": "389.png",
+        "wtp": "389x.png"
+    },
+    "390": {
+        "name": "chimchar",
+        "original": "390.png",
+        "wtp": "390x.png"
+    },
+    "391": {
+        "name": "monferno",
+        "original": "391.png",
+        "wtp": "391x.png"
+    },
+    "392": {
+        "name": "infernape",
+        "original": "392.png",
+        "wtp": "392x.png"
+    },
+    "393": {
+        "name": "piplup",
+        "original": "393.png",
+        "wtp": "393x.png"
+    },
+    "394": {
+        "name": "prinplup",
+        "original": "394.png",
+        "wtp": "394x.png"
+    },
+    "395": {
+        "name": "empoleon",
+        "original": "395.png",
+        "wtp": "395x.png"
+    },
+    "396": {
+        "name": "starly",
+        "original": "396.png",
+        "wtp": "396x.png"
+    },
+    "397": {
+        "name": "staravia",
+        "original": "397.png",
+        "wtp": "397x.png"
+    },
+    "398": {
+        "name": "staraptor",
+        "original": "398.png",
+        "wtp": "398x.png"
+    },
+    "399": {
+        "name": "bidoof",
+        "original": "399.png",
+        "wtp": "399x.png"
+    },
+    "400": {
+        "name": "bibarel",
+        "original": "400.png",
+        "wtp": "400x.png"
+    },
+    "401": {
+        "name": "kricketot",
+        "original": "401.png",
+        "wtp": "401x.png"
+    },
+    "402": {
+        "name": "kricketune",
+        "original": "402.png",
+        "wtp": "402x.png"
+    },
+    "403": {
+        "name": "shinx",
+        "original": "403.png",
+        "wtp": "403x.png"
+    },
+    "404": {
+        "name": "luxio",
+        "original": "404.png",
+        "wtp": "404x.png"
+    },
+    "405": {
+        "name": "luxray",
+        "original": "405.png",
+        "wtp": "405x.png"
+    },
+    "406": {
+        "name": "budew",
+        "original": "406.png",
+        "wtp": "406x.png"
+    },
+    "407": {
+        "name": "roserade",
+        "original": "407.png",
+        "wtp": "407x.png"
+    },
+    "408": {
+        "name": "cranidos",
+        "original": "408.png",
+        "wtp": "408x.png"
+    },
+    "409": {
+        "name": "rampardos",
+        "original": "409.png",
+        "wtp": "409x.png"
+    },
+    "410": {
+        "name": "shieldon",
+        "original": "410.png",
+        "wtp": "410x.png"
+    },
+    "411": {
+        "name": "bastiodon",
+        "original": "411.png",
+        "wtp": "411x.png"
+    },
+    "412": {
+        "name": "burmy",
+        "original": "412.png",
+        "wtp": "412x.png"
+    },
+    "413": {
+        "name": "wormadam",
+        "original": "413.png",
+        "wtp": "413x.png"
+    },
+    "414": {
+        "name": "mothim",
+        "original": "414.png",
+        "wtp": "414x.png"
+    },
+    "415": {
+        "name": "combee",
+        "original": "415.png",
+        "wtp": "415x.png"
+    },
+    "416": {
+        "name": "vespiquen",
+        "original": "416.png",
+        "wtp": "416x.png"
+    },
+    "417": {
+        "name": "pachirisu",
+        "original": "417.png",
+        "wtp": "417x.png"
+    },
+    "418": {
+        "name": "buizel",
+        "original": "418.png",
+        "wtp": "418x.png"
+    },
+    "419": {
+        "name": "floatzel",
+        "original": "419.png",
+        "wtp": "419x.png"
+    },
+    "420": {
+        "name": "cherubi",
+        "original": "420.png",
+        "wtp": "420x.png"
+    },
+    "421": {
+        "name": "cherrim",
+        "original": "421.png",
+        "wtp": "421x.png"
+    },
+    "422": {
+        "name": "shellos",
+        "original": "422.png",
+        "wtp": "422x.png"
+    },
+    "423": {
+        "name": "gastrodon",
+        "original": "423.png",
+        "wtp": "423x.png"
+    },
+    "424": {
+        "name": "ambipom",
+        "original": "424.png",
+        "wtp": "424x.png"
+    },
+    "425": {
+        "name": "drifloon",
+        "original": "425.png",
+        "wtp": "425x.png"
+    },
+    "426": {
+        "name": "drifblim",
+        "original": "426.png",
+        "wtp": "426x.png"
+    },
+    "427": {
+        "name": "buneary",
+        "original": "427.png",
+        "wtp": "427x.png"
+    },
+    "428": {
+        "name": "lopunny",
+        "original": "428.png",
+        "wtp": "428x.png"
+    },
+    "429": {
+        "name": "mismagius",
+        "original": "429.png",
+        "wtp": "429x.png"
+    },
+    "430": {
+        "name": "honchkrow",
+        "original": "430.png",
+        "wtp": "430x.png"
+    },
+    "431": {
+        "name": "glameow",
+        "original": "431.png",
+        "wtp": "431x.png"
+    },
+    "432": {
+        "name": "purugly",
+        "original": "432.png",
+        "wtp": "432x.png"
+    },
+    "433": {
+        "name": "chingling",
+        "original": "433.png",
+        "wtp": "433x.png"
+    },
+    "434": {
+        "name": "stunky",
+        "original": "434.png",
+        "wtp": "434x.png"
+    },
+    "435": {
+        "name": "skuntank",
+        "original": "435.png",
+        "wtp": "435x.png"
+    },
+    "436": {
+        "name": "bronzor",
+        "original": "436.png",
+        "wtp": "436x.png"
+    },
+    "437": {
+        "name": "bronzong",
+        "original": "437.png",
+        "wtp": "437x.png"
+    },
+    "438": {
+        "name": "bonsly",
+        "original": "438.png",
+        "wtp": "438x.png"
+    },
+    "439": {
+        "name": "mime-jr",
+        "original": "439.png",
+        "wtp": "439x.png"
+    },
+    "440": {
+        "name": "happiny",
+        "original": "440.png",
+        "wtp": "440x.png"
+    },
+    "441": {
+        "name": "chatot",
+        "original": "441.png",
+        "wtp": "441x.png"
+    },
+    "442": {
+        "name": "spiritomb",
+        "original": "442.png",
+        "wtp": "442x.png"
+    },
+    "443": {
+        "name": "gible",
+        "original": "443.png",
+        "wtp": "443x.png"
+    },
+    "444": {
+        "name": "gabite",
+        "original": "444.png",
+        "wtp": "444x.png"
+    },
+    "445": {
+        "name": "garchomp",
+        "original": "445.png",
+        "wtp": "445x.png"
+    },
+    "446": {
+        "name": "munchlax",
+        "original": "446.png",
+        "wtp": "446x.png"
+    },
+    "447": {
+        "name": "riolu",
+        "original": "447.png",
+        "wtp": "447x.png"
+    },
+    "448": {
+        "name": "lucario",
+        "original": "448.png",
+        "wtp": "448x.png"
+    },
+    "449": {
+        "name": "hippopotas",
+        "original": "449.png",
+        "wtp": "449x.png"
+    },
+    "450": {
+        "name": "hippowdon",
+        "original": "450.png",
+        "wtp": "450x.png"
+    },
+    "451": {
+        "name": "skorupi",
+        "original": "451.png",
+        "wtp": "451x.png"
+    },
+    "452": {
+        "name": "drapion",
+        "original": "452.png",
+        "wtp": "452x.png"
+    },
+    "453": {
+        "name": "croagunk",
+        "original": "453.png",
+        "wtp": "453x.png"
+    },
+    "454": {
+        "name": "toxicroak",
+        "original": "454.png",
+        "wtp": "454x.png"
+    },
+    "455": {
+        "name": "carnivine",
+        "original": "455.png",
+        "wtp": "455x.png"
+    },
+    "456": {
+        "name": "finneon",
+        "original": "456.png",
+        "wtp": "456x.png"
+    },
+    "457": {
+        "name": "lumineon",
+        "original": "457.png",
+        "wtp": "457x.png"
+    },
+    "458": {
+        "name": "mantyke",
+        "original": "458.png",
+        "wtp": "458x.png"
+    },
+    "459": {
+        "name": "snover",
+        "original": "459.png",
+        "wtp": "459x.png"
+    },
+    "460": {
+        "name": "abomasnow",
+        "original": "460.png",
+        "wtp": "460x.png"
+    },
+    "461": {
+        "name": "weavile",
+        "original": "461.png",
+        "wtp": "461x.png"
+    },
+    "462": {
+        "name": "magnezone",
+        "original": "462.png",
+        "wtp": "462x.png"
+    },
+    "463": {
+        "name": "lickilicky",
+        "original": "463.png",
+        "wtp": "463x.png"
+    },
+    "464": {
+        "name": "rhyperior",
+        "original": "464.png",
+        "wtp": "464x.png"
+    },
+    "465": {
+        "name": "tangrowth",
+        "original": "465.png",
+        "wtp": "465x.png"
+    },
+    "466": {
+        "name": "electivire",
+        "original": "466.png",
+        "wtp": "466x.png"
+    },
+    "467": {
+        "name": "magmortar",
+        "original": "467.png",
+        "wtp": "467x.png"
+    },
+    "468": {
+        "name": "togekiss",
+        "original": "468.png",
+        "wtp": "468x.png"
+    },
+    "469": {
+        "name": "yanmega",
+        "original": "469.png",
+        "wtp": "469x.png"
+    },
+    "470": {
+        "name": "leafeon",
+        "original": "470.png",
+        "wtp": "470x.png"
+    },
+    "471": {
+        "name": "glaceon",
+        "original": "471.png",
+        "wtp": "471x.png"
+    },
+    "472": {
+        "name": "gliscor",
+        "original": "472.png",
+        "wtp": "472x.png"
+    },
+    "473": {
+        "name": "mamoswine",
+        "original": "473.png",
+        "wtp": "473x.png"
+    },
+    "474": {
+        "name": "porygon-z",
+        "original": "474.png",
+        "wtp": "474x.png"
+    },
+    "475": {
+        "name": "gallade",
+        "original": "475.png",
+        "wtp": "475x.png"
+    },
+    "476": {
+        "name": "probopass",
+        "original": "476.png",
+        "wtp": "476x.png"
+    },
+    "477": {
+        "name": "dusknoir",
+        "original": "477.png",
+        "wtp": "477x.png"
+    },
+    "478": {
+        "name": "froslass",
+        "original": "478.png",
+        "wtp": "478x.png"
+    },
+    "479": {
+        "name": "rotom",
+        "original": "479.png",
+        "wtp": "479x.png"
+    },
+    "480": {
+        "name": "uxie",
+        "original": "480.png",
+        "wtp": "480x.png"
+    },
+    "481": {
+        "name": "mesprit",
+        "original": "481.png",
+        "wtp": "481x.png"
+    },
+    "482": {
+        "name": "azelf",
+        "original": "482.png",
+        "wtp": "482x.png"
+    },
+    "483": {
+        "name": "dialga",
+        "original": "483.png",
+        "wtp": "483x.png"
+    },
+    "484": {
+        "name": "palkia",
+        "original": "484.png",
+        "wtp": "484x.png"
+    },
+    "485": {
+        "name": "heatran",
+        "original": "485.png",
+        "wtp": "485x.png"
+    },
+    "486": {
+        "name": "regigigas",
+        "original": "486.png",
+        "wtp": "486x.png"
+    },
+    "487": {
+        "name": "giratina",
+        "original": "487.png",
+        "wtp": "487x.png"
+    },
+    "488": {
+        "name": "cresselia",
+        "original": "488.png",
+        "wtp": "488x.png"
+    },
+    "489": {
+        "name": "phione",
+        "original": "489.png",
+        "wtp": "489x.png"
+    },
+    "490": {
+        "name": "manaphy",
+        "original": "490.png",
+        "wtp": "490x.png"
+    },
+    "491": {
+        "name": "darkrai",
+        "original": "491.png",
+        "wtp": "491x.png"
+    },
+    "492": {
+        "name": "shaymin",
+        "original": "492.png",
+        "wtp": "492x.png"
+    },
+    "493": {
+        "name": "arceus",
+        "original": "493.png",
+        "wtp": "493x.png"
+    },
+    "494": {
+        "name": "victini",
+        "original": "494.png",
+        "wtp": "494x.png"
+    },
+    "495": {
+        "name": "snivy",
+        "original": "495.png",
+        "wtp": "495x.png"
+    },
+    "496": {
+        "name": "servine",
+        "original": "496.png",
+        "wtp": "496x.png"
+    },
+    "497": {
+        "name": "serperior",
+        "original": "497.png",
+        "wtp": "497x.png"
+    },
+    "498": {
+        "name": "tepig",
+        "original": "498.png",
+        "wtp": "498x.png"
+    },
+    "499": {
+        "name": "pignite",
+        "original": "499.png",
+        "wtp": "499x.png"
+    },
+    "500": {
+        "name": "emboar",
+        "original": "500.png",
+        "wtp": "500x.png"
+    },
+    "501": {
+        "name": "oshawott",
+        "original": "501.png",
+        "wtp": "501x.png"
+    },
+    "502": {
+        "name": "dewott",
+        "original": "502.png",
+        "wtp": "502x.png"
+    },
+    "503": {
+        "name": "samurott",
+        "original": "503.png",
+        "wtp": "503x.png"
+    },
+    "504": {
+        "name": "patrat",
+        "original": "504.png",
+        "wtp": "504x.png"
+    },
+    "505": {
+        "name": "watchog",
+        "original": "505.png",
+        "wtp": "505x.png"
+    },
+    "506": {
+        "name": "lillipup",
+        "original": "506.png",
+        "wtp": "506x.png"
+    },
+    "507": {
+        "name": "herdier",
+        "original": "507.png",
+        "wtp": "507x.png"
+    },
+    "508": {
+        "name": "stoutland",
+        "original": "508.png",
+        "wtp": "508x.png"
+    },
+    "509": {
+        "name": "purrloin",
+        "original": "509.png",
+        "wtp": "509x.png"
+    },
+    "510": {
+        "name": "liepard",
+        "original": "510.png",
+        "wtp": "510x.png"
+    },
+    "511": {
+        "name": "pansage",
+        "original": "511.png",
+        "wtp": "511x.png"
+    },
+    "512": {
+        "name": "simisage",
+        "original": "512.png",
+        "wtp": "512x.png"
+    },
+    "513": {
+        "name": "pansear",
+        "original": "513.png",
+        "wtp": "513x.png"
+    },
+    "514": {
+        "name": "simisear",
+        "original": "514.png",
+        "wtp": "514x.png"
+    },
+    "515": {
+        "name": "panpour",
+        "original": "515.png",
+        "wtp": "515x.png"
+    },
+    "516": {
+        "name": "simipour",
+        "original": "516.png",
+        "wtp": "516x.png"
+    },
+    "517": {
+        "name": "munna",
+        "original": "517.png",
+        "wtp": "517x.png"
+    },
+    "518": {
+        "name": "musharna",
+        "original": "518.png",
+        "wtp": "518x.png"
+    },
+    "519": {
+        "name": "pidove",
+        "original": "519.png",
+        "wtp": "519x.png"
+    },
+    "520": {
+        "name": "tranquill",
+        "original": "520.png",
+        "wtp": "520x.png"
+    },
+    "521": {
+        "name": "unfezant",
+        "original": "521.png",
+        "wtp": "521x.png"
+    },
+    "522": {
+        "name": "blitzle",
+        "original": "522.png",
+        "wtp": "522x.png"
+    },
+    "523": {
+        "name": "zebstrika",
+        "original": "523.png",
+        "wtp": "523x.png"
+    },
+    "524": {
+        "name": "roggenrola",
+        "original": "524.png",
+        "wtp": "524x.png"
+    },
+    "525": {
+        "name": "boldore",
+        "original": "525.png",
+        "wtp": "525x.png"
+    },
+    "526": {
+        "name": "gigalith",
+        "original": "526.png",
+        "wtp": "526x.png"
+    },
+    "527": {
+        "name": "woobat",
+        "original": "527.png",
+        "wtp": "527x.png"
+    },
+    "528": {
+        "name": "swoobat",
+        "original": "528.png",
+        "wtp": "528x.png"
+    },
+    "529": {
+        "name": "drilbur",
+        "original": "529.png",
+        "wtp": "529x.png"
+    },
+    "530": {
+        "name": "excadrill",
+        "original": "530.png",
+        "wtp": "530x.png"
+    },
+    "531": {
+        "name": "audino",
+        "original": "531.png",
+        "wtp": "531x.png"
+    },
+    "532": {
+        "name": "timburr",
+        "original": "532.png",
+        "wtp": "532x.png"
+    },
+    "533": {
+        "name": "gurdurr",
+        "original": "533.png",
+        "wtp": "533x.png"
+    },
+    "534": {
+        "name": "conkeldurr",
+        "original": "534.png",
+        "wtp": "534x.png"
+    },
+    "535": {
+        "name": "tympole",
+        "original": "535.png",
+        "wtp": "535x.png"
+    },
+    "536": {
+        "name": "palpitoad",
+        "original": "536.png",
+        "wtp": "536x.png"
+    },
+    "537": {
+        "name": "seismitoad",
+        "original": "537.png",
+        "wtp": "537x.png"
+    },
+    "538": {
+        "name": "throh",
+        "original": "538.png",
+        "wtp": "538x.png"
+    },
+    "539": {
+        "name": "sawk",
+        "original": "539.png",
+        "wtp": "539x.png"
+    },
+    "540": {
+        "name": "sewaddle",
+        "original": "540.png",
+        "wtp": "540x.png"
+    },
+    "541": {
+        "name": "swadloon",
+        "original": "541.png",
+        "wtp": "541x.png"
+    },
+    "542": {
+        "name": "leavanny",
+        "original": "542.png",
+        "wtp": "542x.png"
+    },
+    "543": {
+        "name": "venipede",
+        "original": "543.png",
+        "wtp": "543x.png"
+    },
+    "544": {
+        "name": "whirlipede",
+        "original": "544.png",
+        "wtp": "544x.png"
+    },
+    "545": {
+        "name": "scolipede",
+        "original": "545.png",
+        "wtp": "545x.png"
+    },
+    "546": {
+        "name": "cottonee",
+        "original": "546.png",
+        "wtp": "546x.png"
+    },
+    "547": {
+        "name": "whimsicott",
+        "original": "547.png",
+        "wtp": "547x.png"
+    },
+    "548": {
+        "name": "petilil",
+        "original": "548.png",
+        "wtp": "548x.png"
+    },
+    "549": {
+        "name": "lilligant",
+        "original": "549.png",
+        "wtp": "549x.png"
+    },
+    "550": {
+        "name": "basculin",
+        "original": "550.png",
+        "wtp": "550x.png"
+    },
+    "551": {
+        "name": "sandile",
+        "original": "551.png",
+        "wtp": "551x.png"
+    },
+    "552": {
+        "name": "krokorok",
+        "original": "552.png",
+        "wtp": "552x.png"
+    },
+    "553": {
+        "name": "krookodile",
+        "original": "553.png",
+        "wtp": "553x.png"
+    },
+    "554": {
+        "name": "darumaka",
+        "original": "554.png",
+        "wtp": "554x.png"
+    },
+    "555": {
+        "name": "darmanitan",
+        "original": "555.png",
+        "wtp": "555x.png"
+    },
+    "556": {
+        "name": "maractus",
+        "original": "556.png",
+        "wtp": "556x.png"
+    },
+    "557": {
+        "name": "dwebble",
+        "original": "557.png",
+        "wtp": "557x.png"
+    },
+    "558": {
+        "name": "crustle",
+        "original": "558.png",
+        "wtp": "558x.png"
+    },
+    "559": {
+        "name": "scraggy",
+        "original": "559.png",
+        "wtp": "559x.png"
+    },
+    "560": {
+        "name": "scrafty",
+        "original": "560.png",
+        "wtp": "560x.png"
+    },
+    "561": {
+        "name": "sigilyph",
+        "original": "561.png",
+        "wtp": "561x.png"
+    },
+    "562": {
+        "name": "yamask",
+        "original": "562.png",
+        "wtp": "562x.png"
+    },
+    "563": {
+        "name": "cofagrigus",
+        "original": "563.png",
+        "wtp": "563x.png"
+    },
+    "564": {
+        "name": "tirtouga",
+        "original": "564.png",
+        "wtp": "564x.png"
+    },
+    "565": {
+        "name": "carracosta",
+        "original": "565.png",
+        "wtp": "565x.png"
+    },
+    "566": {
+        "name": "archen",
+        "original": "566.png",
+        "wtp": "566x.png"
+    },
+    "567": {
+        "name": "archeops",
+        "original": "567.png",
+        "wtp": "567x.png"
+    },
+    "568": {
+        "name": "trubbish",
+        "original": "568.png",
+        "wtp": "568x.png"
+    },
+    "569": {
+        "name": "garbodor",
+        "original": "569.png",
+        "wtp": "569x.png"
+    },
+    "570": {
+        "name": "zorua",
+        "original": "570.png",
+        "wtp": "570x.png"
+    },
+    "571": {
+        "name": "zoroark",
+        "original": "571.png",
+        "wtp": "571x.png"
+    },
+    "572": {
+        "name": "minccino",
+        "original": "572.png",
+        "wtp": "572x.png"
+    },
+    "573": {
+        "name": "cinccino",
+        "original": "573.png",
+        "wtp": "573x.png"
+    },
+    "574": {
+        "name": "gothita",
+        "original": "574.png",
+        "wtp": "574x.png"
+    },
+    "575": {
+        "name": "gothorita",
+        "original": "575.png",
+        "wtp": "575x.png"
+    },
+    "576": {
+        "name": "gothitelle",
+        "original": "576.png",
+        "wtp": "576x.png"
+    },
+    "577": {
+        "name": "solosis",
+        "original": "577.png",
+        "wtp": "577x.png"
+    },
+    "578": {
+        "name": "duosion",
+        "original": "578.png",
+        "wtp": "578x.png"
+    },
+    "579": {
+        "name": "reuniclus",
+        "original": "579.png",
+        "wtp": "579x.png"
+    },
+    "580": {
+        "name": "ducklett",
+        "original": "580.png",
+        "wtp": "580x.png"
+    },
+    "581": {
+        "name": "swanna",
+        "original": "581.png",
+        "wtp": "581x.png"
+    },
+    "582": {
+        "name": "vanillite",
+        "original": "582.png",
+        "wtp": "582x.png"
+    },
+    "583": {
+        "name": "vanillish",
+        "original": "583.png",
+        "wtp": "583x.png"
+    },
+    "584": {
+        "name": "vanilluxe",
+        "original": "584.png",
+        "wtp": "584x.png"
+    },
+    "585": {
+        "name": "deerling",
+        "original": "585.png",
+        "wtp": "585x.png"
+    },
+    "586": {
+        "name": "sawsbuck",
+        "original": "586.png",
+        "wtp": "586x.png"
+    },
+    "587": {
+        "name": "emolga",
+        "original": "587.png",
+        "wtp": "587x.png"
+    },
+    "588": {
+        "name": "karrablast",
+        "original": "588.png",
+        "wtp": "588x.png"
+    },
+    "589": {
+        "name": "escavalier",
+        "original": "589.png",
+        "wtp": "589x.png"
+    },
+    "590": {
+        "name": "foongus",
+        "original": "590.png",
+        "wtp": "590x.png"
+    },
+    "591": {
+        "name": "amoonguss",
+        "original": "591.png",
+        "wtp": "591x.png"
+    },
+    "592": {
+        "name": "frillish",
+        "original": "592.png",
+        "wtp": "592x.png"
+    },
+    "593": {
+        "name": "jellicent",
+        "original": "593.png",
+        "wtp": "593x.png"
+    },
+    "594": {
+        "name": "alomomola",
+        "original": "594.png",
+        "wtp": "594x.png"
+    },
+    "595": {
+        "name": "joltik",
+        "original": "595.png",
+        "wtp": "595x.png"
+    },
+    "596": {
+        "name": "galvantula",
+        "original": "596.png",
+        "wtp": "596x.png"
+    },
+    "597": {
+        "name": "ferroseed",
+        "original": "597.png",
+        "wtp": "597x.png"
+    },
+    "598": {
+        "name": "ferrothorn",
+        "original": "598.png",
+        "wtp": "598x.png"
+    },
+    "599": {
+        "name": "klink",
+        "original": "599.png",
+        "wtp": "599x.png"
+    },
+    "600": {
+        "name": "klang",
+        "original": "600.png",
+        "wtp": "600x.png"
+    },
+    "601": {
+        "name": "klinklang",
+        "original": "601.png",
+        "wtp": "601x.png"
+    },
+    "602": {
+        "name": "tynamo",
+        "original": "602.png",
+        "wtp": "602x.png"
+    },
+    "603": {
+        "name": "eelektrik",
+        "original": "603.png",
+        "wtp": "603x.png"
+    },
+    "604": {
+        "name": "eelektross",
+        "original": "604.png",
+        "wtp": "604x.png"
+    },
+    "605": {
+        "name": "elgyem",
+        "original": "605.png",
+        "wtp": "605x.png"
+    },
+    "606": {
+        "name": "beheeyem",
+        "original": "606.png",
+        "wtp": "606x.png"
+    },
+    "607": {
+        "name": "litwick",
+        "original": "607.png",
+        "wtp": "607x.png"
+    },
+    "608": {
+        "name": "lampent",
+        "original": "608.png",
+        "wtp": "608x.png"
+    },
+    "609": {
+        "name": "chandelure",
+        "original": "609.png",
+        "wtp": "609x.png"
+    },
+    "610": {
+        "name": "axew",
+        "original": "610.png",
+        "wtp": "610x.png"
+    },
+    "611": {
+        "name": "fraxure",
+        "original": "611.png",
+        "wtp": "611x.png"
+    },
+    "612": {
+        "name": "haxorus",
+        "original": "612.png",
+        "wtp": "612x.png"
+    },
+    "613": {
+        "name": "cubchoo",
+        "original": "613.png",
+        "wtp": "613x.png"
+    },
+    "614": {
+        "name": "beartic",
+        "original": "614.png",
+        "wtp": "614x.png"
+    },
+    "615": {
+        "name": "cryogonal",
+        "original": "615.png",
+        "wtp": "615x.png"
+    },
+    "616": {
+        "name": "shelmet",
+        "original": "616.png",
+        "wtp": "616x.png"
+    },
+    "617": {
+        "name": "accelgor",
+        "original": "617.png",
+        "wtp": "617x.png"
+    },
+    "618": {
+        "name": "stunfisk",
+        "original": "618.png",
+        "wtp": "618x.png"
+    },
+    "619": {
+        "name": "mienfoo",
+        "original": "619.png",
+        "wtp": "619x.png"
+    },
+    "620": {
+        "name": "mienshao",
+        "original": "620.png",
+        "wtp": "620x.png"
+    },
+    "621": {
+        "name": "druddigon",
+        "original": "621.png",
+        "wtp": "621x.png"
+    },
+    "622": {
+        "name": "golett",
+        "original": "622.png",
+        "wtp": "622x.png"
+    },
+    "623": {
+        "name": "golurk",
+        "original": "623.png",
+        "wtp": "623x.png"
+    },
+    "624": {
+        "name": "pawniard",
+        "original": "624.png",
+        "wtp": "624x.png"
+    },
+    "625": {
+        "name": "bisharp",
+        "original": "625.png",
+        "wtp": "625x.png"
+    },
+    "626": {
+        "name": "bouffalant",
+        "original": "626.png",
+        "wtp": "626x.png"
+    },
+    "627": {
+        "name": "rufflet",
+        "original": "627.png",
+        "wtp": "627x.png"
+    },
+    "628": {
+        "name": "braviary",
+        "original": "628.png",
+        "wtp": "628x.png"
+    },
+    "629": {
+        "name": "vullaby",
+        "original": "629.png",
+        "wtp": "629x.png"
+    },
+    "630": {
+        "name": "mandibuzz",
+        "original": "630.png",
+        "wtp": "630x.png"
+    },
+    "631": {
+        "name": "heatmor",
+        "original": "631.png",
+        "wtp": "631x.png"
+    },
+    "632": {
+        "name": "durant",
+        "original": "632.png",
+        "wtp": "632x.png"
+    },
+    "633": {
+        "name": "deino",
+        "original": "633.png",
+        "wtp": "633x.png"
+    },
+    "634": {
+        "name": "zweilous",
+        "original": "634.png",
+        "wtp": "634x.png"
+    },
+    "635": {
+        "name": "hydreigon",
+        "original": "635.png",
+        "wtp": "635x.png"
+    },
+    "636": {
+        "name": "larvesta",
+        "original": "636.png",
+        "wtp": "636x.png"
+    },
+    "637": {
+        "name": "volcarona",
+        "original": "637.png",
+        "wtp": "637x.png"
+    },
+    "638": {
+        "name": "cobalion",
+        "original": "638.png",
+        "wtp": "638x.png"
+    },
+    "639": {
+        "name": "terrakion",
+        "original": "639.png",
+        "wtp": "639x.png"
+    },
+    "640": {
+        "name": "virizion",
+        "original": "640.png",
+        "wtp": "640x.png"
+    },
+    "641": {
+        "name": "tornadus",
+        "original": "641.png",
+        "wtp": "641x.png"
+    },
+    "642": {
+        "name": "thundurus",
+        "original": "642.png",
+        "wtp": "642x.png"
+    },
+    "643": {
+        "name": "reshiram",
+        "original": "643.png",
+        "wtp": "643x.png"
+    },
+    "644": {
+        "name": "zekrom",
+        "original": "644.png",
+        "wtp": "644x.png"
+    },
+    "645": {
+        "name": "landorus",
+        "original": "645.png",
+        "wtp": "645x.png"
+    },
+    "646": {
+        "name": "kyurem",
+        "original": "646.png",
+        "wtp": "646x.png"
+    },
+    "647": {
+        "name": "keldeo",
+        "original": "647.png",
+        "wtp": "647x.png"
+    },
+    "648": {
+        "name": "meloetta",
+        "original": "648.png",
+        "wtp": "648x.png"
+    },
+    "649": {
+        "name": "genesect",
+        "original": "649.png",
+        "wtp": "649x.png"
+    },
+    "650": {
+        "name": "chespin",
+        "original": "650.png",
+        "wtp": "650x.png"
+    },
+    "651": {
+        "name": "quilladin",
+        "original": "651.png",
+        "wtp": "651x.png"
+    },
+    "652": {
+        "name": "chesnaught",
+        "original": "652.png",
+        "wtp": "652x.png"
+    },
+    "653": {
+        "name": "fennekin",
+        "original": "653.png",
+        "wtp": "653x.png"
+    },
+    "654": {
+        "name": "braixen",
+        "original": "654.png",
+        "wtp": "654x.png"
+    },
+    "655": {
+        "name": "delphox",
+        "original": "655.png",
+        "wtp": "655x.png"
+    },
+    "656": {
+        "name": "froakie",
+        "original": "656.png",
+        "wtp": "656x.png"
+    },
+    "657": {
+        "name": "frogadier",
+        "original": "657.png",
+        "wtp": "657x.png"
+    },
+    "658": {
+        "name": "greninja",
+        "original": "658.png",
+        "wtp": "658x.png"
+    },
+    "659": {
+        "name": "bunnelby",
+        "original": "659.png",
+        "wtp": "659x.png"
+    },
+    "660": {
+        "name": "diggersby",
+        "original": "660.png",
+        "wtp": "660x.png"
+    },
+    "661": {
+        "name": "fletchling",
+        "original": "661.png",
+        "wtp": "661x.png"
+    },
+    "662": {
+        "name": "fletchinder",
+        "original": "662.png",
+        "wtp": "662x.png"
+    },
+    "663": {
+        "name": "talonflame",
+        "original": "663.png",
+        "wtp": "663x.png"
+    },
+    "664": {
+        "name": "scatterbug",
+        "original": "664.png",
+        "wtp": "664x.png"
+    },
+    "665": {
+        "name": "spewpa",
+        "original": "665.png",
+        "wtp": "665x.png"
+    },
+    "666": {
+        "name": "vivillon",
+        "original": "666.png",
+        "wtp": "666x.png"
+    },
+    "667": {
+        "name": "litleo",
+        "original": "667.png",
+        "wtp": "667x.png"
+    },
+    "668": {
+        "name": "pyroar",
+        "original": "668.png",
+        "wtp": "668x.png"
+    },
+    "669": {
+        "name": "flabebe",
+        "original": "669.png",
+        "wtp": "669x.png"
+    },
+    "670": {
+        "name": "floette",
+        "original": "670.png",
+        "wtp": "670x.png"
+    },
+    "671": {
+        "name": "florges",
+        "original": "671.png",
+        "wtp": "671x.png"
+    },
+    "672": {
+        "name": "skiddo",
+        "original": "672.png",
+        "wtp": "672x.png"
+    },
+    "673": {
+        "name": "gogoat",
+        "original": "673.png",
+        "wtp": "673x.png"
+    },
+    "674": {
+        "name": "pancham",
+        "original": "674.png",
+        "wtp": "674x.png"
+    },
+    "675": {
+        "name": "pangoro",
+        "original": "675.png",
+        "wtp": "675x.png"
+    },
+    "676": {
+        "name": "furfrou",
+        "original": "676.png",
+        "wtp": "676x.png"
+    },
+    "677": {
+        "name": "espurr",
+        "original": "677.png",
+        "wtp": "677x.png"
+    },
+    "678": {
+        "name": "meowstic",
+        "original": "678.png",
+        "wtp": "678x.png"
+    },
+    "679": {
+        "name": "honedge",
+        "original": "679.png",
+        "wtp": "679x.png"
+    },
+    "680": {
+        "name": "doublade",
+        "original": "680.png",
+        "wtp": "680x.png"
+    },
+    "681": {
+        "name": "aegislash",
+        "original": "681.png",
+        "wtp": "681x.png"
+    },
+    "682": {
+        "name": "spritzee",
+        "original": "682.png",
+        "wtp": "682x.png"
+    },
+    "683": {
+        "name": "aromatisse",
+        "original": "683.png",
+        "wtp": "683x.png"
+    },
+    "684": {
+        "name": "swirlix",
+        "original": "684.png",
+        "wtp": "684x.png"
+    },
+    "685": {
+        "name": "slurpuff",
+        "original": "685.png",
+        "wtp": "685x.png"
+    },
+    "686": {
+        "name": "inkay",
+        "original": "686.png",
+        "wtp": "686x.png"
+    },
+    "687": {
+        "name": "malamar",
+        "original": "687.png",
+        "wtp": "687x.png"
+    },
+    "688": {
+        "name": "binacle",
+        "original": "688.png",
+        "wtp": "688x.png"
+    },
+    "689": {
+        "name": "barbaracle",
+        "original": "689.png",
+        "wtp": "689x.png"
+    },
+    "690": {
+        "name": "skrelp",
+        "original": "690.png",
+        "wtp": "690x.png"
+    },
+    "691": {
+        "name": "dragalge",
+        "original": "691.png",
+        "wtp": "691x.png"
+    },
+    "692": {
+        "name": "clauncher",
+        "original": "692.png",
+        "wtp": "692x.png"
+    },
+    "693": {
+        "name": "clawitzer",
+        "original": "693.png",
+        "wtp": "693x.png"
+    },
+    "694": {
+        "name": "helioptile",
+        "original": "694.png",
+        "wtp": "694x.png"
+    },
+    "695": {
+        "name": "heliolisk",
+        "original": "695.png",
+        "wtp": "695x.png"
+    },
+    "696": {
+        "name": "tyrunt",
+        "original": "696.png",
+        "wtp": "696x.png"
+    },
+    "697": {
+        "name": "tyrantrum",
+        "original": "697.png",
+        "wtp": "697x.png"
+    },
+    "698": {
+        "name": "amaura",
+        "original": "698.png",
+        "wtp": "698x.png"
+    },
+    "699": {
+        "name": "aurorus",
+        "original": "699.png",
+        "wtp": "699x.png"
+    },
+    "700": {
+        "name": "sylveon",
+        "original": "700.png",
+        "wtp": "700x.png"
+    },
+    "701": {
+        "name": "hawlucha",
+        "original": "701.png",
+        "wtp": "701x.png"
+    },
+    "702": {
+        "name": "dedenne",
+        "original": "702.png",
+        "wtp": "702x.png"
+    },
+    "703": {
+        "name": "carbink",
+        "original": "703.png",
+        "wtp": "703x.png"
+    },
+    "704": {
+        "name": "goomy",
+        "original": "704.png",
+        "wtp": "704x.png"
+    },
+    "705": {
+        "name": "sliggoo",
+        "original": "705.png",
+        "wtp": "705x.png"
+    },
+    "706": {
+        "name": "goodra",
+        "original": "706.png",
+        "wtp": "706x.png"
+    },
+    "707": {
+        "name": "klefki",
+        "original": "707.png",
+        "wtp": "707x.png"
+    },
+    "708": {
+        "name": "phantump",
+        "original": "708.png",
+        "wtp": "708x.png"
+    },
+    "709": {
+        "name": "trevenant",
+        "original": "709.png",
+        "wtp": "709x.png"
+    },
+    "710": {
+        "name": "pumpkaboo",
+        "original": "710.png",
+        "wtp": "710x.png"
+    },
+    "711": {
+        "name": "gourgeist",
+        "original": "711.png",
+        "wtp": "711x.png"
+    },
+    "712": {
+        "name": "bergmite",
+        "original": "712.png",
+        "wtp": "712x.png"
+    },
+    "713": {
+        "name": "avalugg",
+        "original": "713.png",
+        "wtp": "713x.png"
+    },
+    "714": {
+        "name": "noibat",
+        "original": "714.png",
+        "wtp": "714x.png"
+    },
+    "715": {
+        "name": "noivern",
+        "original": "715.png",
+        "wtp": "715x.png"
+    },
+    "716": {
+        "name": "xerneas",
+        "original": "716.png",
+        "wtp": "716x.png"
+    },
+    "717": {
+        "name": "yveltal",
+        "original": "717.png",
+        "wtp": "717x.png"
+    },
+    "718": {
+        "name": "zygarde",
+        "original": "718.png",
+        "wtp": "718x.png"
+    },
+    "719": {
+        "name": "diancie",
+        "original": "719.png",
+        "wtp": "719x.png"
+    },
+    "720": {
+        "name": "hoopa",
+        "original": "720.png",
+        "wtp": "720x.png"
+    },
+    "721": {
+        "name": "volcanion",
+        "original": "721.png",
+        "wtp": "721x.png"
+    },
+    "722": {
+        "name": "rowlet",
+        "original": "722.png",
+        "wtp": "722x.png"
+    },
+    "723": {
+        "name": "dartrix",
+        "original": "723.png",
+        "wtp": "723x.png"
+    },
+    "724": {
+        "name": "decidueye",
+        "original": "724.png",
+        "wtp": "724x.png"
+    },
+    "725": {
+        "name": "litten",
+        "original": "725.png",
+        "wtp": "725x.png"
+    },
+    "726": {
+        "name": "torracat",
+        "original": "726.png",
+        "wtp": "726x.png"
+    },
+    "727": {
+        "name": "incineroar",
+        "original": "727.png",
+        "wtp": "727x.png"
+    },
+    "728": {
+        "name": "popplio",
+        "original": "728.png",
+        "wtp": "728x.png"
+    },
+    "729": {
+        "name": "brionne",
+        "original": "729.png",
+        "wtp": "729x.png"
+    },
+    "730": {
+        "name": "primarina",
+        "original": "730.png",
+        "wtp": "730x.png"
+    },
+    "731": {
+        "name": "pikipek",
+        "original": "731.png",
+        "wtp": "731x.png"
+    },
+    "732": {
+        "name": "trumbeak",
+        "original": "732.png",
+        "wtp": "732x.png"
+    },
+    "733": {
+        "name": "toucannon",
+        "original": "733.png",
+        "wtp": "733x.png"
+    },
+    "734": {
+        "name": "yungoos",
+        "original": "734.png",
+        "wtp": "734x.png"
+    },
+    "735": {
+        "name": "gumshoos",
+        "original": "735.png",
+        "wtp": "735x.png"
+    },
+    "736": {
+        "name": "grubbin",
+        "original": "736.png",
+        "wtp": "736x.png"
+    },
+    "737": {
+        "name": "charjabug",
+        "original": "737.png",
+        "wtp": "737x.png"
+    },
+    "738": {
+        "name": "vikavolt",
+        "original": "738.png",
+        "wtp": "738x.png"
+    },
+    "739": {
+        "name": "crabrawler",
+        "original": "739.png",
+        "wtp": "739x.png"
+    },
+    "740": {
+        "name": "crabominable",
+        "original": "740.png",
+        "wtp": "740x.png"
+    },
+    "741": {
+        "name": "oricorio",
+        "original": "741.png",
+        "wtp": "741x.png"
+    },
+    "742": {
+        "name": "cutiefly",
+        "original": "742.png",
+        "wtp": "742x.png"
+    },
+    "743": {
+        "name": "ribombee",
+        "original": "743.png",
+        "wtp": "743x.png"
+    },
+    "744": {
+        "name": "rockruff",
+        "original": "744.png",
+        "wtp": "744x.png"
+    },
+    "745": {
+        "name": "lycanroc",
+        "original": "745.png",
+        "wtp": "745x.png"
+    },
+    "746": {
+        "name": "wishiwashi",
+        "original": "746.png",
+        "wtp": "746x.png"
+    },
+    "747": {
+        "name": "mareanie",
+        "original": "747.png",
+        "wtp": "747x.png"
+    },
+    "748": {
+        "name": "toxapex",
+        "original": "748.png",
+        "wtp": "748x.png"
+    },
+    "749": {
+        "name": "mudbray",
+        "original": "749.png",
+        "wtp": "749x.png"
+    },
+    "750": {
+        "name": "mudsdale",
+        "original": "750.png",
+        "wtp": "750x.png"
+    },
+    "751": {
+        "name": "dewpider",
+        "original": "751.png",
+        "wtp": "751x.png"
+    },
+    "752": {
+        "name": "araquanid",
+        "original": "752.png",
+        "wtp": "752x.png"
+    },
+    "753": {
+        "name": "fomantis",
+        "original": "753.png",
+        "wtp": "753x.png"
+    },
+    "754": {
+        "name": "lurantis",
+        "original": "754.png",
+        "wtp": "754x.png"
+    },
+    "755": {
+        "name": "morelull",
+        "original": "755.png",
+        "wtp": "755x.png"
+    },
+    "756": {
+        "name": "shiinotic",
+        "original": "756.png",
+        "wtp": "756x.png"
+    },
+    "757": {
+        "name": "salandit",
+        "original": "757.png",
+        "wtp": "757x.png"
+    },
+    "758": {
+        "name": "salazzle",
+        "original": "758.png",
+        "wtp": "758x.png"
+    },
+    "759": {
+        "name": "stufful",
+        "original": "759.png",
+        "wtp": "759x.png"
+    },
+    "760": {
+        "name": "bewear",
+        "original": "760.png",
+        "wtp": "760x.png"
+    },
+    "761": {
+        "name": "bounsweet",
+        "original": "761.png",
+        "wtp": "761x.png"
+    },
+    "762": {
+        "name": "steenee",
+        "original": "762.png",
+        "wtp": "762x.png"
+    },
+    "763": {
+        "name": "tsareena",
+        "original": "763.png",
+        "wtp": "763x.png"
+    },
+    "764": {
+        "name": "comfey",
+        "original": "764.png",
+        "wtp": "764x.png"
+    },
+    "765": {
+        "name": "oranguru",
+        "original": "765.png",
+        "wtp": "765x.png"
+    },
+    "766": {
+        "name": "passimian",
+        "original": "766.png",
+        "wtp": "766x.png"
+    },
+    "767": {
+        "name": "wimpod",
+        "original": "767.png",
+        "wtp": "767x.png"
+    },
+    "768": {
+        "name": "golisopod",
+        "original": "768.png",
+        "wtp": "768x.png"
+    },
+    "769": {
+        "name": "sandygast",
+        "original": "769.png",
+        "wtp": "769x.png"
+    },
+    "770": {
+        "name": "palossand",
+        "original": "770.png",
+        "wtp": "770x.png"
+    },
+    "771": {
+        "name": "pyukumuku",
+        "original": "771.png",
+        "wtp": "771x.png"
+    },
+    "772": {
+        "name": "type-null",
+        "original": "772.png",
+        "wtp": "772x.png"
+    },
+    "773": {
+        "name": "silvally",
+        "original": "773.png",
+        "wtp": "773x.png"
+    },
+    "774": {
+        "name": "minior",
+        "original": "774.png",
+        "wtp": "774x.png"
+    },
+    "775": {
+        "name": "komala",
+        "original": "775.png",
+        "wtp": "775x.png"
+    },
+    "776": {
+        "name": "turtonator",
+        "original": "776.png",
+        "wtp": "776x.png"
+    },
+    "777": {
+        "name": "togedemaru",
+        "original": "777.png",
+        "wtp": "777x.png"
+    },
+    "778": {
+        "name": "mimikyu",
+        "original": "778.png",
+        "wtp": "778x.png"
+    },
+    "779": {
+        "name": "bruxish",
+        "original": "779.png",
+        "wtp": "779x.png"
+    },
+    "780": {
+        "name": "drampa",
+        "original": "780.png",
+        "wtp": "780x.png"
+    },
+    "781": {
+        "name": "dhelmise",
+        "original": "781.png",
+        "wtp": "781x.png"
+    },
+    "782": {
+        "name": "jangmo-o",
+        "original": "782.png",
+        "wtp": "782x.png"
+    },
+    "783": {
+        "name": "hakamo-o",
+        "original": "783.png",
+        "wtp": "783x.png"
+    },
+    "784": {
+        "name": "kommo-o",
+        "original": "784.png",
+        "wtp": "784x.png"
+    },
+    "785": {
+        "name": "tapu-koko",
+        "original": "785.png",
+        "wtp": "785x.png"
+    },
+    "786": {
+        "name": "tapu-lele",
+        "original": "786.png",
+        "wtp": "786x.png"
+    },
+    "787": {
+        "name": "tapu-bulu",
+        "original": "787.png",
+        "wtp": "787x.png"
+    },
+    "788": {
+        "name": "tapu-fini",
+        "original": "788.png",
+        "wtp": "788x.png"
+    },
+    "789": {
+        "name": "cosmog",
+        "original": "789.png",
+        "wtp": "789x.png"
+    },
+    "790": {
+        "name": "cosmoem",
+        "original": "790.png",
+        "wtp": "790x.png"
+    },
+    "791": {
+        "name": "solgaleo",
+        "original": "791.png",
+        "wtp": "791x.png"
+    },
+    "792": {
+        "name": "lunala",
+        "original": "792.png",
+        "wtp": "792x.png"
+    },
+    "793": {
+        "name": "nihilego",
+        "original": "793.png",
+        "wtp": "793x.png"
+    },
+    "794": {
+        "name": "buzzwole",
+        "original": "794.png",
+        "wtp": "794x.png"
+    },
+    "795": {
+        "name": "pheromosa",
+        "original": "795.png",
+        "wtp": "795x.png"
+    },
+    "796": {
+        "name": "xurkitree",
+        "original": "796.png",
+        "wtp": "796x.png"
+    },
+    "797": {
+        "name": "celesteela",
+        "original": "797.png",
+        "wtp": "797x.png"
+    },
+    "798": {
+        "name": "kartana",
+        "original": "798.png",
+        "wtp": "798x.png"
+    },
+    "799": {
+        "name": "guzzlord",
+        "original": "799.png",
+        "wtp": "799x.png"
+    },
+    "800": {
+        "name": "necrozma",
+        "original": "800.png",
+        "wtp": "800x.png"
+    },
+    "801": {
+        "name": "magearna",
+        "original": "801.png",
+        "wtp": "801x.png"
+    },
+    "802": {
+        "name": "marshadow",
+        "original": "802.png",
+        "wtp": "802x.png"
+    },
+    "803": {
+        "name": "poipole",
+        "original": "803.png",
+        "wtp": "803x.png"
+    },
+    "804": {
+        "name": "naganadel",
+        "original": "804.png",
+        "wtp": "804x.png"
+    },
+    "805": {
+        "name": "stakataka",
+        "original": "805.png",
+        "wtp": "805x.png"
+    },
+    "806": {
+        "name": "blacephalon",
+        "original": "806.png",
+        "wtp": "806x.png"
+    },
+    "807": {
+        "name": "zeraora",
+        "original": "807.png",
+        "wtp": "807x.png"
+    },
+    "808": {
+        "name": "meltan",
+        "original": "808.png",
+        "wtp": "808x.png"
+    },
+    "809": {
+        "name": "melmetal",
+        "original": "809.png",
+        "wtp": "809x.png"
+    },
+    "810": {
+        "name": "grookey",
+        "original": "810.png",
+        "wtp": "810x.png"
+    },
+    "811": {
+        "name": "thwackey",
+        "original": "811.png",
+        "wtp": "811x.png"
+    },
+    "812": {
+        "name": "rillaboom",
+        "original": "812.png",
+        "wtp": "812x.png"
+    },
+    "813": {
+        "name": "scorbunny",
+        "original": "813.png",
+        "wtp": "813x.png"
+    },
+    "814": {
+        "name": "raboot",
+        "original": "814.png",
+        "wtp": "814x.png"
+    },
+    "815": {
+        "name": "cinderace",
+        "original": "815.png",
+        "wtp": "815x.png"
+    },
+    "816": {
+        "name": "sobble",
+        "original": "816.png",
+        "wtp": "816x.png"
+    },
+    "817": {
+        "name": "drizzile",
+        "original": "817.png",
+        "wtp": "817x.png"
+    },
+    "818": {
+        "name": "inteleon",
+        "original": "818.png",
+        "wtp": "818x.png"
+    },
+    "819": {
+        "name": "skwovet",
+        "original": "819.png",
+        "wtp": "819x.png"
+    },
+    "820": {
+        "name": "greedent",
+        "original": "820.png",
+        "wtp": "820x.png"
+    },
+    "821": {
+        "name": "rookidee",
+        "original": "821.png",
+        "wtp": "821x.png"
+    },
+    "822": {
+        "name": "corvisquire",
+        "original": "822.png",
+        "wtp": "822x.png"
+    },
+    "823": {
+        "name": "corviknight",
+        "original": "823.png",
+        "wtp": "823x.png"
+    },
+    "824": {
+        "name": "blipbug",
+        "original": "824.png",
+        "wtp": "824x.png"
+    },
+    "825": {
+        "name": "dottler",
+        "original": "825.png",
+        "wtp": "825x.png"
+    },
+    "826": {
+        "name": "orbeetle",
+        "original": "826.png",
+        "wtp": "826x.png"
+    },
+    "827": {
+        "name": "nickit",
+        "original": "827.png",
+        "wtp": "827x.png"
+    },
+    "828": {
+        "name": "thievul",
+        "original": "828.png",
+        "wtp": "828x.png"
+    },
+    "829": {
+        "name": "gossifleur",
+        "original": "829.png",
+        "wtp": "829x.png"
+    },
+    "830": {
+        "name": "eldegoss",
+        "original": "830.png",
+        "wtp": "830x.png"
+    },
+    "831": {
+        "name": "wooloo",
+        "original": "831.png",
+        "wtp": "831x.png"
+    },
+    "832": {
+        "name": "dubwool",
+        "original": "832.png",
+        "wtp": "832x.png"
+    },
+    "833": {
+        "name": "chewtle",
+        "original": "833.png",
+        "wtp": "833x.png"
+    },
+    "834": {
+        "name": "drednaw",
+        "original": "834.png",
+        "wtp": "834x.png"
+    },
+    "835": {
+        "name": "yamper",
+        "original": "835.png",
+        "wtp": "835x.png"
+    },
+    "836": {
+        "name": "boltund",
+        "original": "836.png",
+        "wtp": "836x.png"
+    },
+    "837": {
+        "name": "rolycoly",
+        "original": "837.png",
+        "wtp": "837x.png"
+    },
+    "838": {
+        "name": "carkol",
+        "original": "838.png",
+        "wtp": "838x.png"
+    },
+    "839": {
+        "name": "coalossal",
+        "original": "839.png",
+        "wtp": "839x.png"
+    },
+    "840": {
+        "name": "applin",
+        "original": "840.png",
+        "wtp": "840x.png"
+    },
+    "841": {
+        "name": "flapple",
+        "original": "841.png",
+        "wtp": "841x.png"
+    },
+    "842": {
+        "name": "appletun",
+        "original": "842.png",
+        "wtp": "842x.png"
+    },
+    "843": {
+        "name": "silicobra",
+        "original": "843.png",
+        "wtp": "843x.png"
+    },
+    "844": {
+        "name": "sandaconda",
+        "original": "844.png",
+        "wtp": "844x.png"
+    },
+    "845": {
+        "name": "cramorant",
+        "original": "845.png",
+        "wtp": "845x.png"
+    },
+    "846": {
+        "name": "arrokuda",
+        "original": "846.png",
+        "wtp": "846x.png"
+    },
+    "847": {
+        "name": "barraskewda",
+        "original": "847.png",
+        "wtp": "847x.png"
+    },
+    "848": {
+        "name": "toxel",
+        "original": "848.png",
+        "wtp": "848x.png"
+    },
+    "849": {
+        "name": "toxtricity",
+        "original": "849.png",
+        "wtp": "849x.png"
+    },
+    "850": {
+        "name": "sizzlipede",
+        "original": "850.png",
+        "wtp": "850x.png"
+    },
+    "851": {
+        "name": "centiskorch",
+        "original": "851.png",
+        "wtp": "851x.png"
+    },
+    "852": {
+        "name": "clobbopus",
+        "original": "852.png",
+        "wtp": "852x.png"
+    },
+    "853": {
+        "name": "grapploct",
+        "original": "853.png",
+        "wtp": "853x.png"
+    },
+    "854": {
+        "name": "sinistea",
+        "original": "854.png",
+        "wtp": "854x.png"
+    },
+    "855": {
+        "name": "polteageist",
+        "original": "855.png",
+        "wtp": "855x.png"
+    },
+    "856": {
+        "name": "hatenna",
+        "original": "856.png",
+        "wtp": "856x.png"
+    },
+    "857": {
+        "name": "hattrem",
+        "original": "857.png",
+        "wtp": "857x.png"
+    },
+    "858": {
+        "name": "hatterene",
+        "original": "858.png",
+        "wtp": "858x.png"
+    },
+    "859": {
+        "name": "impidimp",
+        "original": "859.png",
+        "wtp": "859x.png"
+    },
+    "860": {
+        "name": "morgrem",
+        "original": "860.png",
+        "wtp": "860x.png"
+    },
+    "861": {
+        "name": "grimmsnarl",
+        "original": "861.png",
+        "wtp": "861x.png"
+    },
+    "862": {
+        "name": "obstagoon",
+        "original": "862.png",
+        "wtp": "862x.png"
+    },
+    "863": {
+        "name": "perrserker",
+        "original": "863.png",
+        "wtp": "863x.png"
+    },
+    "864": {
+        "name": "cursola",
+        "original": "864.png",
+        "wtp": "864x.png"
+    },
+    "865": {
+        "name": "sirfetchd",
+        "original": "865.png",
+        "wtp": "865x.png"
+    },
+    "866": {
+        "name": "mr-rime",
+        "original": "866.png",
+        "wtp": "866x.png"
+    },
+    "867": {
+        "name": "runerigus",
+        "original": "867.png",
+        "wtp": "867x.png"
+    },
+    "868": {
+        "name": "milcery",
+        "original": "868.png",
+        "wtp": "868x.png"
+    },
+    "869": {
+        "name": "alcremie",
+        "original": "869.png",
+        "wtp": "869x.png"
+    },
+    "870": {
+        "name": "falinks",
+        "original": "870.png",
+        "wtp": "870x.png"
+    },
+    "871": {
+        "name": "pincurchin",
+        "original": "871.png",
+        "wtp": "871x.png"
+    },
+    "872": {
+        "name": "snom",
+        "original": "872.png",
+        "wtp": "872x.png"
+    },
+    "873": {
+        "name": "frosmoth",
+        "original": "873.png",
+        "wtp": "873x.png"
+    },
+    "874": {
+        "name": "stonjourner",
+        "original": "874.png",
+        "wtp": "874x.png"
+    },
+    "875": {
+        "name": "eiscue",
+        "original": "875.png",
+        "wtp": "875x.png"
+    },
+    "876": {
+        "name": "indeedee",
+        "original": "876.png",
+        "wtp": "876x.png"
+    },
+    "877": {
+        "name": "morpeko",
+        "original": "877.png",
+        "wtp": "877x.png"
+    },
+    "878": {
+        "name": "cufant",
+        "original": "878.png",
+        "wtp": "878x.png"
+    },
+    "879": {
+        "name": "copperajah",
+        "original": "879.png",
+        "wtp": "879x.png"
+    },
+    "880": {
+        "name": "dracozolt",
+        "original": "880.png",
+        "wtp": "880x.png"
+    },
+    "881": {
+        "name": "arctozolt",
+        "original": "881.png",
+        "wtp": "881x.png"
+    },
+    "882": {
+        "name": "dracovish",
+        "original": "882.png",
+        "wtp": "882x.png"
+    },
+    "883": {
+        "name": "arctovish",
+        "original": "883.png",
+        "wtp": "883x.png"
+    },
+    "884": {
+        "name": "duraludon",
+        "original": "884.png",
+        "wtp": "884x.png"
+    },
+    "885": {
+        "name": "dreepy",
+        "original": "885.png",
+        "wtp": "885x.png"
+    },
+    "886": {
+        "name": "drakloak",
+        "original": "886.png",
+        "wtp": "886x.png"
+    },
+    "887": {
+        "name": "dragapult",
+        "original": "887.png",
+        "wtp": "887x.png"
+    },
+    "888": {
+        "name": "zacian",
+        "original": "888.png",
+        "wtp": "888x.png"
+    },
+    "889": {
+        "name": "zamazenta",
+        "original": "889.png",
+        "wtp": "889x.png"
+    },
+    "890": {
+        "name": "eternatus",
+        "original": "890.png",
+        "wtp": "890x.png"
+    },
+    "891": {
+        "name": "kubfu",
+        "original": "891.png",
+        "wtp": "891x.png"
+    },
+    "892": {
+        "name": "urshifu",
+        "original": "892.png",
+        "wtp": "892x.png"
+    },
+    "893": {
+        "name": "zarude",
+        "original": "893.png",
+        "wtp": "893x.png"
+    },
+    "894": {
+        "name": "regieleki",
+        "original": "894.png",
+        "wtp": "894x.png"
+    },
+    "895": {
+        "name": "regidrago",
+        "original": "895.png",
+        "wtp": "895x.png"
+    },
+    "896": {
+        "name": "glastrier",
+        "original": "896.png",
+        "wtp": "896x.png"
+    },
+    "897": {
+        "name": "spectrier",
+        "original": "897.png",
+        "wtp": "897x.png"
+    }
+}
