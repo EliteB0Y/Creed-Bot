@@ -6,6 +6,7 @@ import secret
 
 class MyBot(commands.Bot):
     #Declare Bot variables here (can be accessed in cogs using self.client.variable)
+    promo = ""
     wtpList = []
     activeQuiz = []
     disabledCogs = [] #add cogs.namehere to disable
