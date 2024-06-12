@@ -6,7 +6,6 @@ import secret
 
 class MyBot(commands.Bot):
     #Declare Bot variables here (can be accessed in cogs using self.client.variable)
-    launch_time = datetime.utcnow()
     wtpList = []
     activeQuiz = []
     disabledCogs = [] #add cogs.namehere to disable
@@ -105,7 +104,7 @@ os.environ["JISHAKU_HIDE"]="True"
 
 async def main():
     await create_db_connection()
-    extensions = ['cogs.pokemoncreed', 'cogs.basic', 'cogs.games', 'cogs.error', 'jishaku']
+    extensions = ['cogs.pokemoncreed', 'cogs.basic', 'cogs.games', 'cogs.extra', 'cogs.error', 'jishaku']
     async with client:
         for extension in extensions:
             if extension not in client.disabledCogs:

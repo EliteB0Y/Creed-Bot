@@ -10,9 +10,10 @@ class BoxMenu(menus.Menu):
     
     async def mystbin(self, text):
         async with aiohttp.ClientSession() as session:
-            pastedata = {"files":[{"content": text, "filename": "No Title"}]}
-            async with session.put(url="https://api.mystb.in/paste", json=pastedata) as r:
-                if r.status == 201:
+            payload = {"files":[{"content": text, "filename": "No Title"}]}
+            headers = {"Content-Type": "application/json"}
+            async with session.post(url="https://mystb.in/api/paste", json=payload, headers=headers) as r:
+                if r.status == 200:
                     mdata = await r.json()
                     return f"https://mystb.in/{mdata['id']}"
                 else:
@@ -41,7 +42,7 @@ class BoxMenu(menus.Menu):
                 mytext += f"(This box contains {self.pkcount} colored pokemons)\n\n"
                 pokes = [poke for lst in self.results for poke in lst]
                 mytext += "\n".join(pokes)
-                mytext += "\n\n>> Box organizer by EliteBOT <<"
+                mytext += "\n\n>> Box organizer by Creed Bot <<"
                 self.pasteURL = await self.mystbin(mytext)
 
         else:
@@ -170,9 +171,10 @@ class PokemonCreed(commands.Cog):
 
     async def mystbin(self, text):
         async with aiohttp.ClientSession() as session:
-            pastedata = {"files":[{"content": text, "filename": "No Title"}]}
-            async with session.put(url="https://api.mystb.in/paste", json=pastedata) as r:
-                if r.status == 201:
+            payload = {"files":[{"content": text, "filename": "No Title"}]}
+            headers = {"Content-Type": "application/json"}
+            async with session.post(url="https://mystb.in/api/paste", json=payload, headers=headers) as r:
+                if r.status == 200:
                     mdata = await r.json()
                     return f"https://mystb.in/{mdata['id']}"
                 else:
@@ -442,7 +444,7 @@ class PokemonCreed(commands.Cog):
         rates = []
         desc = f"{self.client.emotes.get('loading','')} Computing rates...\n(This might take some time!)"
         embed = discord.Embed(description = desc)
-        embed.set_author(name = "TES Bot (Pokemon Rater)", icon_url = ctx.me.avatar)
+        embed.set_author(name = "Creed Bot (Pokemon Rater)", icon_url = ctx.me.avatar)
         m = await ctx.send(embed = embed)
         for pk in pkmn:
             tmp = pk.split('*')
@@ -477,7 +479,7 @@ class PokemonCreed(commands.Cog):
 
         if not_considered:
             embed.add_field(name = "Below pokemon(s) are not considered:", value = "\n".join(not_considered))
-        embed.set_author(name = "TES Bot (Pokemon Rater)", icon_url = ctx.me.avatar)
+        embed.set_author(name = "Creed Bot (Pokemon Rater)", icon_url = ctx.me.avatar)
         embed.set_footer(text = f'Requested by {ctx.author.name}', icon_url = ctx.author.avatar)
         await m.edit(embed = embed)
 
