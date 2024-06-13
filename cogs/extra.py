@@ -1,5 +1,6 @@
-import discord, os, mechanicalsoup, asyncio, json, aiohttp
+import discord, os, mechanicalsoup, asyncio, json, aiohttp, requests, re
 from discord.ext import commands, tasks
+from bs4 import BeautifulSoup
 from datetime import datetime
 
 class Extra(commands.Cog):
@@ -9,16 +10,6 @@ class Extra(commands.Cog):
         self.hitdownBGTask.start()
         self.promoBGTask.start()
         self.client = client
-
-    def convertNumber(self, x):
-        op = 0
-        num_map = {'K': 1000, 'M': 1000000, 'B': 1000000000, 'T': 1000000000000, 'Q': 1000000000000000}
-        if x.isdigit():
-            op = int(x)
-        else:
-            if len(x) > 1:
-                op = float(x[:-1]) * num_map.get(x[-1].upper(), 1)
-        return int(op)
 
     @property
     def get_hd_channel(self):
@@ -30,54 +21,56 @@ class Extra(commands.Cog):
       
 
     async def scrape_hd(self):
-        cred = os.environ.get('CREED_LOGIN').split(',')
-        time_dict = {}
-        browser = mechanicalsoup.StatefulBrowser()
-        browser.open('https://pokemoncreed.net/login.php')
-        browser.get_current_page()
-        browser.select_form()
-        browser["username"] = cred[0]
-        browser["password"] = cred[1]
-        response = browser.submit_selected()
-        await asyncio.sleep(1)
-        browser.open('https://pokemoncreed.net/hitdown.php')
-        data = browser.get_current_page().text
-        data = data[data.index('Time till next round:'):]
-        data = data[22:data.index('.')]
-        tmp = ''
-        for i in range(len(data) - 1):
-            if data[i].isnumeric():
-                tmp += data[i]
-            elif data[i + 1].isnumeric():
-                tmp += ':'
+        username, password = os.environ.get('CREED_LOGIN').split(',')
+        login_url = 'https://pokemoncreed.net/login.php'
+        scrape_url = 'https://pokemoncreed.net/hitdown.php'
+        
+        session = requests.Session()
+        
+        login_page = session.get(login_url)
+        soup = BeautifulSoup(login_page.content, 'html.parser')
+        
+        token = soup.find('input', {'name': 'token'})['value']
+        backuptoken = soup.find('input', {'name': 'backuptoken'})['value']
+        
+        credentials = {
+            'username': username,
+            'password': password,
+            'token': token ,
+            'backuptoken': backuptoken
+        }
+        
+        login_response = session.post(login_url, data=credentials)
+        
+        if 'logout' in login_response.text:
+            
+            scrape_response = session.get(scrape_url)
+            soup = BeautifulSoup(scrape_response.content, 'html.parser')
+        
+            countdown_span = soup.find('span', class_='fn-countdown')
+            if countdown_span:
+                time_str = countdown_span.get_text(strip=True)
             else:
-                continue
+                time_str = ""
 
-        if all(i in data for i in ['hour', 'minutes']):
-            t = tmp.split(':')
-            time_dict['h'] = int(t[0])
-            time_dict['m'] = int(t[1])
-            time_dict['s'] = int(t[2])
-
-        elif 'hour' not in data and 'minutes' in data:
-            t = tmp.split(':')
-            time_dict['h'] = 0
-            time_dict['m'] = int(t[0])
-            time_dict['s'] = int(t[1])
-
-        elif 'hour' in data and 'minutes' not in data:
-            t = tmp.split(':')
-            time_dict['h'] = int(t[0])
-            time_dict['m'] = 0
-            time_dict['s'] = int(t[1])
+            pattern = re.compile(r"(\d+)\s*hour[s]*|(\d+)\s*minute[s]*|(\d+)\s*second[s]*")
+            matches = pattern.findall(time_str)
+            
+            # Initialize the dictionary with default values
+            time_dict = {'h': 0, 'm': 0, 's': 0}
+            
+            # Iterate over the matches and fill the dictionary
+            for match in matches:
+                if match[0]:
+                    time_dict['h'] = int(match[0])
+                elif match[1]:
+                    time_dict['m'] = int(match[1])
+                elif match[2]:
+                    time_dict['s'] = int(match[2])
+            
+            return time_dict
         else:
-            t = tmp.split(':')
-            time_dict['h'] = 0
-            time_dict['m'] = 0
-            time_dict['s'] = int(tmp)
-
-        browser.open('https://pokemoncreed.net/logout.php')
-        return time_dict
+            print("Login failed!")
 
     # <# BG Task: Hitdown - Start #>
 
