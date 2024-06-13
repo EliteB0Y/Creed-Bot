@@ -68,6 +68,8 @@ class Extra(commands.Cog):
                 elif match[2]:
                     time_dict['s'] = int(match[2])
             
+            #Saving the Next HD for reference
+            self.client.next_hitdown = time_dict
             return time_dict
         else:
             print("Login failed!")
