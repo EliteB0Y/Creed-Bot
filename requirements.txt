@@ -1,5 +1,6 @@
 discord.py==2.1.1
 mechanicalsoup
+beautifulsoup4
 pymongo
 git+https://github.com/Rapptz/discord-ext-menus
 jishaku
