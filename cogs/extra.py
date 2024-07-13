@@ -114,6 +114,8 @@ class Extra(commands.Cog):
             self.client.promo = current_promo
             print(f"Promo change detected: {self.client.promo}")
             await promo_channel.send(f"@everyone New Promo: {self.client.promo}")
+        else:
+            pass
 
   
     @promoBGTask.before_loop

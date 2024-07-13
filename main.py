@@ -11,7 +11,8 @@ class MyBot(commands.Bot):
     activeQuiz = []
     disabledCogs = [] #add cogs.namehere to disable
     inviteurl = ""
-    boxrateconfig = {"base": 1, "unbase": 0.8, "other": 5}
+    boxrateconfig = {"base": 1, "unbase": 0.8, "other": 3}
+    rate_cache = {}
 
     def __init__(self, command_prefix, intents):
         super().__init__(command_prefix=command_prefix, intents=intents)

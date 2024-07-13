@@ -190,12 +190,16 @@ class PokemonCreed(commands.Cog):
     
     async def findRate(self, pokename):
         """"Fetch rate of a pokemon and returns the result"""
+        if pokename in self.client.rate_cache:
+            return self.client.rate_cache[pokename]
+        
         async with aiohttp.ClientSession() as session:
             async with session.get(f"https://pokemoncreed.net/ajax/pokedex.php?pokemon={pokename}") as r:
                 data = await r.text()
         result = json.loads(data)
         if result["success"]:
             rate = result["rating"]
+            self.client.rate_cache[pokename] = rate
         else:
             rate = ""
         return rate
@@ -260,6 +264,7 @@ class PokemonCreed(commands.Cog):
 
                 #Now the actual calculation starts
                 considered = []
+                considered_rates = {}
                 ignored = []
                 sumthese = []
                 embed.description = f"""{self.client.emotes.get('greentick', '')} Initializing ...\n
@@ -271,19 +276,42 @@ class PokemonCreed(commands.Cog):
                     for poke in output[category]:
                         if foundrates.get(poke["name"], False):
                             rate = foundrates.get(poke["name"]) * self.client.boxrateconfig[category]
-                            considered.append(f"{poke['name']} {poke['gender']} - Level: {poke['level']} [{self.human_format(rate)}]")
+                            considered.append(f"{poke['name']} {poke['gender']} - Level: {poke['level']}")
+                            considered_rates[f"{poke['name']} {poke['gender']} - Level: {poke['level']}"] = rate
                             sumthese.append(rate)
                         else:
                             ignored.append(f"{poke['name']} {poke['gender']} - Level: {poke['level']}")
+
+                cleaned_considered = {}
+                for poke in considered:
+                    if poke in cleaned_considered:
+                        cleaned_considered[poke][0] += 1
+                    else:
+                        cleaned_considered[poke] = [1, considered_rates[poke]]
+
+                cleaned_ignored = {}
+                for poke in ignored:
+                    if poke in cleaned_ignored:
+                        cleaned_ignored[poke][0] += 1
+                    else:
+                        cleaned_ignored[poke] = [1, ""]
+
+                considered_text = ""
+                for poke, details in cleaned_considered.items():
+                    considered_text += f"{details[0]}x {poke} [{self.human_format(details[0] * details [1])}] \n"
+                    
+                ignored_text = ""
+                for poke, details in cleaned_ignored.items():
+                    ignored_text += f"{details[0]}x {poke} \n"
                 
                 mytext = f"Box Rater: {uname} - #{uid}\n\n"
                 mytext += f"Total Rating: {self.human_format(sum(sumthese))}\n\n"
-                mytext += f"\n\n** Unbase: {self.client.boxrateconfig['unbase']}x Rate List |  Level 4 or less: {self.client.boxrateconfig['other']}x Rate List | Genderless/Special Genders are rated normal**\n\n"
+                mytext += f"\n\n** Unbase: {self.client.boxrateconfig['unbase']}x Rate List |  Level 4 or less: {self.client.boxrateconfig['other']}x Rate List | Genderless/Special Genders are rated normally.**\n\n"
                 mytext += "Below pokemons are considered while rating the box: \n\n"""
-                mytext += "\n".join(considered)
+                mytext += considered_text
 
                 mytext += "\n\nBelow pokemons are NOT considered: \n\n"""
-                mytext += "\n".join(ignored)
+                mytext += ignored_text
 
                 mytext += "\n\n>> Box Rater by Creed Bot <<"
 
@@ -403,6 +431,7 @@ class PokemonCreed(commands.Cog):
                 data = await r.text()
         result = json.loads(data)
         if result["success"]:
+            self.client.rate_cache[result["name"]] = result["rating"]
             embed = discord.Embed(title = result["name"],
                                   url = "https://pokemoncreed.net/search_pokemon.php?pokemon=" + result[
                                       "name"].replace(".","").replace(" ","%20") + "&trainer=&og=&ntrainer=&gender=&search=Search",
@@ -460,6 +489,7 @@ class PokemonCreed(commands.Cog):
             result = json.loads(data)
 
             if result["success"]:
+                self.client.rate_cache[result["name"]] = result["rating"]
                 pk = result["name"].strip()
                 try:
                     rate = result["rating"].replace("+", "").split(" ", 1)[0]
