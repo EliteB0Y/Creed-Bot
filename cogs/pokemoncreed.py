@@ -12,13 +12,13 @@ class BoxMenu(menus.Menu):
         async with aiohttp.ClientSession() as session:
             payload = {"files":[{"content": text, "filename": "No Title"}]}
             headers = {"Content-Type": "application/json"}
-            async with session.post(url="https://mystb.in/api/paste", json=payload, headers=headers) as r:
+            async with session.post(url="https://mystbin.abstractumbra.dev/api/paste", json=payload, headers=headers) as r:
                 if r.status == 200:
                     mdata = await r.json()
-                    return f"https://mystb.in/{mdata['id']}"
+                    return f"https://mystbin.abstractumbra.dev/{mdata['id']}"
                 else:
                     print("Oops! I couldn't upload text to mystb.in")
-                    return f"https://mystb.in/"
+                    return f"https://mystbin.abstractumbra.dev"
 
     async def cleanResults(self):
         if self.results["success"]:
@@ -173,13 +173,13 @@ class PokemonCreed(commands.Cog):
         async with aiohttp.ClientSession() as session:
             payload = {"files":[{"content": text, "filename": "No Title"}]}
             headers = {"Content-Type": "application/json"}
-            async with session.post(url="https://mystb.in/api/paste", json=payload, headers=headers) as r:
+            async with session.post(url="https://mystbin.abstractumbra.dev/api/paste", json=payload, headers=headers) as r:
                 if r.status == 200:
                     mdata = await r.json()
-                    return f"https://mystb.in/{mdata['id']}"
+                    return f"https://mystbin.abstractumbra.dev/{mdata['id']}"
                 else:
                     print("Oops! I couldn't upload text to mystb.in")
-                    return f"https://mystb.in/"
+                    return f"https://mystbin.abstractumbra.dev"
     
     def human_format(self, num, round_to=2):
         magnitude = 0
