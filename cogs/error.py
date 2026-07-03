@@ -1,5 +1,8 @@
 import discord
+import logging
 from discord.ext import commands
+
+logger = logging.getLogger("CreedBot")
 
 class CommandErrorHandler(commands.Cog):
 
@@ -58,7 +61,7 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send(embed=e)
 
         else:
-            print(f"Ignoring exception in command {ctx.command}: {str(error)}")
+            logger.error(f"Ignoring exception in command {ctx.command}: {str(error)}", exc_info=error)
 
 async def setup(bot):
     await bot.add_cog(CommandErrorHandler(bot))

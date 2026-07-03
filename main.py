@@ -1,8 +1,49 @@
 import os, discord, asyncio
+import logging
+from logging.handlers import TimedRotatingFileHandler
+import sys
 from discord.ext import commands
 from datetime import datetime
 from pymongo import MongoClient
 import secret
+
+# Configure logging
+def setup_logging():
+    # Ensure logs directory exists
+    os.makedirs('logs', exist_ok=True)
+
+    # Root logger
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.INFO)
+    
+    # Formatter
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(levelname)-8s] %(name)s: %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+    
+    # Console Handler (Stdout)
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(formatter)
+    root_logger.addHandler(console_handler)
+    
+    # File Handler (logs/bot.log, rotating weekly on Mondays)
+    file_handler = TimedRotatingFileHandler(
+        filename='logs/bot.log',
+        when='W0',  # Rotate weekly on Monday (0 = Monday)
+        interval=1,
+        encoding='utf-8',
+        backupCount=10  # Keep 10 weeks of logs
+    )
+    file_handler.setFormatter(formatter)
+    root_logger.addHandler(file_handler)
+    
+    # Adjust discord.py logging levels to minimize verbosity
+    logging.getLogger('discord').setLevel(logging.INFO)
+    logging.getLogger('discord.http').setLevel(logging.WARNING)
+
+setup_logging()
+logger = logging.getLogger('CreedBot')
 
 class MyBot(commands.Bot):
     #Declare Bot variables here (can be accessed in cogs using self.client.variable)
@@ -63,9 +104,9 @@ async def create_db_connection():
     try:
         mclient = MongoClient(os.environ.get('mongodb'))
         client.db = mclient.get_database("my_db")
-        print("Database connection successful!")
-    except:
-        print("Database connection failed!")
+        logger.info("Database connection successful!")
+    except Exception as e:
+        logger.error("Database connection failed!", exc_info=e)
 
 
 @client.tree.command(name="ping", description="shows the bot latency.")
@@ -76,7 +117,7 @@ async def _ping(interaction: discord.Interaction):
 async def on_ready():
     await client.change_presence(status = discord.Status.idle, activity = discord.Game('Pokemon Creed!'))
     #await client.change_presence(status = discord.Status.dnd, activity = discord.Game('with EliteBOY'))
-    print('The Bot is online.')
+    logger.info('The Bot is online.')
 
 @client.event
 async def on_message(message):
@@ -111,7 +152,7 @@ async def main():
         for extension in extensions:
             if extension not in client.disabledCogs:
                 await client.load_extension(extension)
-                print(f'Successfullly loaded [{extension}] extension!')
+                logger.info(f'Successfullly loaded [{extension}] extension!')
         await client.start(os.environ.get('TOKEN'))
 
 asyncio.run(main())

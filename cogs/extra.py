@@ -1,7 +1,10 @@
 import discord, os, mechanicalsoup, asyncio, json, aiohttp, requests, re
+import logging
 from discord.ext import commands, tasks
 from bs4 import BeautifulSoup
 from datetime import datetime
+
+logger = logging.getLogger("CreedBot")
 
 class Extra(commands.Cog):
     """Extra Features for Premium Servers!"""
@@ -72,7 +75,7 @@ class Extra(commands.Cog):
             self.client.next_hitdown = time_dict
             return time_dict
         else:
-            print("Login failed!")
+            logger.error("Login failed!")
 
     # <# BG Task: Hitdown - Start #>
 
@@ -87,7 +90,7 @@ class Extra(commands.Cog):
             await hd_channel.send('@everyone, It\'s Hitdown time!')
             await asyncio.sleep(300)
         except:
-            print(f'Restarting Hitdown Nootification!')
+            logger.info('Restarting Hitdown Nootification!')
             await asyncio.sleep(120)
             self.hitdownBGTask.restart()
 
@@ -109,10 +112,10 @@ class Extra(commands.Cog):
         current_promo = result["name"]
         if self.client.promo == "":
             self.client.promo = current_promo
-            print(f"Promo set as {self.client.promo}")
+            logger.info(f"Promo set as {self.client.promo}")
         elif self.client.promo != current_promo:
             self.client.promo = current_promo
-            print(f"Promo change detected: {self.client.promo}")
+            logger.info(f"Promo change detected: {self.client.promo}")
             await promo_channel.send(f"@everyone New Promo: {self.client.promo}")
         else:
             pass

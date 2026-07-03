@@ -1,5 +1,8 @@
 import discord, mechanicalsoup, asyncio, json, aiohttp
+import logging
 from discord.ext import commands, menus
+
+logger = logging.getLogger("CreedBot")
 
 class BoxMenu(menus.Menu):
     def __init__(self, ctx, results):
@@ -17,7 +20,7 @@ class BoxMenu(menus.Menu):
                     mdata = await r.json()
                     return f"https://pastey.gg/{mdata['id']}"
                 else:
-                    print("Oops! I couldn't upload text to pastey.gg")
+                    logger.warning("Oops! I couldn't upload text to pastey.gg")
                     return f"https://pastey.gg/"
 
     async def cleanResults(self):
@@ -178,7 +181,7 @@ class PokemonCreed(commands.Cog):
                     mdata = await r.json()
                     return f"https://pastey.gg/{mdata['id']}"
                 else:
-                    print("Oops! I couldn't upload text to pastey.gg")
+                    logger.warning("Oops! I couldn't upload text to pastey.gg")
                     return f"https://pastey.gg/"
     
     def human_format(self, num, round_to=2):
