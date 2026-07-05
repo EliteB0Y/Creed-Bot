@@ -88,8 +88,8 @@ jobs:
                   - ./logs:/app/logs
             COMPEOF
 
-            # Log in to GHCR, pull latest image, and restart
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            # Log in to GHCR with PAT (required for private packages)
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
             docker compose pull
             docker compose up -d --force-recreate
             docker image prune -f
