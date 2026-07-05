@@ -1,4 +1,6 @@
 secret.py
 __pycache__
 .venv
+.vscode
 logs
+.env

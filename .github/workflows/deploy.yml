@@ -1,0 +1,97 @@
+name: Build & Deploy Creed-Bot
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+# Prevent duplicate runs when a PR is merged (push + PR closed both fire)
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/creed-bot
+
+jobs:
+  # ─── Job 1: Build Docker image and push to GHCR ───
+  build-and-push:
+    runs-on: ubuntu-latest
+    # Only run on push to main, or when a PR is merged (not just closed)
+    if: >
+      github.event_name == 'push' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+  # ─── Job 2: Deploy to Oracle VM (requires manual approval) ───
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    environment: production  # Requires manual approval in GitHub UI
+
+    steps:
+      - name: Deploy to Oracle VM
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.ORACLE_VM_HOST }}
+          username: ubuntu
+          key: ${{ secrets.ORACLE_VM_SSH_KEY }}
+          script: |
+            set -e
+
+            DEPLOY_DIR="/home/ubuntu/creed-bot"
+            mkdir -p "$DEPLOY_DIR"
+            cd "$DEPLOY_DIR"
+
+            # Write .env file from GitHub Secrets
+            cat > .env << 'ENVEOF'
+            TOKEN=${{ secrets.TOKEN }}
+            MONGODB=${{ secrets.MONGODB }}
+            CREED_LOGIN=${{ secrets.CREED_LOGIN }}
+            ENVEOF
+
+            # Ensure docker-compose.yml exists
+            cat > docker-compose.yml << 'COMPEOF'
+            services:
+              creed-bot:
+                image: ghcr.io/${{ github.repository_owner }}/creed-bot:latest
+                container_name: creed-bot
+                restart: unless-stopped
+                env_file:
+                  - .env
+                volumes:
+                  - ./logs:/app/logs
+            COMPEOF
+
+            # Log in to GHCR, pull latest image, and restart
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker compose pull
+            docker compose up -d --force-recreate
+            docker image prune -f
+
+            echo "✅ Deployment complete!"

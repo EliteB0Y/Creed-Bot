@@ -1,0 +1,9 @@
+services:
+  creed-bot:
+    image: ghcr.io/eliteb0y/creed-bot:latest
+    container_name: creed-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs

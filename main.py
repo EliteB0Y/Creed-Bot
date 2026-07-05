@@ -5,7 +5,6 @@ import sys
 from discord.ext import commands
 from datetime import datetime
 from pymongo import MongoClient
-import secret
 
 # Configure logging
 def setup_logging():
@@ -102,7 +101,7 @@ client = MyBot(command_prefix = get_prefix, intents = discord.Intents.all())
 #Connect to the database
 async def create_db_connection():
     try:
-        mclient = MongoClient(os.environ.get('mongodb'))
+        mclient = MongoClient(os.environ.get('MONGODB'))
         client.db = mclient.get_database("my_db")
         logger.info("Database connection successful!")
     except Exception as e:
