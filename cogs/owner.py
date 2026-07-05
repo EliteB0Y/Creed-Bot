@@ -1,4 +1,5 @@
 import discord
+import json
 import logging
 from discord.ext import commands
 from bson import ObjectId
@@ -21,58 +22,50 @@ class Owner(commands.Cog):
     #  Helper: Format documents for display
     # ==========================================
 
-    def _format_docs(self, docs, max_chars=3800):
-        """Format a list of MongoDB documents into a readable string."""
+    def _format_docs(self, docs, max_chars=1800):
+        """Format a list of MongoDB documents into a readable code block."""
         if not docs:
-            return "No documents found."
-        lines = []
-        for i, doc in enumerate(docs, 1):
-            # Convert ObjectId to string for display
+            return "`No documents found.`"
+        formatted = []
+        for doc in docs:
             if "_id" in doc and isinstance(doc["_id"], ObjectId):
                 doc["_id"] = str(doc["_id"])
-            lines.append(f"**{i}.** ```json\n{doc}\n```")
-        result = "\n".join(lines)
-        if len(result) > max_chars:
-            result = result[:max_chars] + "\n... (truncated)"
-        return result
+            formatted.append(doc)
+        output = json.dumps(formatted, indent=2, default=str)
+        if len(output) > max_chars:
+            output = output[:max_chars] + "\n... (truncated)"
+        return f"```json\n{output}\n```"
 
     # ==========================================
     #  Command Group: MongoDB
     # ==========================================
 
-    @commands.group(invoke_without_command=True)
+    @commands.group(name="mongodb", aliases=["mdb"], invoke_without_command=True)
     async def mongodb(self, ctx):
         """Interact with the MongoDB database."""
-        e = discord.Embed(
-            title="MongoDB Commands",
-            description=(
-                "Use the following subcommands:\n\n"
-                f"`{ctx.prefix}mongodb collections` — List all collections\n"
-                f"`{ctx.prefix}mongodb find <collection> [filter]` — Find documents\n"
-                f"`{ctx.prefix}mongodb insert <collection> <document>` — Insert a document\n"
-                f"`{ctx.prefix}mongodb update <collection> <filter> <update>` — Update documents\n"
-                f"`{ctx.prefix}mongodb delete <collection> <filter>` — Delete documents\n"
-                f"`{ctx.prefix}mongodb drop <collection>` — Drop an entire collection\n"
-                f"`{ctx.prefix}mongodb count <collection> [filter]` — Count documents"
-            ),
-            color=discord.Color.blurple()
+        p = ctx.prefix
+        msg = (
+            f"**MongoDB Commands**\n"
+            f"```\n"
+            f"{p}mdb collections        — List all collections\n"
+            f"{p}mdb find <col> [query] — Find documents\n"
+            f"{p}mdb insert <col> <doc> — Insert a document\n"
+            f"{p}mdb update <col> <f> <u>— Update documents\n"
+            f"{p}mdb delete <col> <f>   — Delete documents\n"
+            f"{p}mdb drop <col>         — Drop a collection\n"
+            f"{p}mdb count <col> [query]— Count documents\n"
+            f"```"
         )
-        await ctx.send(embed=e)
+        await ctx.send(msg)
 
     @mongodb.command(name="collections", aliases=["cols", "list"])
     async def mongodb_collections(self, ctx):
         """List all collections in the database."""
         collections = self.client.db.list_collection_names()
         if not collections:
-            desc = "No collections found."
-        else:
-            desc = "\n".join(f"`{i}.` **{name}**" for i, name in enumerate(collections, 1))
-        e = discord.Embed(
-            title="Collections",
-            description=desc,
-            color=discord.Color.blurple()
-        )
-        await ctx.send(embed=e)
+            return await ctx.send("`No collections found.`")
+        listing = "\n".join(f"  {i}. {name}" for i, name in enumerate(collections, 1))
+        await ctx.send(f"**Collections** ({len(collections)})\n```\n{listing}\n```")
 
     @mongodb.command(name="find", aliases=["read", "get"])
     async def mongodb_find(self, ctx, collection: str, *, filter_json: str = "{}"):
@@ -84,13 +77,8 @@ class Owner(commands.Cog):
 
         col = self.client.db.get_collection(collection)
         docs = list(col.find(query).limit(20))
-        e = discord.Embed(
-            title=f"Find — {collection}",
-            description=self._format_docs(docs),
-            color=discord.Color.green()
-        )
-        e.set_footer(text=f"Showing up to 20 results | Filter: {filter_json}")
-        await ctx.send(embed=e)
+        header = f"**Find — {collection}** | {len(docs)} result(s) | Filter: `{filter_json}`"
+        await ctx.send(f"{header}\n{self._format_docs(docs)}")
 
     @mongodb.command(name="insert", aliases=["add", "create"])
     async def mongodb_insert(self, ctx, collection: str, *, document_json: str):
@@ -102,12 +90,10 @@ class Owner(commands.Cog):
 
         col = self.client.db.get_collection(collection)
         result = col.insert_one(document)
-        e = discord.Embed(
-            title=f"Insert — {collection}",
-            description=f"{self.client.emotes.get('greentick', '✅')} Inserted document with ID: `{result.inserted_id}`",
-            color=discord.Color.green()
+        await ctx.send(
+            f"{self.client.emotes.get('greentick', '✅')} **Insert — {collection}**\n"
+            f"Inserted document with ID: `{result.inserted_id}`"
         )
-        await ctx.send(embed=e)
 
     @mongodb.command(name="update", aliases=["edit", "modify"])
     async def mongodb_update(self, ctx, collection: str, filter_json: str, *, update_json: str):
@@ -124,15 +110,10 @@ class Owner(commands.Cog):
 
         col = self.client.db.get_collection(collection)
         result = col.update_many(query, update)
-        e = discord.Embed(
-            title=f"Update — {collection}",
-            description=(
-                f"{self.client.emotes.get('greentick', '✅')} "
-                f"Matched **{result.matched_count}** | Modified **{result.modified_count}**"
-            ),
-            color=discord.Color.green()
+        await ctx.send(
+            f"{self.client.emotes.get('greentick', '✅')} **Update — {collection}**\n"
+            f"Matched: `{result.matched_count}` | Modified: `{result.modified_count}`"
         )
-        await ctx.send(embed=e)
 
     @mongodb.command(name="delete", aliases=["remove", "del"])
     async def mongodb_delete(self, ctx, collection: str, *, filter_json: str):
@@ -163,12 +144,10 @@ class Owner(commands.Cog):
             return await ctx.send(f"{self.client.emotes.get('timer', '⏱️')} Delete cancelled — timed out.")
 
         result = col.delete_many(query)
-        e = discord.Embed(
-            title=f"Delete — {collection}",
-            description=f"{self.client.emotes.get('greentick', '✅')} Deleted **{result.deleted_count}** document(s).",
-            color=discord.Color.red()
+        await ctx.send(
+            f"{self.client.emotes.get('greentick', '✅')} **Delete — {collection}**\n"
+            f"Deleted `{result.deleted_count}` document(s)."
         )
-        await ctx.send(embed=e)
 
     @mongodb.command(name="drop")
     async def mongodb_drop(self, ctx, *, collection: str):
@@ -177,7 +156,7 @@ class Owner(commands.Cog):
             return await ctx.send(f"{self.client.emotes.get('redtick', '❌')} Collection `{collection}` does not exist.")
 
         confirm_msg = await ctx.send(
-            f"🚨 **WARNING**: This will permanently drop the entire `{collection}` collection. React ✅ to confirm."
+            f"🚨 **WARNING**: This will permanently drop `{collection}`. React ✅ to confirm."
         )
         await confirm_msg.add_reaction("✅")
 
@@ -190,12 +169,10 @@ class Owner(commands.Cog):
             return await ctx.send(f"{self.client.emotes.get('timer', '⏱️')} Drop cancelled — timed out.")
 
         self.client.db.drop_collection(collection)
-        e = discord.Embed(
-            title=f"Drop — {collection}",
-            description=f"{self.client.emotes.get('greentick', '✅')} Collection `{collection}` has been dropped.",
-            color=discord.Color.red()
+        await ctx.send(
+            f"{self.client.emotes.get('greentick', '✅')} **Drop — {collection}**\n"
+            f"Collection `{collection}` has been dropped."
         )
-        await ctx.send(embed=e)
 
     @mongodb.command(name="count")
     async def mongodb_count(self, ctx, collection: str, *, filter_json: str = "{}"):
@@ -207,13 +184,10 @@ class Owner(commands.Cog):
 
         col = self.client.db.get_collection(collection)
         count = col.count_documents(query)
-        e = discord.Embed(
-            title=f"Count — {collection}",
-            description=f"**{count:,}** document(s) match the filter.",
-            color=discord.Color.blurple()
+        await ctx.send(
+            f"**Count — {collection}**\n"
+            f"`{count:,}` document(s) | Filter: `{filter_json}`"
         )
-        e.set_footer(text=f"Filter: {filter_json}")
-        await ctx.send(embed=e)
 
     # ==========================================
     #  Command: Emit (re-process a message)
