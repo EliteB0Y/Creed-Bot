@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/creed-bot
+  IMAGE_NAME: ghcr.io/eliteb0y/creed-bot
 
 jobs:
   # ─── Job 1: Build Docker image and push to GHCR ───
@@ -79,7 +79,7 @@ jobs:
             cat > docker-compose.yml << 'COMPEOF'
             services:
               creed-bot:
-                image: ghcr.io/${{ github.repository_owner }}/creed-bot:latest
+                image: ghcr.io/eliteb0y/creed-bot:latest
                 container_name: creed-bot
                 restart: unless-stopped
                 env_file:
