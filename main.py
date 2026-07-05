@@ -146,7 +146,7 @@ os.environ["JISHAKU_HIDE"]="True"
 
 async def main():
     await create_db_connection()
-    extensions = ['cogs.pokemoncreed', 'cogs.basic', 'cogs.games', 'cogs.extra', 'cogs.error', 'jishaku']
+    extensions = ['cogs.pokemoncreed', 'cogs.basic', 'cogs.games', 'cogs.extra', 'cogs.error', 'cogs.owner', 'jishaku']
     async with client:
         for extension in extensions:
             if extension not in client.disabledCogs:
