@@ -75,7 +75,7 @@ class Extra(commands.Cog):
             self.client.next_hitdown = time_dict
             return time_dict
         else:
-            logger.error("Login failed!")
+            logger.error("Creed login failed — hitdown scrape aborted.")
 
     # <# BG Task: Hitdown - Start #>
 
@@ -86,17 +86,20 @@ class Extra(commands.Cog):
         try:
             t = await self.scrape_hd()
             sec = (t['h'] * 60 * 60) + (t['m'] * 60) + t['s'] - 100
+            logger.debug("Hitdown: next alert in %ss.", sec)
             await asyncio.sleep(sec)
             await hd_channel.send('@everyone, It\'s Hitdown time!')
             await asyncio.sleep(300)
-        except:
-            logger.info('Restarting Hitdown Nootification!')
+        except Exception as e:
+            logger.warning("Hitdown task error, restarting in 120s.", exc_info=e)
             await asyncio.sleep(120)
             self.hitdownBGTask.restart()
 
     @hitdownBGTask.before_loop
     async def before_hitdownBGTask(self):
+        logger.info("Hitdown BG task waiting for bot to be ready.")
         await self.client.wait_until_ready()
+        logger.info("Hitdown BG task started.")
 
     # <# BG Task: Hitdown - End #>
 
@@ -105,25 +108,31 @@ class Extra(commands.Cog):
     @tasks.loop(seconds = 10)
     async def promoBGTask(self):
         promo_channel = self.get_promo_channel
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://pokemoncreed.net/ajax/pokedex.php?pokemon=promo") as r:
-                data = await r.text()
-        result = json.loads(data)
-        current_promo = result["name"]
-        if self.client.promo == "":
-            self.client.promo = current_promo
-            logger.info(f"Promo set as {self.client.promo}")
-        elif self.client.promo != current_promo:
-            self.client.promo = current_promo
-            logger.info(f"Promo change detected: {self.client.promo}")
-            await promo_channel.send(f"@everyone New Promo: {self.client.promo}")
-        else:
-            pass
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"https://pokemoncreed.net/ajax/pokedex.php?pokemon=promo") as r:
+                    if r.status != 200:
+                        logger.warning("Promo check failed: HTTP %s", r.status)
+                        return
+                    data = await r.text()
+            result = json.loads(data)
+            current_promo = result["name"]
+            if self.client.promo == "":
+                self.client.promo = current_promo
+                logger.info(f"Promo set as {self.client.promo}")
+            elif self.client.promo != current_promo:
+                self.client.promo = current_promo
+                logger.info(f"Promo change detected: {self.client.promo}")
+                await promo_channel.send(f"@everyone New Promo: {self.client.promo}")
+        except Exception as e:
+            logger.exception("Promo BG task error.")
 
   
     @promoBGTask.before_loop
     async def before_promoBGTask(self):
+        logger.info("Promo BG task waiting for bot to be ready.")
         await self.client.wait_until_ready()
+        logger.info("Promo BG task started.")
 
 
 async def setup(client):

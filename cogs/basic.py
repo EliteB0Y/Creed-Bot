@@ -1,5 +1,8 @@
 import discord, random, asyncio, io
+import logging
 from discord.ext import commands
+
+logger = logging.getLogger("CreedBot")
 
 class Basic(commands.Cog):
 
@@ -10,6 +13,7 @@ class Basic(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_join(self, guild):
+        logger.info("Joined guild: %s (%s) | Members: %s", guild.name, guild.id, guild.member_count)
         prefixes = self.client.db.get_collection("prefixes_cb")
         p = prefixes.find_one({"serverid": guild.id})
         if not p:
@@ -21,6 +25,7 @@ class Basic(commands.Cog):
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
+        logger.info("Left guild: %s (%s)", guild.name, guild.id)
         prefixes = self.client.db.get_collection("prefixes_cb")
         p = prefixes.find_one({"serverid": guild.id})
         if p:
@@ -98,7 +103,7 @@ class Basic(commands.Cog):
             _expression = expression.replace(" ", "").replace("^", "**").replace(",","")
             try:
                 result = eval(_expression)
-            except:
+            except Exception:
                 result = "invalid"
             if result != "invalid":
                 msg = f"{self.client.emotes.get('greentick','')} `{expression} = {result:,}`"

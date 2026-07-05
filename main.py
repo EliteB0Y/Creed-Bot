@@ -132,7 +132,19 @@ async def _ping(interaction: discord.Interaction):
 async def on_ready():
     await client.change_presence(status = discord.Status.idle, activity = discord.Game('Pokemon Creed!'))
     #await client.change_presence(status = discord.Status.dnd, activity = discord.Game('with EliteBOY'))
-    logger.info('The Bot is online.')
+    logger.info('The Bot is online. Guilds: %s | Users: %s', len(client.guilds), len(client.users))
+
+@client.event
+async def on_command(ctx):
+    logger.info(
+        "Command: %s | User: %s (%s) | Guild: %s (%s) | Channel: %s",
+        ctx.command.qualified_name,
+        ctx.author,
+        ctx.author.id,
+        ctx.guild.name if ctx.guild else "DM",
+        ctx.guild.id if ctx.guild else "N/A",
+        ctx.channel.id,
+    )
 
 @client.event
 async def on_message(message):
@@ -180,8 +192,11 @@ async def main():
 
         for extension in extensions:
             if extension not in client.disabledCogs:
-                await client.load_extension(extension)
-                logger.info(f'Successfullly loaded [{extension}] extension!')
+                try:
+                    await client.load_extension(extension)
+                    logger.info(f'Successfully loaded [{extension}] extension.')
+                except Exception as e:
+                    logger.error(f'Failed to load [{extension}] extension!', exc_info=e)
         await client.start(os.environ.get('TOKEN'))
 
 asyncio.run(main())

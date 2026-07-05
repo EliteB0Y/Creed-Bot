@@ -20,7 +20,7 @@ class BoxMenu(menus.Menu):
                     mdata = await r.json()
                     return f"https://pastey.gg/{mdata['id']}"
                 else:
-                    logger.warning("Oops! I couldn't upload text to pastey.gg")
+                    logger.warning("pastey.gg upload failed: HTTP %s", r.status)
                     return f"https://pastey.gg/"
 
     async def cleanResults(self):
@@ -152,7 +152,8 @@ class BoxMenu(menus.Menu):
                     await self.message.edit(embed=self.getPagewiseDetails(self.pg))
                 else:
                     raise Exception
-            except:
+            except Exception as e:
+                logger.debug("Invalid page number input: %s", e)
                 await self.message.channel.send('`Invalid page number.`', delete_after=3)
 
 
@@ -181,7 +182,7 @@ class PokemonCreed(commands.Cog):
                     mdata = await r.json()
                     return f"https://pastey.gg/{mdata['id']}"
                 else:
-                    logger.warning("Oops! I couldn't upload text to pastey.gg")
+                    logger.warning("pastey.gg upload failed: HTTP %s", r.status)
                     return f"https://pastey.gg/"
     
     def human_format(self, num, round_to=2):
@@ -196,16 +197,23 @@ class PokemonCreed(commands.Cog):
         if pokename in self.client.rate_cache:
             return self.client.rate_cache[pokename]
         
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://pokemoncreed.net/ajax/pokedex.php?pokemon={pokename}") as r:
-                data = await r.text()
-        result = json.loads(data)
-        if result["success"]:
-            rate = result["rating"]
-            self.client.rate_cache[pokename] = rate
-        else:
-            rate = ""
-        return rate
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f"https://pokemoncreed.net/ajax/pokedex.php?pokemon={pokename}") as r:
+                    if r.status != 200:
+                        logger.warning("Pokedex API failed for '%s': HTTP %s", pokename, r.status)
+                        return ""
+                    data = await r.text()
+            result = json.loads(data)
+            if result["success"]:
+                rate = result["rating"]
+                self.client.rate_cache[pokename] = rate
+            else:
+                rate = ""
+            return rate
+        except Exception as e:
+            logger.error("findRate failed for '%s'", pokename, exc_info=e)
+            return ""
     
     @commands.command(aliases = ["ratebox"])
     @commands.cooldown(1, 120, commands.BucketType.user)
@@ -262,8 +270,8 @@ class PokemonCreed(commands.Cog):
                     try:
                         pkrate = self.convertNumber(pkrate.split(" ", 1)[0])
                         foundrates[poke] = pkrate
-                    except:
-                        pass
+                    except (ValueError, KeyError) as e:
+                        logger.warning("Could not parse rate for '%s': %s", poke, e)
 
                 #Now the actual calculation starts
                 considered = []
@@ -409,7 +417,7 @@ class PokemonCreed(commands.Cog):
         levelTOexp = levelTOexp.replace(",","")
         try:
             level, exp = levelTOexp.replace(" ","").split("to")
-        except:
+        except ValueError:
             await ctx.send("Invalid inputs! Use `exp train <level> to <exp>`", delete_after=5)
             return
         
@@ -500,6 +508,7 @@ class PokemonCreed(commands.Cog):
                     considered.append(f"{pk} - ({result['rating']}) [x{c}]")
                     rates.append(rate * c)
                 except Exception as e:
+                    logger.warning("Could not parse rate for '%s': %s", pk, e)
                     not_considered.append(pk)
             else:
                 not_considered.append(pk)

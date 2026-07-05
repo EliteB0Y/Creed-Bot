@@ -1,6 +1,9 @@
 import discord, json, asyncio, random
+import logging
 from discord.ext import commands
 from datetime import datetime
+
+logger = logging.getLogger("CreedBot")
 
 class Games(commands.Cog):
 
@@ -115,7 +118,7 @@ class Games(commands.Cog):
             return user == ctx.author and str(reaction.emoji) == "\U0001f44d\U0001f3fb"
         try:
             reaction, user = await self.client.wait_for('reaction_add', timeout=20, check=check)
-        except:
+        except asyncio.TimeoutError:
             embed.description += "\nYour seconds counting sucks for real! 😂"
             await x.edit(embed = embed)
         else:
@@ -208,7 +211,7 @@ class Games(commands.Cog):
         else:
             try:
                 points_to_win = int(points_to_win)
-            except:
+            except (ValueError, TypeError):
                 _ = await ctx.send("Invalid input for `points_to_win` parameter.")
                 return
 

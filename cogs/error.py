@@ -61,7 +61,16 @@ class CommandErrorHandler(commands.Cog):
             await ctx.send(embed=e)
 
         else:
-            logger.error(f"Ignoring exception in command {ctx.command}: {str(error)}", exc_info=error)
+            logger.error(
+                "Unhandled error in '%s' by %s (%s) in guild %s (%s): %s",
+                ctx.command.qualified_name,
+                ctx.author,
+                ctx.author.id,
+                ctx.guild.name if ctx.guild else "DM",
+                ctx.guild.id if ctx.guild else "N/A",
+                error,
+                exc_info=error,
+            )
 
 async def setup(bot):
     await bot.add_cog(CommandErrorHandler(bot))
