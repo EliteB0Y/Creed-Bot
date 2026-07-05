@@ -1,4 +1,4 @@
-import os, discord, asyncio
+import os, discord, asyncio, signal
 import logging
 from logging.handlers import TimedRotatingFileHandler
 import sys
@@ -79,6 +79,22 @@ class MyBot(commands.Bot):
         self._cache_block = [r['userid'] for r in self.db.blocklist.find()]
         return "`Updated the cache`"
 
+    async def close(self):
+        """Graceful shutdown: backup rate_cache to MongoDB before closing."""
+        try:
+            if hasattr(self, 'db') and self.rate_cache:
+                self.db.backups.update_one(
+                    {"_id": "rate_cache"},
+                    {"$set": {"data": self.rate_cache}},
+                    upsert=True
+                )
+                logger.info(f"Backed up rate_cache ({len(self.rate_cache)} entries) to MongoDB.")
+            else:
+                logger.info("No rate_cache data to back up.")
+        except Exception as e:
+            logger.error("Failed to backup rate_cache!", exc_info=e)
+        await super().close()
+
     @property
     def get_time(self):
         return datetime.now().strftime("%d %b, %Y | %I:%M:%S %p")
@@ -146,8 +162,22 @@ os.environ["JISHAKU_HIDE"]="True"
 
 async def main():
     await create_db_connection()
+
+    # Restore rate_cache from MongoDB backup
+    backup = client.db.backups.find_one({"_id": "rate_cache"})
+    if backup and "data" in backup:
+        client.rate_cache = backup["data"]
+        logger.info(f"Restored rate_cache ({len(client.rate_cache)} entries) from MongoDB backup.")
+    else:
+        logger.info("No rate_cache backup found — starting with empty cache.")
+
     extensions = ['cogs.pokemoncreed', 'cogs.basic', 'cogs.games', 'cogs.extra', 'cogs.error', 'cogs.owner', 'jishaku']
     async with client:
+        # Register signal handlers for graceful shutdown
+        loop = asyncio.get_event_loop()
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            loop.add_signal_handler(sig, lambda: asyncio.ensure_future(client.close()))
+
         for extension in extensions:
             if extension not in client.disabledCogs:
                 await client.load_extension(extension)
