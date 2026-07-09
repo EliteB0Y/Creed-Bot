@@ -271,7 +271,9 @@ class PokemonCreed(commands.Cog):
                         pkrate = self.convertNumber(pkrate.split(" ", 1)[0])
                         foundrates[poke] = pkrate
                     except (ValueError, KeyError) as e:
-                        logger.warning("Could not parse rate for '%s': %s", poke, e)
+                        #Silently ignore the convertion error.
+                        pass
+                        #logger.warning("Could not parse rate for '%s': %s", poke, e)
 
                 #Now the actual calculation starts
                 considered = []
