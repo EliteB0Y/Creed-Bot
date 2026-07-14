@@ -557,16 +557,16 @@ class PokemonCreed(commands.Cog):
             raise commands.CheckFailure("This command is not available in this server.")
 
         p = ctx.prefix
-        embed = discord.Embed(title="Collection Commands:", color=discord.Color.dark_gold())
-        embed.description = (
+        msg = (
+            f"**Collection Commands:**\n"
             f"```\n"
             f"{p}collection view [@user|id] - View a user's collection\n"
             f"{p}collection set <text>      - Set your collection\n"
             f"{p}collection clear           - Clear your collection\n"
-            f"```"
+            f"```\n"
+            f"Alias: `{p}cl` | do `{p}help collection <subcommand>` for more info"
         )
-        embed.set_footer(text=f"Alias: {p}cl | do {p}help collection <subcommand> for more info")
-        await ctx.send(embed=embed)
+        await ctx.send(msg)
 
     @collection.before_invoke
     async def collection_before_invoke(self, ctx):
@@ -595,13 +595,6 @@ class PokemonCreed(commands.Cog):
         embed = discord.Embed(color=discord.Color.dark_gold())
         embed.set_author(name=f"{target.display_name}'s Collection", icon_url=target.display_avatar.url)
         embed.description = record["text"]
-
-        footer_parts = []
-        if "created_at" in record:
-            footer_parts.append(f"Created: {record['created_at']}")
-        if "updated_at" in record:
-            footer_parts.append(f"Updated: {record['updated_at']}")
-        embed.set_footer(text=" | ".join(footer_parts) if footer_parts else "Collection")
 
         logger.info("collection view: %s (%s) viewed collection of %s (%s)", ctx.author, ctx.author.id, target, target.id)
         await ctx.send(embed=embed)
