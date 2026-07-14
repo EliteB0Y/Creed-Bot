@@ -1,4 +1,5 @@
 import discord, mechanicalsoup, asyncio, json, aiohttp
+from datetime import datetime, timezone
 import logging
 from discord.ext import commands, menus
 
@@ -526,6 +527,145 @@ class PokemonCreed(commands.Cog):
         embed.set_author(name = "Creed Bot (Pokemon Rater)", icon_url = ctx.me.avatar)
         embed.set_footer(text = f'Requested by {ctx.author.name}', icon_url = ctx.author.avatar)
         await m.edit(embed = embed)
+
+    # ==========================================
+    #  Collection Commands (Guild-restricted)
+    # ==========================================
+
+    async def _resolve_user(self, ctx, user_input):
+        """Resolve a user from mention, name, or raw ID."""
+        if user_input is None:
+            return ctx.author
+        try:
+            return await commands.MemberConverter().convert(ctx, user_input)
+        except commands.MemberNotFound:
+            pass
+        try:
+            return await commands.UserConverter().convert(ctx, user_input)
+        except commands.UserNotFound:
+            pass
+        try:
+            return await self.client.fetch_user(int(user_input))
+        except (ValueError, discord.NotFound, discord.HTTPException):
+            return None
+
+    @commands.group(aliases=['cl'], invoke_without_command=True)
+    @commands.guild_only()
+    async def collection(self, ctx):
+        """Collection commands for Pokemon Creed users."""
+        if ctx.guild.id not in self.client.collection_allowed_guilds:
+            raise commands.CheckFailure("This command is not available in this server.")
+
+        p = ctx.prefix
+        embed = discord.Embed(title="Collection Commands:", color=discord.Color.dark_gold())
+        embed.description = (
+            f"```\n"
+            f"{p}collection view [@user|id] - View a user's collection\n"
+            f"{p}collection set <text>      - Set your collection\n"
+            f"{p}collection clear           - Clear your collection\n"
+            f"```"
+        )
+        embed.set_footer(text=f"Alias: {p}cl | do {p}help collection <subcommand> for more info")
+        await ctx.send(embed=embed)
+
+    @collection.before_invoke
+    async def collection_before_invoke(self, ctx):
+        """Guild check applied before any collection subcommand runs."""
+        if ctx.guild.id not in self.client.collection_allowed_guilds:
+            logger.warning("Collection command blocked in guild %s (%s) by %s (%s)", ctx.guild.name, ctx.guild.id, ctx.author, ctx.author.id)
+            raise commands.CheckFailure("This command is not available in this server.")
+
+    @collection.command(name="view", aliases=["show"])
+    async def collection_view(self, ctx, *, user=None):
+        """Displays the collection of a user. Accepts @mention or user ID."""
+        target = await self._resolve_user(ctx, user)
+        if target is None:
+            logger.debug("collection view: user not found for input '%s' by %s (%s)", user, ctx.author, ctx.author.id)
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `User not found.`")
+            return
+
+        col = self.client.db.get_collection("collections")
+        record = col.find_one({"user_id": target.id})
+
+        if not record:
+            logger.info("collection view: no collection found for %s (%s), requested by %s (%s)", target, target.id, ctx.author, ctx.author.id)
+            await ctx.send(f"`{target.display_name} has not set a collection yet.`")
+            return
+
+        embed = discord.Embed(color=discord.Color.dark_gold())
+        embed.set_author(name=f"{target.display_name}'s Collection", icon_url=target.display_avatar.url)
+        embed.description = record["text"]
+
+        footer_parts = []
+        if "created_at" in record:
+            footer_parts.append(f"Created: {record['created_at']}")
+        if "updated_at" in record:
+            footer_parts.append(f"Updated: {record['updated_at']}")
+        embed.set_footer(text=" | ".join(footer_parts) if footer_parts else "Collection")
+
+        logger.info("collection view: %s (%s) viewed collection of %s (%s)", ctx.author, ctx.author.id, target, target.id)
+        await ctx.send(embed=embed)
+
+    @collection.command(name="set", aliases=["update"])
+    async def collection_set(self, ctx, *, text: str):
+        """Sets or updates your collection text. (Max 4096 characters)"""
+        if len(text) > 4096:
+            await ctx.send(
+                f"{self.client.emotes.get('redtick', '❌')} "
+                f"`Collection text is too long! ({len(text)}/4096 characters)`"
+            )
+            return
+
+        col = self.client.db.get_collection("collections")
+        now = datetime.now(timezone.utc).strftime("%d %b, %Y | %I:%M:%S %p UTC")
+
+        existing = col.find_one({"user_id": ctx.author.id})
+
+        update_data = {
+            "$set": {
+                "user_id": ctx.author.id,
+                "text": text,
+                "updated_at": now
+            }
+        }
+        if not existing:
+            update_data["$set"]["created_at"] = now
+
+        col.update_one({"user_id": ctx.author.id}, update_data, upsert=True)
+        action = "created" if not existing else "updated"
+        logger.info("collection set: %s (%s) %s their collection (%d/4096 chars)", ctx.author, ctx.author.id, action, len(text))
+        await ctx.send(
+            f"{self.client.emotes.get('greentick', '✅')} "
+            f"`Collection set! ({len(text)}/4096 characters)`"
+        )
+
+    @collection.command(name="clear", aliases=["delete"])
+    async def collection_clear(self, ctx):
+        """Clears your collection after confirmation."""
+        col = self.client.db.get_collection("collections")
+        record = col.find_one({"user_id": ctx.author.id})
+
+        if not record:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `You don't have a collection to clear.`")
+            return
+
+        confirm_msg = await ctx.send("⚠️ Are you sure you want to clear your collection? React ✅ to confirm.")
+        await confirm_msg.add_reaction("✅")
+
+        def check(reaction, user):
+            return user == ctx.author and str(reaction.emoji) == "✅" and reaction.message.id == confirm_msg.id
+
+        try:
+            await self.client.wait_for("reaction_add", timeout=15.0, check=check)
+        except asyncio.TimeoutError:
+            logger.info("collection clear: %s (%s) timed out on confirmation", ctx.author, ctx.author.id)
+            await ctx.send(f"{self.client.emotes.get('timer', '⏱️')} `Collection clear cancelled — timed out.`")
+            return
+
+        col.delete_one({"user_id": ctx.author.id})
+        logger.info("collection clear: %s (%s) cleared their collection", ctx.author, ctx.author.id)
+        await ctx.send(f"{self.client.emotes.get('greentick', '✅')} `Your collection has been cleared.`")
+
 
 async def setup(client):
     await client.add_cog(PokemonCreed(client))

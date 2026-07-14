@@ -53,6 +53,7 @@ class MyBot(commands.Bot):
     inviteurl = ""
     boxrateconfig = {"base": 1, "unbase": 0.8, "other": 3}
     rate_cache = {}
+    collection_allowed_guilds = []  # Add guild IDs that can use !collection
 
     def __init__(self, command_prefix, intents):
         super().__init__(command_prefix=command_prefix, intents=intents)
