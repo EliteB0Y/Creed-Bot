@@ -184,7 +184,7 @@ async def main():
     else:
         logger.info("No rate_cache backup found — starting with empty cache.")
 
-    extensions = ['cogs.pokemoncreed', 'cogs.basic', 'cogs.games', 'cogs.error', 'cogs.owner', 'jishaku'] #'cogs.extra'
+    extensions = ['cogs.pokemoncreed', 'cogs.basic', 'cogs.games', 'cogs.extra', 'cogs.error', 'cogs.owner', 'jishaku'] #
     async with client:
         # Register signal handlers for graceful shutdown
         loop = asyncio.get_event_loop()

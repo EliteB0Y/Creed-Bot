@@ -23,14 +23,15 @@ class Extra(commands.Cog):
         return self.client.get_channel(1073949084244770856)
       
 
-    async def scrape_hd(self):
+    def _sync_scrape_hd(self):
+        """Synchronous hitdown scraping — runs in a thread executor."""
         username, password = os.environ.get('CREED_LOGIN').split(',')
         login_url = 'https://pokemoncreed.net/login.php'
         scrape_url = 'https://pokemoncreed.net/hitdown.php'
         
         session = requests.Session()
         
-        login_page = session.get(login_url)
+        login_page = session.get(login_url, timeout=15)
         soup = BeautifulSoup(login_page.content, 'html.parser')
         
         token = soup.find('input', {'name': 'token'})['value']
@@ -43,11 +44,11 @@ class Extra(commands.Cog):
             'backuptoken': backuptoken
         }
         
-        login_response = session.post(login_url, data=credentials)
+        login_response = session.post(login_url, data=credentials, timeout=15)
         
         if 'logout' in login_response.text:
             
-            scrape_response = session.get(scrape_url)
+            scrape_response = session.get(scrape_url, timeout=15)
             soup = BeautifulSoup(scrape_response.content, 'html.parser')
         
             countdown_span = soup.find('span', class_='fn-countdown')
@@ -71,11 +72,24 @@ class Extra(commands.Cog):
                 elif match[2]:
                     time_dict['s'] = int(match[2])
             
-            #Saving the Next HD for reference
-            self.client.next_hitdown = time_dict
             return time_dict
         else:
             logger.error("Creed login failed — hitdown scrape aborted.")
+            return None
+
+    async def scrape_hd(self):
+        """Async wrapper that runs the synchronous scrape in a thread executor with timeout."""
+        try:
+            t = await asyncio.wait_for(
+                asyncio.get_running_loop().run_in_executor(None, self._sync_scrape_hd),
+                timeout=30
+            )
+        except asyncio.TimeoutError:
+            logger.warning("Hitdown scrape timed out.")
+            return None
+        if t is not None:
+            self.client.next_hitdown = t
+        return t
 
     # <# BG Task: Hitdown - Start #>
 
@@ -109,7 +123,8 @@ class Extra(commands.Cog):
     async def promoBGTask(self):
         promo_channel = self.get_promo_channel
         try:
-            async with aiohttp.ClientSession() as session:
+            timeout = aiohttp.ClientTimeout(total=15)
+            async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(f"https://pokemoncreed.net/ajax/pokedex.php?pokemon=promo") as r:
                     if r.status != 200:
                         logger.warning("Promo check failed: HTTP %s", r.status)

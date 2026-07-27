@@ -1,4 +1,4 @@
-import discord, mechanicalsoup, asyncio, json, aiohttp
+import discord, asyncio, json, aiohttp
 from datetime import datetime, timezone
 import logging
 from discord.ext import commands, menus
@@ -13,16 +13,21 @@ class BoxMenu(menus.Menu):
         self.pg = 0
     
     async def mystbin(self, text):
-        async with aiohttp.ClientSession() as session:
-            payload = {"files":[{"content": text, "name": "No Title"}]}
-            headers = {"Content-Type": "application/json"}
-            async with session.post(url="https://api.pastey.gg/pastes", json=payload, headers=headers) as r:
-                if r.status == 201:
-                    mdata = await r.json()
-                    return f"https://pastey.gg/{mdata['id']}"
-                else:
-                    logger.warning("pastey.gg upload failed: HTTP %s", r.status)
-                    return f"https://pastey.gg/"
+        timeout = aiohttp.ClientTimeout(total=15)
+        try:
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                payload = {"files":[{"content": text, "name": "No Title"}]}
+                headers = {"Content-Type": "application/json"}
+                async with session.post(url="https://api.pastey.gg/pastes", json=payload, headers=headers) as r:
+                    if r.status == 201:
+                        mdata = await r.json()
+                        return f"https://pastey.gg/{mdata['id']}"
+                    else:
+                        logger.warning("pastey.gg upload failed: HTTP %s", r.status)
+                        return f"https://pastey.gg/"
+        except asyncio.TimeoutError:
+            logger.warning("pastey.gg upload timed out.")
+            return f"https://pastey.gg/"
 
     async def cleanResults(self):
         if self.results["success"]:
@@ -175,16 +180,21 @@ class PokemonCreed(commands.Cog):
 
 
     async def mystbin(self, text):
-        async with aiohttp.ClientSession() as session:
-            payload = {"files":[{"content": text, "name": "No Title"}]}
-            headers = {"Content-Type": "application/json"}
-            async with session.post(url="https://api.pastey.gg/pastes", json=payload, headers=headers) as r:
-                if r.status == 201:
-                    mdata = await r.json()
-                    return f"https://pastey.gg/{mdata['id']}"
-                else:
-                    logger.warning("pastey.gg upload failed: HTTP %s", r.status)
-                    return f"https://pastey.gg/"
+        timeout = aiohttp.ClientTimeout(total=15)
+        try:
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                payload = {"files":[{"content": text, "name": "No Title"}]}
+                headers = {"Content-Type": "application/json"}
+                async with session.post(url="https://api.pastey.gg/pastes", json=payload, headers=headers) as r:
+                    if r.status == 201:
+                        mdata = await r.json()
+                        return f"https://pastey.gg/{mdata['id']}"
+                    else:
+                        logger.warning("pastey.gg upload failed: HTTP %s", r.status)
+                        return f"https://pastey.gg/"
+        except asyncio.TimeoutError:
+            logger.warning("pastey.gg upload timed out.")
+            return f"https://pastey.gg/"
     
     def human_format(self, num, round_to=2):
         magnitude = 0
@@ -199,7 +209,8 @@ class PokemonCreed(commands.Cog):
             return self.client.rate_cache[pokename]
         
         try:
-            async with aiohttp.ClientSession() as session:
+            timeout = aiohttp.ClientTimeout(total=15)
+            async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(f"https://pokemoncreed.net/ajax/pokedex.php?pokemon={pokename}") as r:
                     if r.status != 200:
                         logger.warning("Pokedex API failed for '%s': HTTP %s", pokename, r.status)
@@ -221,9 +232,14 @@ class PokemonCreed(commands.Cog):
     async def boxrater(self, ctx, *, userName):
         """Box Rater (Beta) for Pokemon Creed users. [2 mins cooldown]"""
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://pokemoncreed.net/ajax/box.php?user={userName}") as r:
-                data = await r.text()
+        timeout = aiohttp.ClientTimeout(total=15)
+        try:
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                async with session.get(f"https://pokemoncreed.net/ajax/box.php?user={userName}") as r:
+                    data = await r.text()
+        except asyncio.TimeoutError:
+            await ctx.send("`Request timed out. The site may be down — please try again later.`")
+            return
 
         result = json.loads(data)
         if result["success"]:
@@ -440,9 +456,14 @@ class PokemonCreed(commands.Cog):
     @commands.command(aliases = ['rate', 'rarity'])
     async def p(self, ctx, *, pokemon):
         """Displays rate, rarity and sprite of the Creed Pokemon."""
-        async with aiohttp.ClientSession() as session:
-            async with session.get(f"https://pokemoncreed.net/ajax/pokedex.php?pokemon={pokemon}") as r:
-                data = await r.text()
+        timeout = aiohttp.ClientTimeout(total=15)
+        try:
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                async with session.get(f"https://pokemoncreed.net/ajax/pokedex.php?pokemon={pokemon}") as r:
+                    data = await r.text()
+        except asyncio.TimeoutError:
+            await ctx.send("`Request timed out. The site may be down — please try again later.`")
+            return
         result = json.loads(data)
         if result["success"]:
             self.client.rate_cache[result["name"]] = result["rating"]
@@ -469,9 +490,16 @@ class PokemonCreed(commands.Cog):
     async def box(self, ctx, *, uname):
         """Displays colored pokemons of a Creed user. [2 mins cooldown]"""
         url = 'https://pokemoncreed.net/ajax/box.php?user=' + uname
-        browser = mechanicalsoup.StatefulBrowser()
-        browser.open(url)
-        data = browser.get_current_page().text
+
+        timeout = aiohttp.ClientTimeout(total=15)
+        try:
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                async with session.get(url) as r:
+                    data = await r.text()
+        except asyncio.TimeoutError:
+            await ctx.send("`Request timed out. The site may be down — please try again later.`")
+            return
+
         result = json.loads(data)
         bm = BoxMenu(ctx, result)
         await bm.start(ctx)
@@ -480,7 +508,6 @@ class PokemonCreed(commands.Cog):
     @commands.command(aliases = ['pkrate'])
     async def pokerate(self, ctx, *, pkmn):
         """Computes the total rate of given pokemon(s)."""
-        browser = mechanicalsoup.StatefulBrowser()
         pkmn = pkmn.replace("+", ",").replace("\n", ",").split(',')
         considered = []
         not_considered = []
@@ -489,32 +516,43 @@ class PokemonCreed(commands.Cog):
         embed = discord.Embed(description = desc)
         embed.set_author(name = "Creed Bot (Pokemon Rater)", icon_url = ctx.me.avatar)
         m = await ctx.send(embed = embed)
-        for pk in pkmn:
-            tmp = pk.split('*')
-            pk = tmp[0].strip()
-            try:
-                c = int(tmp[1])
-            except Exception as e:
-                c = 1
-
-            url = 'https://pokemoncreed.net/ajax/pokedex.php?pokemon=' + pk
-            browser.open(url)
-            data = browser.get_current_page().text
-            result = json.loads(data)
-
-            if result["success"]:
-                self.client.rate_cache[result["name"]] = result["rating"]
-                pk = result["name"].strip()
+        timeout = aiohttp.ClientTimeout(total=15)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
+            for pk in pkmn:
+                tmp = pk.split('*')
+                pk = tmp[0].strip()
                 try:
-                    rate = result["rating"].replace("+", "").split(" ", 1)[0]
-                    rate = self.convertNumber(rate)
-                    considered.append(f"{pk} - ({result['rating']}) [x{c}]")
-                    rates.append(rate * c)
+                    c = int(tmp[1])
                 except Exception as e:
-                    logger.warning("Could not parse rate for '%s': %s", pk, e)
+                    c = 1
+
+                url = 'https://pokemoncreed.net/ajax/pokedex.php?pokemon=' + pk
+                try:
+                    async with session.get(url) as r:
+                        data = await r.text()
+                except asyncio.TimeoutError:
+                    logger.warning("pokerate timed out for '%s'", pk)
                     not_considered.append(pk)
-            else:
-                not_considered.append(pk)
+                    continue
+                except Exception as e:
+                    logger.warning("pokerate fetch failed for '%s': %s", pk, e)
+                    not_considered.append(pk)
+                    continue
+                result = json.loads(data)
+
+                if result["success"]:
+                    self.client.rate_cache[result["name"]] = result["rating"]
+                    pk = result["name"].strip()
+                    try:
+                        rate = result["rating"].replace("+", "").split(" ", 1)[0]
+                        rate = self.convertNumber(rate)
+                        considered.append(f"{pk} - ({result['rating']}) [x{c}]")
+                        rates.append(rate * c)
+                    except Exception as e:
+                        logger.warning("Could not parse rate for '%s': %s", pk, e)
+                        not_considered.append(pk)
+                else:
+                    not_considered.append(pk)
         desc = "\n"
         if considered:
             desc += "\n".join(considered)
