@@ -389,10 +389,12 @@ class PokemonCreed(commands.Cog):
         try:
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(f"{host}/ajax/user.php?user={userName}") as r:
-                    resp = await r.json()
+                    data = await r.text()
         except asyncio.TimeoutError:
             await ctx.send("`Request timed out. The site may be down — please try again later.`")
             return
+
+        resp = json.loads(data)
 
         data = resp.get("data", {})
         if not data:
