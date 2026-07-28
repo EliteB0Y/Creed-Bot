@@ -379,6 +379,74 @@ class PokemonCreed(commands.Cog):
         embed.description += f"{self.client.emotes.get('pin','')} [click here for details]({rating['paste_url']})"
         await zzz.edit(embed=embed)
 
+    @commands.command(aliases=["cp", "pf"])
+    @commands.cooldown(1, 30, commands.BucketType.user)
+    async def profile(self, ctx, *, userName):
+        """Displays the profile of a Pokemon Creed user."""
+        host = "https://pokemoncreed.net"
+
+        timeout = aiohttp.ClientTimeout(total=15)
+        try:
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                async with session.get(f"{host}/ajax/user.php?user={userName}") as r:
+                    resp = await r.json()
+        except asyncio.TimeoutError:
+            await ctx.send("`Request timed out. The site may be down — please try again later.`")
+            return
+
+        data = resp.get("data", {})
+        if not data:
+            await ctx.send("`User not found! Please provide a valid username.`")
+            return
+
+        username = data.get("username", "N/A")
+        user_id = data.get("id", "N/A")
+        level = f"{int(data.get('trainerlevel', 0)):,}"
+        coins = f"{int(data.get('coins', 0)):,}"
+        money = f"${int(data.get('money', 0)):,}"
+        last_active = data.get("lastactive", "0")
+        avatar = data.get("avatar", "88882")
+
+        # Grab the first Pokemon from the roster array safely
+        roster = data.get("roster", [])
+        first_mon = roster[0] if roster else {}
+        mon_name = first_mon.get("name", "Ghost")
+        mon_exp = int(first_mon.get("totalexp", 0))
+
+        embed = discord.Embed(
+            title=f"{username} - #{user_id}",
+            color=0x2B2D31,
+            url=f"{host}/prof.php?user={username}"
+        )
+
+        embed.description = (
+            f"**Last Seen:** <t:{last_active}:R>\n"
+            f"**Trainer Level:** `{level}`\n"
+            f"**Coins:** `{coins}`\n"
+            f"**Cash:** `{money}`"
+        )
+
+        # Fetch box rating in the background
+        rating = await self.calculate_box_rating(username)
+        if rating.get("error"):
+            embed.description += "\n\n-# **Box Rating:** `N/A`"
+        else:
+            embed.description += f"\n\n-# **Box Rating:** `{rating['total_rating_formatted']}`"
+            embed.description += f"\n-# [Details Here]({rating['paste_url']})"
+
+        embed.description += f"\n\n-# **Starter Pokemon**"
+
+        embed.set_thumbnail(url=f"{host}/img/avatars/{avatar}.png")
+
+        safe_name = mon_name.replace(".", "").replace(" ", "%20")
+        embed.set_footer(
+            text=f"{mon_name} - Level: {round(mon_exp**(1/3))}",
+            icon_url=f"{host}/img/icon/{safe_name}.gif"
+        )
+        embed.set_image(url=f"{host}/sprites/{safe_name}.png")
+
+        await ctx.send(embed=embed)
+
     @commands.group()
     async def exp(self, ctx):
         """Exp related commands. Use !help exp for more commands."""
