@@ -227,130 +227,157 @@ class PokemonCreed(commands.Cog):
             logger.error("findRate failed for '%s'", pokename, exc_info=e)
             return ""
     
-    @commands.command(aliases = ["ratebox"])
-    @commands.cooldown(1, 120, commands.BucketType.user)
-    async def boxrater(self, ctx, *, userName):
-        """Box Rater (Beta) for Pokemon Creed users. [2 mins cooldown]"""
+    async def calculate_box_rating(self, userName):
+        """Fetch a user's box from Pokemon Creed and calculate the total colored-pokemon rating.
 
+        Returns a dict with keys:
+            - username (str)
+            - user_id (str)
+            - total_rating (int/float)
+            - total_rating_formatted (str)
+            - colored_count (int)
+            - paste_url (str)
+        Returns None with an "error" key on failure, e.g.:
+            {"error": "username_not_found"} or {"error": "timeout"} or {"error": "no_colored"}
+        """
+        # 1. Fetch box data
         timeout = aiohttp.ClientTimeout(total=15)
         try:
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(f"https://pokemoncreed.net/ajax/box.php?user={userName}") as r:
                     data = await r.text()
         except asyncio.TimeoutError:
-            await ctx.send("`Request timed out. The site may be down — please try again later.`")
-            return
+            return {"error": "timeout"}
 
         result = json.loads(data)
-        if result["success"]:
-            uname = result["data"]["name"]
-            uid = result["data"]["id"]
+        if not result["success"]:
+            return {"error": "username_not_found"}
 
-            embed = discord.Embed(title=f"Box Rater: {uname} - #{uid}")
-            embed.description = f"{self.client.emotes.get('loading', '')} Initializing ...\n"
-            zzz = await ctx.send(embed=embed)
+        uname = result["data"]["name"]
+        uid = result["data"]["id"]
 
-            coloreds = ["Cursed", "Glitter", "Golden", "Luminous", "Rainbow", "Shadow"]
+        # 2. Categorize colored pokemon
+        coloreds = ["Cursed", "Glitter", "Golden", "Luminous", "Rainbow", "Shadow"]
+        output = {"base": [], "unbase": [], "other": []}
+        findrates = []
 
-            output = {"base": [], "unbase": [], "other": []}
-            findrates = []
-            embed.description = f"""{self.client.emotes.get('greentick', '')} Initializing ...\n
-                                    {self.client.emotes.get('loading','')} Collecting pokemons ...\n"""
-            await zzz.edit(embed = embed)
-            for poke in result["data"]["pokemon"]:
-                if poke["loan"] == "0" and any(poke["name"].startswith(x) for x in coloreds):
-                    if poke["name"] not in findrates:
-                        findrates.append(poke["name"])
+        for poke in result["data"]["pokemon"]:
+            if poke["loan"] == "0" and any(poke["name"].startswith(x) for x in coloreds):
+                if poke["name"] not in findrates:
+                    findrates.append(poke["name"])
 
-                    if poke["level"] == 5:
-                        output["base"].append({"name": poke["name"], "gender": poke["gender"], "level": poke["level"]})
-                    elif poke["level"] > 5:
-                        output["unbase"].append({"name": poke["name"], "gender": poke["gender"], "level": poke["level"]})
-                    else:
-                        output["other"].append({"name": poke["name"], "gender": poke["gender"], "level": poke["level"]})
+                if poke["level"] == 5:
+                    output["base"].append({"name": poke["name"], "gender": poke["gender"], "level": poke["level"]})
+                elif poke["level"] > 5:
+                    output["unbase"].append({"name": poke["name"], "gender": poke["gender"], "level": poke["level"]})
+                else:
+                    output["other"].append({"name": poke["name"], "gender": poke["gender"], "level": poke["level"]})
 
-            pkcount = len(output["base"]) + len(output["unbase"]) + len(output["other"])
-            if not pkcount:
-                embed.description = f"{uname} -#{uid} has no colored pokemons to rate!"
-                await zzz.edit(embed = embed)
+        pkcount = len(output["base"]) + len(output["unbase"]) + len(output["other"])
+        if not pkcount:
+            return {"error": "no_colored", "username": uname, "user_id": uid}
+
+        # 3. Fetch rates for each unique pokemon
+        foundrates = {}
+        for poke in findrates:
+            pkrate = await self.findRate(poke)
+            pkrate = pkrate.replace("+", "")
+            try:
+                pkrate = self.convertNumber(pkrate.split(" ", 1)[0])
+                foundrates[poke] = pkrate
+            except (ValueError, KeyError):
+                pass
+
+        # 4. Calculate rating per pokemon
+        considered = []
+        considered_rates = {}
+        ignored = []
+        sumthese = []
+
+        for category in output:
+            for poke in output[category]:
+                if foundrates.get(poke["name"], False):
+                    rate = foundrates.get(poke["name"]) * self.client.boxrateconfig[category]
+                    label = f"{poke['name']} {poke['gender']} - Level: {poke['level']}"
+                    considered.append(label)
+                    considered_rates[label] = rate
+                    sumthese.append(rate)
+                else:
+                    ignored.append(f"{poke['name']} {poke['gender']} - Level: {poke['level']}")
+
+        # 5. Aggregate duplicates
+        cleaned_considered = {}
+        for poke in considered:
+            if poke in cleaned_considered:
+                cleaned_considered[poke][0] += 1
             else:
-                embed.description = f"""{self.client.emotes.get('greentick', '')} Initializing ...\n
-                                    {self.client.emotes.get('greentick','')} Collecting pokemons ...\n
-                                    {self.client.emotes.get('loading','')} Fetching rates ...\n"""
-                await zzz.edit(embed = embed)
-                #try to find rates of every pokemon that the user has (no duplicates)
-                foundrates = {}
-                for poke in findrates:
-                    pkrate = await self.findRate(poke)
-                    pkrate = pkrate.replace("+", "")
+                cleaned_considered[poke] = [1, considered_rates[poke]]
 
-                    try:
-                        pkrate = self.convertNumber(pkrate.split(" ", 1)[0])
-                        foundrates[poke] = pkrate
-                    except (ValueError, KeyError) as e:
-                        #Silently ignore the convertion error.
-                        pass
-                        #logger.warning("Could not parse rate for '%s': %s", poke, e)
+        cleaned_ignored = {}
+        for poke in ignored:
+            if poke in cleaned_ignored:
+                cleaned_ignored[poke][0] += 1
+            else:
+                cleaned_ignored[poke] = [1, ""]
 
-                #Now the actual calculation starts
-                considered = []
-                considered_rates = {}
-                ignored = []
-                sumthese = []
-                embed.description = f"""{self.client.emotes.get('greentick', '')} Initializing ...\n
-                                    {self.client.emotes.get('greentick','')} Collecting pokemons ...\n
-                                    {self.client.emotes.get('greentick','')} Fetching rates ...\n
-                                    {self.client.emotes.get('loading','')} Calculating ...\n"""
-                await zzz.edit(embed = embed)
-                for category in output:
-                    for poke in output[category]:
-                        if foundrates.get(poke["name"], False):
-                            rate = foundrates.get(poke["name"]) * self.client.boxrateconfig[category]
-                            considered.append(f"{poke['name']} {poke['gender']} - Level: {poke['level']}")
-                            considered_rates[f"{poke['name']} {poke['gender']} - Level: {poke['level']}"] = rate
-                            sumthese.append(rate)
-                        else:
-                            ignored.append(f"{poke['name']} {poke['gender']} - Level: {poke['level']}")
+        # 6. Build paste text and upload
+        considered_text = ""
+        for poke, details in cleaned_considered.items():
+            considered_text += f"{details[0]}x {poke} [{self.human_format(details[0] * details [1])}] \n"
 
-                cleaned_considered = {}
-                for poke in considered:
-                    if poke in cleaned_considered:
-                        cleaned_considered[poke][0] += 1
-                    else:
-                        cleaned_considered[poke] = [1, considered_rates[poke]]
+        ignored_text = ""
+        for poke, details in cleaned_ignored.items():
+            ignored_text += f"{details[0]}x {poke} \n"
 
-                cleaned_ignored = {}
-                for poke in ignored:
-                    if poke in cleaned_ignored:
-                        cleaned_ignored[poke][0] += 1
-                    else:
-                        cleaned_ignored[poke] = [1, ""]
+        mytext = f"Box Rater: {uname} - #{uid}\n\n"
+        mytext += f"Total Rating: {self.human_format(sum(sumthese))}\n\n"
+        mytext += f"\n\n** Unbase: {self.client.boxrateconfig['unbase']}x Rate List |  Level 4 or less: {self.client.boxrateconfig['other']}x Rate List | Genderless/Special Genders are rated normally.**\n\n"
+        mytext += "Below pokemons are considered while rating the box: \n\n"""
+        mytext += considered_text
+        mytext += "\n\nBelow pokemons are NOT considered: \n\n"""
+        mytext += ignored_text
+        mytext += "\n\n>> Box Rater by Creed Bot <<"
 
-                considered_text = ""
-                for poke, details in cleaned_considered.items():
-                    considered_text += f"{details[0]}x {poke} [{self.human_format(details[0] * details [1])}] \n"
-                    
-                ignored_text = ""
-                for poke, details in cleaned_ignored.items():
-                    ignored_text += f"{details[0]}x {poke} \n"
-                
-                mytext = f"Box Rater: {uname} - #{uid}\n\n"
-                mytext += f"Total Rating: {self.human_format(sum(sumthese))}\n\n"
-                mytext += f"\n\n** Unbase: {self.client.boxrateconfig['unbase']}x Rate List |  Level 4 or less: {self.client.boxrateconfig['other']}x Rate List | Genderless/Special Genders are rated normally.**\n\n"
-                mytext += "Below pokemons are considered while rating the box: \n\n"""
-                mytext += considered_text
+        paste_url = await self.mystbin(mytext)
 
-                mytext += "\n\nBelow pokemons are NOT considered: \n\n"""
-                mytext += ignored_text
+        return {
+            "username": uname,
+            "user_id": uid,
+            "total_rating": sum(sumthese),
+            "total_rating_formatted": self.human_format(sum(sumthese)),
+            "colored_count": pkcount,
+            "paste_url": paste_url,
+        }
 
-                mytext += "\n\n>> Box Rater by Creed Bot <<"
+    @commands.command(aliases = ["ratebox"])
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    async def boxrater(self, ctx, *, userName):
+        """Box Rater (Beta) for Pokemon Creed users. [1 mins cooldown]"""
 
-                pasteURL = await self.mystbin(mytext)
-                embed.description = f"{self.client.emotes.get('greentick','')} **Total Rating:** {self.human_format(sum(sumthese))}\n"
-                embed.description += f"{self.client.emotes.get('pin','')} [click here for details]({pasteURL})"
-                await zzz.edit(embed = embed)
-        else:
-            await ctx.send("Username not found!")
+        embed = discord.Embed(title=f"Box Rater: {userName}")
+        embed.description = f"{self.client.emotes.get('loading', '')} Analyzing your box and calculating it's total worth...\n"
+        zzz = await ctx.send(embed=embed)
+
+        rating = await self.calculate_box_rating(userName)
+
+        if rating.get("error") == "timeout":
+            embed.description = "`Request timed out. The site may be down — please try again later.`"
+            await zzz.edit(embed=embed)
+            return
+        elif rating.get("error") == "username_not_found":
+            embed.description = "Username not found!"
+            await zzz.edit(embed=embed)
+            return
+        elif rating.get("error") == "no_colored":
+            embed.description = f"{rating['username']} -#{rating['user_id']} has no colored pokemons to rate!"
+            embed.title = f"Box Rater: {rating['username']} - #{rating['user_id']}"
+            await zzz.edit(embed=embed)
+            return
+
+        embed.title = f"Box Rater: {rating['username']} - #{rating['user_id']}"
+        embed.description = f"{self.client.emotes.get('greentick','')} **Total Rating:** {rating['total_rating_formatted']}\n"
+        embed.description += f"{self.client.emotes.get('pin','')} [click here for details]({rating['paste_url']})"
+        await zzz.edit(embed=embed)
 
     @commands.group()
     async def exp(self, ctx):
