@@ -418,7 +418,7 @@ class PokemonCreed(commands.Cog):
         embed = discord.Embed(
             title=f"{username} - #{user_id}",
             color=0x2B2D31,
-            url=f"{host}/prof.php?user={username}"
+            url=f"{host}/prof.php?user={discord.utils.escape_markdown(username).replace(' ', '%20')}"
         )
 
         embed.description = (
