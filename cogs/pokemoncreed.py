@@ -384,6 +384,10 @@ class PokemonCreed(commands.Cog):
     async def profile(self, ctx, *, userName):
         """Displays the profile of a Pokemon Creed user."""
         host = "https://pokemoncreed.net"
+        
+        loading_embed = discord.Embed(title=f"Profile: {userName}")
+        loading_embed.description = f"{self.client.emotes.get('loading', '')} Fetching user profile...\n"
+        zzz = await ctx.send(embed=loading_embed)
 
         timeout = aiohttp.ClientTimeout(total=15)
         try:
@@ -391,14 +395,14 @@ class PokemonCreed(commands.Cog):
                 async with session.get(f"{host}/ajax/user.php?user={userName}") as r:
                     data = await r.text()
         except asyncio.TimeoutError:
-            await ctx.send("`Request timed out. The site may be down — please try again later.`")
+            await zzz.edit(content="`Request timed out. The site may be down — please try again later.`", embed=None)
             return
 
         resp = json.loads(data)
 
         data = resp.get("data", {})
         if not data:
-            await ctx.send("`User not found! Please provide a valid username.`")
+            await zzz.edit(content="`User not found! Please provide a valid username.`", embed=None)
             return
 
         username = data.get("username", "N/A")
@@ -415,9 +419,20 @@ class PokemonCreed(commands.Cog):
         mon_name = first_mon.get("name", "Ghost")
         mon_exp = int(first_mon.get("totalexp", 0))
 
+        # Fetch embed color from the starter pokemon's pokedex entry
+        embed_color = 0x2B2D31
+        try:
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                async with session.get(f"{host}/ajax/pokedex.php?pokemon={mon_name}") as r:
+                    poke_data = json.loads(await r.text())
+            if poke_data.get("success"):
+                embed_color = poke_data.get("color", embed_color)
+        except Exception:
+            pass
+
         embed = discord.Embed(
             title=f"{username} - #{user_id}",
-            color=0x2B2D31,
+            color=embed_color,
             url=f"{host}/prof.php?user={discord.utils.escape_markdown(username).replace(' ', '%20')}"
         )
 
@@ -447,7 +462,7 @@ class PokemonCreed(commands.Cog):
         )
         embed.set_image(url=f"{host}/sprites/{safe_name}.png")
 
-        await ctx.send(embed=embed)
+        await zzz.edit(content=None, embed=embed)
 
     @commands.group()
     async def exp(self, ctx):
