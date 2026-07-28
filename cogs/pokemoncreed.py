@@ -379,7 +379,7 @@ class PokemonCreed(commands.Cog):
         embed.description += f"{self.client.emotes.get('pin','')} [click here for details]({rating['paste_url']})"
         await zzz.edit(embed=embed)
 
-    @commands.command(aliases=["cp", "pf"])
+    @commands.command(aliases=["creedpf", "creed_profile"])
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def profile(self, ctx, *, userName):
         """Displays the profile of a Pokemon Creed user."""
