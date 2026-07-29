@@ -49,6 +49,7 @@ class MyBot(commands.Bot):
     promo = ""
     wtpList = {}
     activeQuiz = {}
+    rpsList = {}
     disabledCogs = [] #add cogs.namehere to disable
     inviteurl = ""
     boxrateconfig = {"base": 1, "unbase": 0.8, "other": 3}
