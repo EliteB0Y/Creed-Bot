@@ -45,10 +45,10 @@ class RPSView(discord.ui.View):
 
 
 class WTPJoinView(discord.ui.View):
-    def __init__(self, host, emotes, timeout=30.0):
+    def __init__(self, host, emotes, timeout=35.0):
         super().__init__(timeout=timeout)
         self.host = host
-        self.players = {host.id: host}
+        self.players = {}  # Host is not forced to join automatically
 
         pokeball_emoji = emotes.get("pokeball") or "🔴"
         self.join_btn.emoji = pokeball_emoji
@@ -61,6 +61,27 @@ class WTPJoinView(discord.ui.View):
             self.players[interaction.user.id] = interaction.user
             await interaction.response.send_message(
                 f"✅ You joined Who's That Pokémon! ({len(self.players)} player(s) in lobby)",
+                ephemeral=True
+            )
+
+
+class PKQuizJoinView(discord.ui.View):
+    def __init__(self, host, emotes, timeout=35.0):
+        super().__init__(timeout=timeout)
+        self.host = host
+        self.players = {}
+
+        pokeball_emoji = emotes.get("pokeball") or "🔴"
+        self.join_btn.emoji = pokeball_emoji
+
+    @discord.ui.button(label="Join Quiz", style=discord.ButtonStyle.success)
+    async def join_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id in self.players:
+            await interaction.response.send_message("You have already joined the quiz!", ephemeral=True)
+        else:
+            self.players[interaction.user.id] = interaction.user
+            await interaction.response.send_message(
+                f"✅ You joined the Pokédex Quiz! ({len(self.players)} player(s) in lobby)",
                 ephemeral=True
             )
 
@@ -113,6 +134,27 @@ class Games(commands.Cog):
             await ctx.send(embed=embed)
             return
     
+    @wtp.command(name='stop', aliases=['end', 'cancel', 'quit'])
+    @commands.guild_only()
+    async def wtp_stop(self, ctx):
+        """Stops an ongoing Who's That Pokémon game in the channel."""
+        if ctx.channel.id not in self.client.wtpList:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `No Who's That Pokémon game is currently running in this channel.`")
+            return
+
+        host_id = self.client.wtpList.get(ctx.channel.id)
+        is_allowed = (
+            ctx.author.id == self.client.owner_id or
+            ctx.author.id == host_id or
+            (hasattr(ctx.author, 'guild_permissions') and ctx.author.guild_permissions.manage_messages)
+        )
+        if not is_allowed:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Only the game host, server moderators, or bot owner can stop this game.`")
+            return
+
+        self.client.wtpList.pop(ctx.channel.id, None)
+        await ctx.send(f"{self.client.emotes.get('greentick', '✅')} **Who's That Pokémon game has been stopped by {ctx.author.display_name}.**")
+
     @wtp.command(name = 'start')
     @commands.guild_only()
     async def wtp_start(self, ctx, *, args: str = "10"):
@@ -133,16 +175,17 @@ class Games(commands.Cog):
             await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Number of pokemons must be between 1 and 50.`")
             return
 
-        self.client.wtpList.append(ctx.channel.id)
+        self.client.wtpList[ctx.channel.id] = ctx.author.id
 
         try:
             # 1. Open 30-second lobby window
-            join_view = WTPJoinView(ctx.author, self.client.emotes, timeout=30.0)
+            lobby_end_time = int(datetime.now(timezone.utc).timestamp()) + 30
+            join_view = WTPJoinView(ctx.author, self.client.emotes, timeout=35.0)
             embed = discord.Embed(
                 title="🎮 Who's That Pokémon — Lobby Open!",
                 description=(
                     f"**{ctx.author.display_name}** is starting a WTP game with **{count} Pokémon(s)**!\n\n"
-                    f"Click **Join Game** below to participate! Game starts in **30 seconds**."
+                    f"Click **Join Game** below to participate! Game starts <t:{lobby_end_time}:R>."
                 ),
                 color=discord.Color.gold()
             )
@@ -150,18 +193,48 @@ class Games(commands.Cog):
             embed.set_footer(text=f"Hosted by {ctx.author.display_name}", icon_url=ctx.author.display_avatar.url)
 
             lobby_msg = await ctx.send(embed=embed, view=join_view)
-            await join_view.wait()
+
+            # Check for early cancellation during 30s lobby
+            for _ in range(30):
+                if ctx.channel.id not in self.client.wtpList:
+                    join_view.stop()
+                    for child in join_view.children:
+                        child.disabled = True
+                    cancel_embed = discord.Embed(
+                        title="🎮 Who's That Pokémon — Stopped",
+                        description="Game was stopped by host or administrator.",
+                        color=discord.Color.red()
+                    )
+                    await lobby_msg.edit(embed=cancel_embed, view=join_view)
+                    return
+                await asyncio.sleep(1)
+
+            # Close lobby & disable buttons
+            join_view.stop()
+            for child in join_view.children:
+                child.disabled = True
 
             players = join_view.players
+            if not players:
+                cancel_embed = discord.Embed(
+                    title="🎮 Who's That Pokémon — Cancelled",
+                    description="No participants joined the game! Game cancelled.",
+                    color=discord.Color.red()
+                )
+                cancel_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
+                await lobby_msg.edit(embed=cancel_embed, view=join_view)
+                return
+
             player_names = ", ".join([p.display_name for p in players.values()])
 
+            game_start_time = int(datetime.now(timezone.utc).timestamp()) + 5
             start_embed = discord.Embed(
                 title="🎮 Who's That Pokémon — Game Starting!",
-                description=f"**{len(players)} Player(s) joined:** {player_names}\n\nGet ready! Round 1 is starting in **5 seconds**...",
+                description=f"**{len(players)} Player(s) joined:** {player_names}\n\nGet ready! Round 1 is starting <t:{game_start_time}:R>...",
                 color=discord.Color.green()
             )
             start_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
-            await lobby_msg.edit(embed=start_embed, view=None)
+            await lobby_msg.edit(embed=start_embed, view=join_view)
             await asyncio.sleep(5)
 
             # Load Pokémon dataset
@@ -172,73 +245,96 @@ class Games(commands.Cog):
             round_time = 15.0
 
             for current_round in range(1, count + 1):
+                if ctx.channel.id not in self.client.wtpList:
+                    break
+
                 pokeID = random.randrange(1, 897)
                 wtpPoke = wtpData.get(f"{pokeID}")
                 pokeName = wtpPoke["name"].lower().strip()
                 pokeImgOrg = f"https://github.com/EliteB0Y/TestBot/raw/master/WTP/{pokeID:03d}.png"
                 pokeImgWtp = f"https://github.com/EliteB0Y/TestBot/raw/master/WTP/{pokeID:03d}x.png"
 
+                round_end_time = int(datetime.now(timezone.utc).timestamp()) + 15
                 embed = discord.Embed(
                     title=f"Round {current_round}/{count} — Who's that Pokémon?",
+                    description=f"Guessing ends <t:{round_end_time}:R>!",
                     color=discord.Color.blurple()
                 )
                 embed.set_author(name="Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
                 embed.set_image(url=pokeImgWtp)
-                embed.set_footer(text=f"Round {current_round} of {count} | 15 seconds to guess")
+                embed.set_footer(text=f"Round {current_round} of {count}")
 
                 round_msg = await ctx.send(embed=embed)
 
                 def check(message):
-                    return (
-                        message.channel.id == ctx.channel.id and
-                        message.author.id in players and
-                        message.content.lower().strip() == pokeName
-                    )
+                    if message.channel.id != ctx.channel.id:
+                        return False
+
+                    # Check if stop requested
+                    if message.content.lower().strip() in ["!wtp stop", "wtp stop", "!wtp end", "!wtp cancel"]:
+                        host_id = self.client.wtpList.get(ctx.channel.id)
+                        is_allowed = (
+                            message.author.id == self.client.owner_id or
+                            message.author.id == host_id or
+                            (hasattr(message.author, 'guild_permissions') and message.author.guild_permissions.manage_messages)
+                        )
+                        if is_allowed:
+                            self.client.wtpList.pop(ctx.channel.id, None)
+                            return True
+
+                    return message.author.id in players and message.content.lower().strip() == pokeName
 
                 try:
                     msg = await self.client.wait_for('message', timeout=round_time, check=check)
                 except asyncio.TimeoutError:
+                    if ctx.channel.id not in self.client.wtpList:
+                        break
                     embed.title = f"Round {current_round}/{count} — Time's Up!"
                     embed.description = f"{self.client.emotes.get('redtick', '❌')} Nobody guessed **{wtpPoke['name'].title()}**!"
                     embed.set_image(url=pokeImgOrg)
                     embed.color = discord.Color.red()
                     await round_msg.edit(embed=embed)
                 else:
-                    scores[msg.author.id] += 1
-                    embed.title = f"Round {current_round}/{count} — Correct!"
-                    embed.description = f"{self.client.emotes.get('greentick', '✅')} **{msg.author.display_name}** guessed it correctly! It's **{wtpPoke['name'].title()}**!"
-                    embed.set_image(url=pokeImgOrg)
-                    embed.color = discord.Color.green()
-                    await round_msg.edit(embed=embed)
+                    if ctx.channel.id not in self.client.wtpList:
+                        break
+                    if msg.content.lower().strip() == pokeName:
+                        scores[msg.author.id] += 1
+                        embed.title = f"Round {current_round}/{count} — Correct!"
+                        embed.description = f"{self.client.emotes.get('greentick', '✅')} **{msg.author.display_name}** guessed it correctly! It's **{wtpPoke['name'].title()}**!"
+                        embed.set_image(url=pokeImgOrg)
+                        embed.color = discord.Color.green()
+                        await round_msg.edit(embed=embed)
 
                 if current_round < count:
+                    if ctx.channel.id not in self.client.wtpList:
+                        break
                     await asyncio.sleep(3)
 
-            # Final Leaderboard
-            sorted_scores = sorted(scores.items(), key=lambda item: item[1], reverse=True)
+            # Final Leaderboard (if not forcibly stopped early)
+            if ctx.channel.id in self.client.wtpList:
+                sorted_scores = sorted(scores.items(), key=lambda item: item[1], reverse=True)
 
-            lb_embed = discord.Embed(
-                title="🏆 Who's That Pokémon — Final Leaderboard",
-                color=discord.Color.gold()
-            )
-            lb_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
+                lb_embed = discord.Embed(
+                    title="🏆 Who's That Pokémon — Final Leaderboard",
+                    color=discord.Color.gold()
+                )
+                lb_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
 
-            lb_lines = []
-            medals = ["🥇", "🥈", "🥉"]
-            for rank, (p_id, score) in enumerate(sorted_scores, 1):
-                user = players.get(p_id)
-                name = user.display_name if user else f"User {p_id}"
-                medal = medals[rank - 1] if rank <= 3 else f"`#{rank}`"
-                lb_lines.append(f"{medal} **{name}**: `{score}` point(s)")
+                lb_lines = []
+                medals = ["🥇", "🥈", "🥉"]
+                for rank, (p_id, score) in enumerate(sorted_scores, 1):
+                    user = players.get(p_id)
+                    name = user.display_name if user else f"User {p_id}"
+                    medal = medals[rank - 1] if rank <= 3 else f"`#{rank}`"
+                    lb_lines.append(f"{medal} **{name}**: `{score}` point(s)")
 
-            lb_embed.description = "\n".join(lb_lines) if lb_lines else "No participants scored points!"
-            lb_embed.set_footer(text=f"Game Over | Total Rounds: {count}", icon_url=ctx.author.display_avatar.url)
+                lb_embed.description = "\n".join(lb_lines) if lb_lines else "No participants scored points!"
+                lb_embed.set_footer(text=f"Game Over | Total Rounds: {count}", icon_url=ctx.author.display_avatar.url)
 
-            await ctx.send(embed=lb_embed)
+                await ctx.send(embed=lb_embed)
 
         finally:
-            if ctx.channel.id in self.client.wtpList:
-                self.client.wtpList.remove(ctx.channel.id)
+            self.client.wtpList.pop(ctx.channel.id, None)
         
     @commands.command(name = "10s")
     @commands.guild_only()
@@ -337,93 +433,234 @@ class Games(commands.Cog):
         )
         await x.edit(embed=embed, view=None)
 
-    @commands.command()
+    @commands.group(aliases=["pkq"])
     @commands.guild_only()
-    async def pkquiz(self, ctx, points_to_win = 5):
+    async def pkquiz(self, ctx):
         """Guess the pokemon by dex entries."""
-        if ctx.guild.id in self.client.activeQuiz:
-            await ctx.send("A quiz is already running in this server. End the quiz to start another one!")
+        if ctx.invoked_subcommand is None:
+            embed = discord.Embed(color=discord.Color.gold())
+            embed.set_author(name="Minigame: Pokédex Quiz", icon_url="https://i.imgur.com/MItw5zU.png")
+            desc = "```This is a multiplayer quiz where you guess the Pokémon from Pokédex entry clues!```"
+            rules = (
+                "```1. Click 'Join Quiz' during the 30-second lobby to join.\n"
+                "2. Read the Pokédex entry clues and type the Pokémon name.\n"
+                "3. The first participant to guess correctly wins 1 point.\n"
+                "4. Only English names are allowed (Case Insensitive).\n"
+                "5. Player with the highest score at the end of all rounds wins!\n```"
+            )
+            embed.description = desc
+            embed.add_field(name="Rules:", value=rules)
+            embed.add_field(name="Good Luck!", value="\u200b", inline=False)
+            embed.set_image(url="https://i.imgur.com/yAz3xCI.jpg")
+            embed.set_footer(text="To Start the Quiz | !pkquiz start [count=10]", icon_url=ctx.author.display_avatar.url)
+            await ctx.send(embed=embed)
             return
-        else:
-            try:
-                points_to_win = int(points_to_win)
-            except (ValueError, TypeError):
-                _ = await ctx.send("Invalid input for `points_to_win` parameter.")
+
+    @pkquiz.command(name='stop', aliases=['end', 'cancel', 'quit'])
+    @commands.guild_only()
+    async def pkquiz_stop(self, ctx):
+        """Stops an ongoing Pokédex Quiz in the channel."""
+        if ctx.channel.id not in self.client.activeQuiz:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `No Pokédex Quiz is currently running in this channel.`")
+            return
+
+        host_id = self.client.activeQuiz.get(ctx.channel.id)
+        is_allowed = (
+            ctx.author.id == self.client.owner_id or
+            ctx.author.id == host_id or
+            (hasattr(ctx.author, 'guild_permissions') and ctx.author.guild_permissions.manage_messages)
+        )
+        if not is_allowed:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Only the quiz host, server moderators, or bot owner can stop this quiz.`")
+            return
+
+        self.client.activeQuiz.pop(ctx.channel.id, None)
+        await ctx.send(f"{self.client.emotes.get('greentick', '✅')} **Pokédex Quiz has been stopped by {ctx.author.display_name}.**")
+
+    @pkquiz.command(name='start')
+    @commands.guild_only()
+    async def pkquiz_start(self, ctx, *, args: str = "10"):
+        """Starts Pokédex Quiz minigame. Usage: !pkquiz start [count=10]"""
+        if ctx.channel.id in self.client.activeQuiz:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `A Pokédex Quiz is already running in this channel!`")
+            return
+
+        count = 10
+        cleaned_args = args.replace("count=", "").strip()
+        try:
+            count = int(cleaned_args)
+        except ValueError:
+            count = 10
+
+        if count < 1 or count > 50:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Number of questions must be between 1 and 50.`")
+            return
+
+        self.client.activeQuiz[ctx.channel.id] = ctx.author.id
+
+        try:
+            # 1. Open 30-second lobby window
+            lobby_end_time = int(datetime.now(timezone.utc).timestamp()) + 30
+            join_view = PKQuizJoinView(ctx.author, self.client.emotes, timeout=35.0)
+            embed = discord.Embed(
+                title="📖 Pokédex Quiz — Lobby Open!",
+                description=(
+                    f"**{ctx.author.display_name}** is starting a Pokédex Quiz with **{count} Question(s)**!\n\n"
+                    f"Click **Join Quiz** below to participate! Quiz starts <t:{lobby_end_time}:R>."
+                ),
+                color=discord.Color.gold()
+            )
+            embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
+            embed.set_footer(text=f"Hosted by {ctx.author.display_name}", icon_url=ctx.author.display_avatar.url)
+
+            lobby_msg = await ctx.send(embed=embed, view=join_view)
+
+            # Check for early cancellation during 30s lobby
+            for _ in range(30):
+                if ctx.channel.id not in self.client.activeQuiz:
+                    join_view.stop()
+                    for child in join_view.children:
+                        child.disabled = True
+                    cancel_embed = discord.Embed(
+                        title="📖 Pokédex Quiz — Stopped",
+                        description="Quiz was stopped by host or administrator.",
+                        color=discord.Color.red()
+                    )
+                    await lobby_msg.edit(embed=cancel_embed, view=join_view)
+                    return
+                await asyncio.sleep(1)
+
+            # Close lobby & disable buttons
+            join_view.stop()
+            for child in join_view.children:
+                child.disabled = True
+
+            players = join_view.players
+            if not players:
+                cancel_embed = discord.Embed(
+                    title="📖 Pokédex Quiz — Cancelled",
+                    description="No participants joined the quiz! Quiz cancelled.",
+                    color=discord.Color.red()
+                )
+                cancel_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
+                await lobby_msg.edit(embed=cancel_embed, view=join_view)
                 return
 
-            self.client.activeQuiz.append(ctx.guild.id)
-            await ctx.send(f"A quiz will start in few seconds. First to {points_to_win} point wins!\n`skip` - To skip the question. \n`quit` - To end the quiz. ")
+            player_names = ", ".join([p.display_name for p in players.values()])
+
+            game_start_time = int(datetime.now(timezone.utc).timestamp()) + 5
+            start_embed = discord.Embed(
+                title="📖 Pokédex Quiz — Game Starting!",
+                description=f"**{len(players)} Player(s) joined:** {player_names}\n\nGet ready! Question 1 is starting <t:{game_start_time}:R>...",
+                color=discord.Color.green()
+            )
+            start_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
+            await lobby_msg.edit(embed=start_embed, view=join_view)
             await asyncio.sleep(5)
 
-        
+            # Load Pokédex entries dataset
+            with open("./files/dex_entries.json", "r") as f:
+                data = json.load(f)
 
-        with open("./files/dex_entries.json","r") as f:
-            data = json.load(f)
+            scores = {p_id: 0 for p_id in players}
+            round_time = 45.0
 
-        start = True
-        fail_count = 0
-        points_table = {}
-        while start:
-            c = random.choice(list(data.keys()))
-            quiz = f"{data[c][0]}\n{data[c][1]}"
-            answer = c
-            if answer in quiz:
-                quiz = quiz.replace(answer, "_" * len(answer))
+            for current_round in range(1, count + 1):
+                if ctx.channel.id not in self.client.activeQuiz:
+                    break
 
-            trans = quiz.maketrans("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", "ᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢ")
-            quiz = "```" + quiz.translate(trans) + "```"
+                c = random.choice(list(data.keys()))
+                quiz_raw = f"{data[c][0]}\n{data[c][1]}"
+                answer = c.lower().strip()
 
-            _ = await ctx.send(quiz)
+                # Mask Pokemon name in clue
+                masked_name = "_" * len(c)
+                if c.lower() in quiz_raw.lower():
+                    # Replace case-insensitively
+                    import re
+                    quiz_raw = re.sub(re.escape(c), masked_name, quiz_raw, flags=re.IGNORECASE)
 
-            def check(message):
-                if message.channel.id == ctx.channel.id:
-                    if message.content.lower() == answer.lower():
-                        return True
-                    elif message.content.lower() == "skip" and message.author == ctx.author:
-                        return True
-                    elif message.content.lower() == "quit" and message.author == ctx.author:
-                        return True
+                trans = quiz_raw.maketrans("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", "ᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢ")
+                quiz_styled = "```" + quiz_raw.translate(trans) + "```"
 
-            try:
-                msg = await self.client.wait_for('message',check=check, timeout=60)
-            except asyncio.TimeoutError:
-                _ = await ctx.send(f"You have failed to guess the answer: {answer}!")
-                fail_count += 1
+                round_end_time = int(datetime.now(timezone.utc).timestamp()) + 45
+                embed = discord.Embed(
+                    title=f"Question {current_round}/{count} — Guess the Pokémon!",
+                    description=f"{quiz_styled}\nGuessing ends <t:{round_end_time}:R>!",
+                    color=discord.Color.blurple()
+                )
+                embed.set_author(name="Pokédex Quiz", icon_url="https://i.imgur.com/MItw5zU.png")
+                embed.set_footer(text=f"Question {current_round} of {count}")
 
-            else:
-                if msg.content.lower() == answer.lower():
-                    point = points_table.get(msg.author, 0) + 1
-                    points_table[msg.author] = point
-                    await msg.add_reaction("✅")
-                    
-                    if point >= points_to_win:
-                        _ = await ctx.send(f"{msg.author} wins with {point} points!!!")
-                        start = False
-                    else:
-                        _ = await ctx.send(f"{msg.author} : +1 [Total: {point} points]")
+                round_msg = await ctx.send(embed=embed)
 
-                    
-                elif msg.content.lower() == "skip":
-                    _ = await ctx.send(f"You have skipped this question!! The answer was: {answer}")
-                elif msg.content.lower() == "quit":
-                    _ = await ctx.send("You have ended the quiz!!!")
-                    start = False
-            
-            if fail_count >= 3:
-                start =  False
-                _ = await ctx.send("Ending the quiz due to multiple failed guesses!!!")
+                def check(message):
+                    if message.channel.id != ctx.channel.id:
+                        return False
 
-            if not start:
-                self.client.activeQuiz.remove(ctx.guild.id)
-                points_table = dict(sorted(points_table.items(), key=lambda item: item[1], reverse=True))
-                desc = "--------------------\n"
-                desc += "Points Table: \n"
-                desc += "--------------------\n"
-                desc += "\n".join([f"{k} : {v} points" for k,v in points_table.items()])
-                desc += "\n--------------------"
-                _ = await ctx.send(f"```{desc}```")
+                    # Check for stop request
+                    if message.content.lower().strip() in ["!pkquiz stop", "pkquiz stop", "!pkquiz end", "!pkquiz cancel"]:
+                        host_id = self.client.activeQuiz.get(ctx.channel.id)
+                        is_allowed = (
+                            message.author.id == self.client.owner_id or
+                            message.author.id == host_id or
+                            (hasattr(message.author, 'guild_permissions') and message.author.guild_permissions.manage_messages)
+                        )
+                        if is_allowed:
+                            self.client.activeQuiz.pop(ctx.channel.id, None)
+                            return True
 
-            await asyncio.sleep(7)
+                    return message.author.id in players and message.content.lower().strip() == answer
+
+                try:
+                    msg = await self.client.wait_for('message', timeout=round_time, check=check)
+                except asyncio.TimeoutError:
+                    if ctx.channel.id not in self.client.activeQuiz:
+                        break
+                    embed.title = f"Question {current_round}/{count} — Time's Up!"
+                    embed.description = f"{self.client.emotes.get('redtick', '❌')} Nobody guessed **{c.title()}**!\n\n{quiz_styled}"
+                    embed.color = discord.Color.red()
+                    await round_msg.edit(embed=embed)
+                else:
+                    if ctx.channel.id not in self.client.activeQuiz:
+                        break
+                    if msg.content.lower().strip() == answer:
+                        scores[msg.author.id] += 1
+                        embed.title = f"Question {current_round}/{count} — Correct!"
+                        embed.description = f"{self.client.emotes.get('greentick', '✅')} **{msg.author.display_name}** guessed it correctly! It's **{c.title()}**!\n\n{quiz_styled}"
+                        embed.color = discord.Color.green()
+                        await round_msg.edit(embed=embed)
+
+                if current_round < count:
+                    if ctx.channel.id not in self.client.activeQuiz:
+                        break
+                    await asyncio.sleep(4)
+
+            # Final Leaderboard (if not forcibly stopped early)
+            if ctx.channel.id in self.client.activeQuiz:
+                sorted_scores = sorted(scores.items(), key=lambda item: item[1], reverse=True)
+
+                lb_embed = discord.Embed(
+                    title="🏆 Pokédex Quiz — Final Leaderboard",
+                    color=discord.Color.gold()
+                )
+                lb_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
+
+                lb_lines = []
+                medals = ["🥇", "🥈", "🥉"]
+                for rank, (p_id, score) in enumerate(sorted_scores, 1):
+                    user = players.get(p_id)
+                    name = user.display_name if user else f"User {p_id}"
+                    medal = medals[rank - 1] if rank <= 3 else f"`#{rank}`"
+                    lb_lines.append(f"{medal} **{name}**: `{score}` point(s)")
+
+                lb_embed.description = "\n".join(lb_lines) if lb_lines else "No participants scored points!"
+                lb_embed.set_footer(text=f"Quiz Complete | Total Questions: {count}", icon_url=ctx.author.display_avatar.url)
+
+                await ctx.send(embed=lb_embed)
+
+        finally:
+            self.client.activeQuiz.pop(ctx.channel.id, None)
 
             
 async def setup(client):
