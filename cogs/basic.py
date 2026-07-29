@@ -4,6 +4,31 @@ from discord.ext import commands
 
 logger = logging.getLogger("CreedBot")
 
+class ConfirmView(discord.ui.View):
+    def __init__(self, author_id, timeout=30.0):
+        super().__init__(timeout=timeout)
+        self.author_id = author_id
+        self.value = None
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.author_id:
+            await interaction.response.send_message("This confirmation is not for you.", ephemeral=True)
+            return False
+        return True
+
+    @discord.ui.button(label="Confirm", style=discord.ButtonStyle.success, emoji="✅")
+    async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.value = True
+        self.stop()
+        await interaction.response.defer()
+
+    @discord.ui.button(label="Cancel", style=discord.ButtonStyle.secondary, emoji="✖️")
+    async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.value = False
+        self.stop()
+        await interaction.response.defer()
+
+
 class Basic(commands.Cog):
 
     def __init__(self, client):
@@ -40,34 +65,22 @@ class Basic(commands.Cog):
         """Changes command prefix."""
         new_prefix = new_prefix.replace('"','').replace("'","")
         if 0 < len(new_prefix) <= 10:
-            def check(message):
-                return message.author == ctx.author and any(
-                    i == message.content.lower() for i in ["y", "n", "yes", "no", "confirm"])
-    
-            m = f"Hello {ctx.author.display_name}, \nCommand prefix will be changed to {self.client.emotes.get('arrowright','**')} {new_prefix} {self.client.emotes.get('arrowleft','**')}\nPlease confirm if you want to continue? \nType any of these `[y/yes/confirm]`"
+            view = ConfirmView(ctx.author.id, timeout=20.0)
+            m = f"Hello {ctx.author.display_name},\nCommand prefix will be changed to {self.client.emotes.get('arrowright','**')} **{new_prefix}** {self.client.emotes.get('arrowleft','**')}\nPlease confirm if you want to continue?"
             embed = discord.Embed(description = m)
-            x = await ctx.send(embed = embed)
-            try:
-                msg = await self.client.wait_for("message", timeout = 20.0, check = check)
-            except asyncio.TimeoutError:
-                embed = discord.Embed(description = f"{self.client.emotes.get('timer','')} Session timed out! Command prefix did not change.",
-                                      color = discord.Color.red())
-                await x.edit(embed = embed)
+            x = await ctx.send(embed = embed, view = view)
+            await view.wait()
+
+            if view.value is True:
+                prefixes = self.client.db.get_collection("prefixes_cb")
+                prefixes.update_one({"serverid": ctx.guild.id}, {"$set": {"prefix": new_prefix}}, upsert=True)
+                desc = f"{self.client.emotes.get('accepted','')} Command prefix changed to {self.client.emotes.get('arrowright','**')} **{new_prefix}** {self.client.emotes.get('arrowleft','**')}"
+                embed = discord.Embed(title = f"Hello {ctx.author.display_name}", description = desc)
+                await x.edit(embed = embed, view = None)
             else:
-                if any(i == msg.content.lower() for i in ["y", "yes", "confirm"]):
-                    prefixes = self.client.db.get_collection("prefixes_cb")
-                    p = prefixes.find_one({"serverid": ctx.guild.id})
-                    prefixes.update_one({"serverid": ctx.guild.id}, {"$set": {"prefix": new_prefix}})
-                    desc = f"{self.client.emotes.get('accepted','')} Command prefix changed to {self.client.emotes.get('arrowright','**')} {new_prefix} {self.client.emotes.get('arrowleft','**')}"
-                    embed = discord.Embed(title = f"Hello {ctx.author.display_name}",
-                                  description = desc)
-                    await x.edit(embed = embed)
-                else:
-                    desc = f"{self.client.emotes.get('denied','')} Command prefix did not change."
-                    embed = discord.Embed(title = f"Hello {ctx.author.display_name}",
-                                  description = desc)
-                    await x.edit(embed = embed)
-    
+                desc = f"{self.client.emotes.get('denied','')} Command prefix did not change."
+                embed = discord.Embed(title = f"Hello {ctx.author.display_name}", description = desc)
+                await x.edit(embed = embed, view = None)
         else:
             embed = discord.Embed(description = f"{self.client.emotes.get('alert','')} Command prefixes can only be of 1 to 10 characters long.",
                                   color = discord.Color.red())
@@ -89,11 +102,12 @@ class Basic(commands.Cog):
         """Displays user avatar."""
         if not member:
             member = ctx.author
-        ext = "gif" if member.avatar.is_animated() else "png"
-        file = discord.File(io.BytesIO(await member.avatar.read()), f"{ctx.author.id}.{ext}")
+        avatar_asset = member.display_avatar
+        ext = "gif" if avatar_asset.is_animated() else "png"
+        file = discord.File(io.BytesIO(await avatar_asset.read()), f"{ctx.author.id}.{ext}")
         embed = discord.Embed()
         embed.set_image(url= f"attachment://{ctx.author.id}.{ext}")
-        embed.set_footer(text = f"Requested by {ctx.author.name} | {self.client.get_time}", icon_url = ctx.author.avatar)
+        embed.set_footer(text = f"Requested by {ctx.author.name} | {self.client.get_time}", icon_url = ctx.author.display_avatar.url)
         await ctx.send(file=file, embed=embed)
 
     @commands.command(aliases = ["calc", "math", "="])

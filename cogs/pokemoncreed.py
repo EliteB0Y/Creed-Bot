@@ -1,22 +1,98 @@
 import discord, asyncio, json, aiohttp
 from datetime import datetime, timezone
 import logging
-from discord.ext import commands, menus
+from discord.ext import commands
 
 logger = logging.getLogger("CreedBot")
 
-class BoxMenu(menus.Menu):
-    def __init__(self, ctx, results):
+
+class ConfirmView(discord.ui.View):
+    def __init__(self, author_id, timeout=30.0):
+        super().__init__(timeout=timeout)
+        self.author_id = author_id
+        self.value = None
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.author_id:
+            await interaction.response.send_message("This confirmation is not for you.", ephemeral=True)
+            return False
+        return True
+
+    @discord.ui.button(label="Confirm", style=discord.ButtonStyle.danger, emoji="✅")
+    async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.value = True
+        self.stop()
+        await interaction.response.defer()
+
+    @discord.ui.button(label="Cancel", style=discord.ButtonStyle.secondary, emoji="✖️")
+    async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.value = False
+        self.stop()
+        await interaction.response.defer()
+
+
+class PageJumpModal(discord.ui.Modal, title="Jump to Page"):
+    page_num = discord.ui.TextInput(
+        label="Page Number",
+        placeholder="Enter page number...",
+        min_length=1,
+        max_length=5,
+        required=True
+    )
+
+    def __init__(self, view):
         super().__init__()
+        self.view = view
+
+    async def on_submit(self, interaction: discord.Interaction):
+        try:
+            page = int(self.page_num.value) - 1
+            if 0 <= page < len(self.view.results):
+                self.view.pg = page
+                embed = self.view.getPagewiseDetails(self.view.pg)
+                await interaction.response.edit_message(embed=embed, view=self.view)
+            else:
+                await interaction.response.send_message(
+                    f"Invalid page number! Please enter between 1 and {len(self.view.results)}.",
+                    ephemeral=True
+                )
+        except ValueError:
+            await interaction.response.send_message("Please enter a valid integer.", ephemeral=True)
+
+
+class BoxView(discord.ui.View):
+    def __init__(self, ctx, results):
+        super().__init__(timeout=120)
         self.ctx = ctx
         self.results = results
         self.pg = 0
-    
+        self.message = None
+        self.uname = ""
+        self.uid = ""
+        self.desc = ""
+        self.pkcount = 0
+        self.pasteURL = ""
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.ctx.author.id:
+            await interaction.response.send_message("You cannot control this menu.", ephemeral=True)
+            return False
+        return True
+
+    async def on_timeout(self):
+        for child in self.children:
+            child.disabled = True
+        if self.message:
+            try:
+                await self.message.edit(view=self)
+            except discord.HTTPException:
+                pass
+
     async def mystbin(self, text):
         timeout = aiohttp.ClientTimeout(total=15)
         try:
             async with aiohttp.ClientSession(timeout=timeout) as session:
-                payload = {"files":[{"content": text, "name": "No Title"}]}
+                payload = {"files": [{"content": text, "name": "No Title"}]}
                 headers = {"Content-Type": "application/json"}
                 async with session.post(url="https://api.pastey.gg/pastes", json=payload, headers=headers) as r:
                     if r.status == 201:
@@ -24,24 +100,28 @@ class BoxMenu(menus.Menu):
                         return f"https://pastey.gg/{mdata['id']}"
                     else:
                         logger.warning("pastey.gg upload failed: HTTP %s", r.status)
-                        return f"https://pastey.gg/"
+                        return "https://pastey.gg/"
         except asyncio.TimeoutError:
             logger.warning("pastey.gg upload timed out.")
-            return f"https://pastey.gg/"
+            return "https://pastey.gg/"
 
     async def cleanResults(self):
-        if self.results["success"]:
+        if self.results and self.results.get("success"):
             self.uname = self.results["data"]["name"]
             self.uid = self.results["data"]["id"]
             self.desc = ""
             coloreds = ["Ancient", "Cursed", "Glitter", "Golden", "Luminous", "Rainbow", "Shadow"]
-            op = [i["name"] + " " + i["gender"] + " - Level: " + str(i["level"]) for i in self.results["data"]["pokemon"] if
-                  i["loan"] == "0" and any(i["name"].startswith(x) for x in coloreds)]
+            op = [
+                i["name"] + " " + i["gender"] + " - Level: " + str(i["level"])
+                for i in self.results["data"]["pokemon"]
+                if i["loan"] == "0" and any(i["name"].startswith(x) for x in coloreds)
+            ]
             self.pkcount = len(op)
 
             def chunks(lst, n):
                 for i in range(0, len(lst), n):
                     yield lst[i: i + n]
+
             if not op:
                 self.desc = f"`{self.uname}'s box contains no colored pokemons.`"
                 self.results = []
@@ -53,114 +133,89 @@ class BoxMenu(menus.Menu):
                 mytext += "\n".join(pokes)
                 mytext += "\n\n>> Box organizer by Creed Bot <<"
                 self.pasteURL = await self.mystbin(mytext)
-
         else:
-            self.desc = f"`Please provide a valid username.`"
+            self.desc = "`Please provide a valid username.`"
             self.results = None
 
     def genEmbed(self):
-        embed = discord.Embed(color = discord.Color.dark_gold())
-        embed.set_author(name = "Box of " + self.uname + ' - #' + self.uid)
+        embed = discord.Embed(color=discord.Color.dark_gold())
+        embed.set_author(name="Box of " + self.uname + ' - #' + self.uid)
         return embed
-    
+
     def getPagewiseDetails(self, pg):
-        result = self.results
-        if result == []:
+        if self.results == []:
             embed = discord.Embed()
-            embed.set_author(name = "Box of " + self.uname + ' - #' + self.uid)
+            embed.set_author(name="Box of " + self.uname + ' - #' + self.uid)
             embed.description = self.desc
-            embed.set_footer(text=f"Box Organizer", icon_url= self.ctx.me.avatar)
+            embed.set_footer(text="Box Organizer", icon_url=self.ctx.me.display_avatar.url)
             return embed
 
-        if result is None:
+        if self.results is None:
             embed = discord.Embed()
-            embed.set_author(name = "Username not found")
+            embed.set_author(name="Username not found")
             embed.description = self.desc
-            embed.set_footer(text=f"Box Organizer", icon_url= self.ctx.me.avatar)
+            embed.set_footer(text="Box Organizer", icon_url=self.ctx.me.display_avatar.url)
             return embed
 
         embed = self.genEmbed()
-        self.desc = f"**(This box contains {self.pkcount} colored pokemons)**\n[Click here to get the complete list!]({self.pasteURL})\n\n"
-        embed.description = self.desc + "\n".join(result[pg])
-        embed.set_footer(text=f"Box Organizer | Page {pg+1} of {len(result)}", icon_url= self.ctx.me.avatar)
+        self.desc = (
+            f"**(This box contains {self.pkcount} colored pokemons)**\n"
+            f"[Click here to get the complete list!]({self.pasteURL})\n\n"
+        )
+        embed.description = self.desc + "\n".join(self.results[pg])
+        embed.set_footer(
+            text=f"Box Organizer | Page {pg + 1} of {len(self.results)}",
+            icon_url=self.ctx.me.display_avatar.url
+        )
         return embed
-                    
-    def check(self, payload):
-        return payload.message_id == self.message.id and payload.user_id == self.ctx.author.id
-                    
-    async def send_initial_message(self, ctx, channel):
+
+    async def start(self):
         await self.cleanResults()
         embed = self.getPagewiseDetails(self.pg)
-        return await channel.send(embed=embed)
-    
-    buttonz = {"first": "<:first:800209150227120158>","back": "<:back:800215055634399232>", "stop": "<:stop:800214101791735808>", "next": "<:next:800214875669528596>", "last": "<:last:800209919734972426>", "page": "\U0001f522"}
-    
-    @menus.button(buttonz.get("first"))
-    async def on_first_button(self, payload):
-        if not self.check(payload):
-            return 
-        self.pg = 0
-        self.pg %=  len(self.results)
-        await self.message.edit(embed=self.getPagewiseDetails(self.pg))
-    
-    @menus.button(buttonz.get("back"))
-    async def on_previous_button(self, payload):
-        if not self.check(payload):
-            return
-        self.pg -= 1
-        self.pg %=  len(self.results)
-        await self.message.edit(embed=self.getPagewiseDetails(self.pg))
-                
-    @menus.button(buttonz.get("stop"))
-    async def on_stop_button(self, payload):
-        if not self.check(payload):
-            return
-        self.stop()
-        await self.message.delete()
-                        
-    @menus.button(buttonz.get("next"))
-    async def on_next_button(self, payload):
-        if not self.check(payload):
-            return 
-        self.pg += 1
-        self.pg %=  len(self.results)
-        await self.message.edit(embed=self.getPagewiseDetails(self.pg))
-        
-    @menus.button(buttonz.get("last"))
-    async def on_last_button(self, payload):
-        if not self.check(payload):
-            return 
-        self.pg = -1
-        self.pg %=  len(self.results)
-        await self.message.edit(embed=self.getPagewiseDetails(self.pg))
-
-    @menus.button(buttonz.get("page"))
-    async def on_page_button(self, payload):
-        if not self.check(payload):
-            return
-        tmp = await self.message.channel.send(f"`Enter the Page Number (1 - {len(self.results)}):`")
-
-        def check(message):
-            return message.author == payload.member
-
-        try:
-            msg  = await self.bot.wait_for('message', timeout = 10, check=check)
-        except asyncio.TimeoutError:
-            await tmp.delete()
-            await self.message.channel.send('`Too bad!! You did not enter the page number...`', delete_after=3)
+        if not self.results:
+            self.message = await self.ctx.send(embed=embed)
         else:
-            try:
-                await tmp.delete()
-                await msg.delete()
-                x = int(msg.content) - 1
-                if 0 < x <= len(self.results):
-                    self.pg = x
-                    await self.message.edit(embed=self.getPagewiseDetails(self.pg))
-                else:
-                    raise Exception
-            except Exception as e:
-                logger.debug("Invalid page number input: %s", e)
-                await self.message.channel.send('`Invalid page number.`', delete_after=3)
+            self.message = await self.ctx.send(embed=embed, view=self)
+
+    @discord.ui.button(emoji="⏮️", style=discord.ButtonStyle.secondary)
+    async def first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if not self.results:
+            return
+        self.pg = 0
+        await interaction.response.edit_message(embed=self.getPagewiseDetails(self.pg), view=self)
+
+    @discord.ui.button(emoji="◀️", style=discord.ButtonStyle.primary)
+    async def prev_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if not self.results:
+            return
+        self.pg = (self.pg - 1) % len(self.results)
+        await interaction.response.edit_message(embed=self.getPagewiseDetails(self.pg), view=self)
+
+    @discord.ui.button(emoji="⏹️", style=discord.ButtonStyle.danger)
+    async def stop_menu(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.stop()
+        if self.message:
+            await self.message.delete()
+
+    @discord.ui.button(emoji="▶️", style=discord.ButtonStyle.primary)
+    async def next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if not self.results:
+            return
+        self.pg = (self.pg + 1) % len(self.results)
+        await interaction.response.edit_message(embed=self.getPagewiseDetails(self.pg), view=self)
+
+    @discord.ui.button(emoji="⏭️", style=discord.ButtonStyle.secondary)
+    async def last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if not self.results:
+            return
+        self.pg = len(self.results) - 1
+        await interaction.response.edit_message(embed=self.getPagewiseDetails(self.pg), view=self)
+
+    @discord.ui.button(emoji="🔢", style=discord.ButtonStyle.secondary)
+    async def jump_page(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if not self.results:
+            return
+        await interaction.response.send_modal(PageJumpModal(self))
 
 
 class PokemonCreed(commands.Cog):
@@ -613,8 +668,8 @@ class PokemonCreed(commands.Cog):
             return
 
         result = json.loads(data)
-        bm = BoxMenu(ctx, result)
-        await bm.start(ctx)
+        bv = BoxView(ctx, result)
+        await bv.start()
 
 
     @commands.command(aliases = ['pkrate'])
@@ -626,7 +681,7 @@ class PokemonCreed(commands.Cog):
         rates = []
         desc = f"{self.client.emotes.get('loading','')} Computing rates...\n(This might take some time!)"
         embed = discord.Embed(description = desc)
-        embed.set_author(name = "Creed Bot (Pokemon Rater)", icon_url = ctx.me.avatar)
+        embed.set_author(name = "Creed Bot (Pokemon Rater)", icon_url = ctx.me.display_avatar.url)
         m = await ctx.send(embed = embed)
         timeout = aiohttp.ClientTimeout(total=15)
         async with aiohttp.ClientSession(timeout=timeout) as session:
@@ -674,8 +729,8 @@ class PokemonCreed(commands.Cog):
 
         if not_considered:
             embed.add_field(name = "Below pokemon(s) are not considered:", value = "\n".join(not_considered))
-        embed.set_author(name = "Creed Bot (Pokemon Rater)", icon_url = ctx.me.avatar)
-        embed.set_footer(text = f'Requested by {ctx.author.name}', icon_url = ctx.author.avatar)
+        embed.set_author(name = "Creed Bot (Pokemon Rater)", icon_url = ctx.me.display_avatar.url)
+        embed.set_footer(text = f'Requested by {ctx.author.name}', icon_url = ctx.author.display_avatar.url)
         await m.edit(embed = embed)
 
     # ==========================================
@@ -792,22 +847,17 @@ class PokemonCreed(commands.Cog):
             await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `You don't have a collection to clear.`")
             return
 
-        confirm_msg = await ctx.send("⚠️ Are you sure you want to clear your collection? React ✅ to confirm.")
-        await confirm_msg.add_reaction("✅")
+        view = ConfirmView(ctx.author.id, timeout=20.0)
+        confirm_msg = await ctx.send("⚠️ Are you sure you want to clear your collection?", view=view)
+        await view.wait()
 
-        def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) == "✅" and reaction.message.id == confirm_msg.id
-
-        try:
-            await self.client.wait_for("reaction_add", timeout=15.0, check=check)
-        except asyncio.TimeoutError:
-            logger.info("collection clear: %s (%s) timed out on confirmation", ctx.author, ctx.author.id)
-            await ctx.send(f"{self.client.emotes.get('timer', '⏱️')} `Collection clear cancelled — timed out.`")
-            return
-
-        col.delete_one({"user_id": ctx.author.id})
-        logger.info("collection clear: %s (%s) cleared their collection", ctx.author, ctx.author.id)
-        await ctx.send(f"{self.client.emotes.get('greentick', '✅')} `Your collection has been cleared.`")
+        if view.value is True:
+            col.delete_one({"user_id": ctx.author.id})
+            logger.info("collection clear: %s (%s) cleared their collection", ctx.author, ctx.author.id)
+            await confirm_msg.edit(content=f"{self.client.emotes.get('greentick', '✅')} `Your collection has been cleared.`", view=None)
+        else:
+            logger.info("collection clear: %s (%s) cancelled or timed out", ctx.author, ctx.author.id)
+            await confirm_msg.edit(content=f"{self.client.emotes.get('timer', '⏱️')} `Collection clear cancelled.`", view=None)
 
 
 async def setup(client):

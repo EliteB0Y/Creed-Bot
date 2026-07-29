@@ -1,5 +1,6 @@
 import discord
 import logging
+from discord import app_commands
 from discord.ext import commands
 
 logger = logging.getLogger("CreedBot")
@@ -8,6 +9,26 @@ class CommandErrorHandler(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+        client.tree.on_error = self.on_app_command_error
+
+    async def on_app_command_error(self, interaction: discord.Interaction, error: app_commands.AppCommandError):
+        logger.error(
+            "Unhandled app command error by %s (%s): %s",
+            interaction.user,
+            interaction.user.id,
+            error,
+            exc_info=error,
+        )
+        if not interaction.response.is_done():
+            await interaction.response.send_message(
+                f"An error occurred while executing this command: `{error}`",
+                ephemeral=True
+            )
+        else:
+            await interaction.followup.send(
+                f"An error occurred while executing this command: `{error}`",
+                ephemeral=True
+            )
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):

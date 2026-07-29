@@ -5,6 +5,56 @@ from datetime import datetime
 
 logger = logging.getLogger("CreedBot")
 
+class RPSView(discord.ui.View):
+    def __init__(self, author_id, timeout=20.0):
+        super().__init__(timeout=timeout)
+        self.author_id = author_id
+        self.user_choice = None
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.author_id:
+            await interaction.response.send_message("This game is not for you.", ephemeral=True)
+            return False
+        return True
+
+    @discord.ui.button(label="Rock", emoji="🪨", style=discord.ButtonStyle.primary)
+    async def rock(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.user_choice = "rock"
+        self.stop()
+        await interaction.response.defer()
+
+    @discord.ui.button(label="Paper", emoji="📄", style=discord.ButtonStyle.primary)
+    async def paper(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.user_choice = "paper"
+        self.stop()
+        await interaction.response.defer()
+
+    @discord.ui.button(label="Scissors", emoji="✂️", style=discord.ButtonStyle.primary)
+    async def scissors(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.user_choice = "scissors"
+        self.stop()
+        await interaction.response.defer()
+
+
+class TimingGameView(discord.ui.View):
+    def __init__(self, author_id, timeout=20.0):
+        super().__init__(timeout=timeout)
+        self.author_id = author_id
+        self.click_time = None
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.author_id:
+            await interaction.response.send_message("This game is not for you.", ephemeral=True)
+            return False
+        return True
+
+    @discord.ui.button(label="React Now!", emoji="⏱️", style=discord.ButtonStyle.success)
+    async def click_button(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.click_time = datetime.now(timezone.utc)
+        self.stop()
+        await interaction.response.defer()
+
+
 class Games(commands.Cog):
 
     def __init__(self, client):
@@ -51,7 +101,7 @@ class Games(commands.Cog):
             embed = discord.Embed()
             embed.set_author(name="Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
             embed.set_image(url=pokeImgWtp)
-            embed.set_footer(text=f"{ctx.author.name} | Current Score: {points} points", icon_url=ctx.author.avatar)
+            embed.set_footer(text=f"{ctx.author.name} | Current Score: {points} points", icon_url=ctx.author.display_avatar.url)
             x = await ctx.send(embed=embed)
                     
                 
@@ -64,7 +114,7 @@ class Games(commands.Cog):
                 embed = discord.Embed(description = f"{self.client.emotes.get('redtick', '')}  **You failed to guess {pokeName.title()}**")
                 embed.set_author(name="Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
                 embed.set_image(url=pokeImgOrg)
-                embed.set_footer(text=f"{ctx.author.name} | Final Score: {points} points", icon_url=ctx.author.avatar)
+                embed.set_footer(text=f"{ctx.author.name} | Final Score: {points} points", icon_url=ctx.author.display_avatar.url)
                 await x.edit(embed=embed)
                 start = False
             else:
@@ -75,13 +125,13 @@ class Games(commands.Cog):
                     embed = discord.Embed(description = f"{self.client.emotes.get('greentick', '')} **Correct!! It's {pokeName.title()}**")
                     embed.set_author(name="Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
                     embed.set_image(url=pokeImgOrg)
-                    embed.set_footer(text=f"{ctx.author.name} | Current Score: {points} points", icon_url=ctx.author.avatar)
+                    embed.set_footer(text=f"{ctx.author.name} | Current Score: {points} points", icon_url=ctx.author.display_avatar.url)
                     await x.edit(embed=embed)
                 else:
                     embed = discord.Embed(description = f"{self.client.emotes.get('redtick', '')}  **You failed to guess {pokeName.title()}**")
                     embed.set_author(name="Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
                     embed.set_image(url=pokeImgOrg)
-                    embed.set_footer(text=f"{ctx.author.name} | Final Score: {points} points", icon_url=ctx.author.avatar)
+                    embed.set_footer(text=f"{ctx.author.name} | Final Score: {points} points", icon_url=ctx.author.display_avatar.url)
                     await x.edit(embed=embed)
                     start = False
 
@@ -97,7 +147,7 @@ class Games(commands.Cog):
             txt = 'Hello'
         embed = discord.Embed()
         embed.set_author(name="Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
-        embed.set_thumbnail(url=ctx.author.avatar)
+        embed.set_thumbnail(url=ctx.author.display_avatar.url)
         embed.description = f"```{txt} {ctx.author.name}! You have guessed {count} pokemon(s) correctly and scored {points} points.```"
         await ctx.send(embed=embed)
         self.client.wtpList.remove(ctx.author.id)
@@ -107,35 +157,32 @@ class Games(commands.Cog):
     async def _10s(self, ctx):
         """Test your timing by reacting at 10 sec exact!"""
         embed = discord.Embed()
-        embed.set_author(name= "Reaction Game", icon_url= ctx.me.avatar)
-        embed.description = 'React to this message in exact 10 seconds.\n'
-        embed.set_footer(text = ctx.author, icon_url = ctx.author.avatar)
-        x = await ctx.send(embed=embed)
-        await x.add_reaction("\U0001f44d\U0001f3fb")
-        t1 = datetime.utcnow()
+        embed.set_author(name="Reaction Game", icon_url=ctx.me.display_avatar.url)
+        embed.description = 'Click the button below in exact 10 seconds.\n'
+        embed.set_footer(text=ctx.author.display_name, icon_url=ctx.author.display_avatar.url)
         
-        def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) == "\U0001f44d\U0001f3fb"
-        try:
-            reaction, user = await self.client.wait_for('reaction_add', timeout=20, check=check)
-        except asyncio.TimeoutError:
+        view = TimingGameView(ctx.author.id, timeout=20.0)
+        t1 = datetime.now(timezone.utc)
+        x = await ctx.send(embed=embed, view=view)
+        await view.wait()
+
+        if view.click_time is None:
             embed.description += "\nYour seconds counting sucks for real! 😂"
-            await x.edit(embed = embed)
+            await x.edit(embed=embed, view=None)
         else:
-            t2 = datetime.utcnow()
-            tm = t2-t1
-            embed.description += f"\nYou have reacted in `{round(tm.total_seconds(),2)}` seconds."
-            await x.edit(embed=embed)
-            
+            tm = view.click_time - t1
+            embed.description += f"\nYou have reacted in `{round(tm.total_seconds(), 2)}` seconds."
+            await x.edit(embed=embed, view=None)
+
     @commands.command()
     @commands.guild_only()
     async def guess(self, ctx):
         """Number guessing game"""
         myGuess = random.randrange(1,10)
         embed = discord.Embed()
-        embed.set_author(name="Guess the Number?", icon_url=ctx.me.avatar)
+        embed.set_author(name="Guess the Number?", icon_url=ctx.me.display_avatar.url)
         embed.description = f"```Hello {ctx.author.name},\nI have guessed a number between 1 to 10. Let's see if you can guess the same number within 5 turns.```"
-        embed.set_footer(text = ctx.author, icon_url = ctx.author.avatar)
+        embed.set_footer(text = ctx.author, icon_url = ctx.author.display_avatar.url)
         await ctx.send(embed=embed)
         
         def check(message):
@@ -162,44 +209,37 @@ class Games(commands.Cog):
     @commands.guild_only()
     async def rps(self, ctx):
         """Rock-Paper-Scissors game"""
-        reac = [f"{self.client.emotes.get('rpsrock','')}", f"{self.client.emotes.get('rpspaper','')}", f"{self.client.emotes.get('rpsscissors','')}"]
-        mine = random.choice(reac)
+        options = ["rock", "paper", "scissors"]
+        mine = random.choice(options)
+        emoji_map = {"rock": "🪨", "paper": "📄", "scissors": "✂️"}
+
         embed = discord.Embed()
-        embed.set_author(name="Rock Paper Scissors!", icon_url=ctx.me.avatar)
-        embed.description = "Okay! Let's see if you can beat me in Rock-Paper-Scissors game!\n\nI have made my move. It's your turn to choose one!"
-        embed.set_footer(text = ctx.author, icon_url = ctx.author.avatar)
-        x = await ctx.send(embed = embed)
-        [await x.add_reaction(r) for r in reac]
+        embed.set_author(name="Rock Paper Scissors!", icon_url=ctx.me.display_avatar.url)
+        embed.description = "Okay! Let's see if you can beat me in Rock-Paper-Scissors game!\n\nI have made my move. Click a button to choose yours!"
+        embed.set_footer(text=ctx.author.display_name, icon_url=ctx.author.display_avatar.url)
         
-        def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) in reac
-        
-        try:
-            reaction, user = await self.client.wait_for('reaction_add', check=check, timeout=20)
-        except asyncio.TimeoutError:
+        view = RPSView(ctx.author.id, timeout=20.0)
+        x = await ctx.send(embed=embed, view=view)
+        await view.wait()
+
+        if view.user_choice is None:
             embed.description = "You've lost the Rock-Paper-Scissors game due to inactivity..."
-            return await x.edit(embed=embed)
+            return await x.edit(embed=embed, view=None)
+
+        yours = view.user_choice
+        if yours == mine:
+            result = "It's a draw!"
+        elif (yours == "rock" and mine == "scissors") or (yours == "paper" and mine == "rock") or (yours == "scissors" and mine == "paper"):
+            result = "Oh Noo!! You have won. I'll get you next time..."
         else:
-            yours = str(reaction.emoji)
-            if yours == mine:
-                result = "It's a draw!"
-            elif mine == reac[0]:
-                if yours == reac[1]:
-                    result = "Oh Noo!! You have won. I'll get you next time..."
-                else:
-                    result = "Haha, You have lost this one."
-            elif mine == reac[1]:
-                if yours == reac[2]:
-                    result = "Oh Noo!! You have won. I'll get you next time..."
-                else:
-                    result = "Haha, You have lost this one."
-            else:
-                if yours == reac[0]:
-                    result = "Oh Noo!! You have won. I'll get you next time..."
-                else:
-                    result = "Haha, You have lost this one."
-            embed.description = f"Your choice: {str(reaction.emoji)} \nMy choice: {mine}\n\n**{result}**"
-            await x.edit(embed=embed)
+            result = "Haha, You have lost this one."
+
+        embed.description = (
+            f"Your choice: {emoji_map[yours]} **{yours.title()}**\n"
+            f"My choice: {emoji_map[mine]} **{mine.title()}**\n\n"
+            f"**{result}**"
+        )
+        await x.edit(embed=embed, view=None)
 
     @commands.command()
     @commands.guild_only()

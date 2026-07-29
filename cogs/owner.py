@@ -8,6 +8,31 @@ from bson.errors import InvalidId
 logger = logging.getLogger("CreedBot")
 
 
+class ConfirmView(discord.ui.View):
+    def __init__(self, author_id, timeout=30.0):
+        super().__init__(timeout=timeout)
+        self.author_id = author_id
+        self.value = None
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.author_id:
+            await interaction.response.send_message("This confirmation is not for you.", ephemeral=True)
+            return False
+        return True
+
+    @discord.ui.button(label="Confirm", style=discord.ButtonStyle.danger, emoji="✅")
+    async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.value = True
+        self.stop()
+        await interaction.response.defer()
+
+    @discord.ui.button(label="Cancel", style=discord.ButtonStyle.secondary, emoji="✖️")
+    async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.value = False
+        self.stop()
+        await interaction.response.defer()
+
+
 class Owner(commands.Cog):
     """Owner exclusive commands."""
 
@@ -130,24 +155,21 @@ class Owner(commands.Cog):
         if count == 0:
             return await ctx.send(f"{self.client.emotes.get('redtick', '❌')} No documents match that filter.")
 
+        view = ConfirmView(ctx.author.id, timeout=20.0)
         confirm_msg = await ctx.send(
-            f"⚠️ This will delete **{count}** document(s) from `{collection}`. React ✅ to confirm."
+            f"⚠️ This will delete **{count}** document(s) from `{collection}`. Click Confirm to proceed.",
+            view=view
         )
-        await confirm_msg.add_reaction("✅")
+        await view.wait()
 
-        def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) == "✅" and reaction.message.id == confirm_msg.id
-
-        try:
-            await self.client.wait_for("reaction_add", timeout=15.0, check=check)
-        except Exception:
-            return await ctx.send(f"{self.client.emotes.get('timer', '⏱️')} Delete cancelled — timed out.")
-
-        result = col.delete_many(query)
-        await ctx.send(
-            f"{self.client.emotes.get('greentick', '✅')} **Delete — {collection}**\n"
-            f"Deleted `{result.deleted_count}` document(s)."
-        )
+        if view.value is True:
+            result = col.delete_many(query)
+            await confirm_msg.edit(
+                content=f"{self.client.emotes.get('greentick', '✅')} **Delete — {collection}**\nDeleted `{result.deleted_count}` document(s).",
+                view=None
+            )
+        else:
+            await confirm_msg.edit(content=f"{self.client.emotes.get('timer', '⏱️')} Delete cancelled.", view=None)
 
     @mongodb.command(name="drop")
     async def mongodb_drop(self, ctx, *, collection: str):
@@ -155,24 +177,21 @@ class Owner(commands.Cog):
         if collection not in self.client.db.list_collection_names():
             return await ctx.send(f"{self.client.emotes.get('redtick', '❌')} Collection `{collection}` does not exist.")
 
+        view = ConfirmView(ctx.author.id, timeout=20.0)
         confirm_msg = await ctx.send(
-            f"🚨 **WARNING**: This will permanently drop `{collection}`. React ✅ to confirm."
+            f"🚨 **WARNING**: This will permanently drop `{collection}`. Click Confirm to proceed.",
+            view=view
         )
-        await confirm_msg.add_reaction("✅")
+        await view.wait()
 
-        def check(reaction, user):
-            return user == ctx.author and str(reaction.emoji) == "✅" and reaction.message.id == confirm_msg.id
-
-        try:
-            await self.client.wait_for("reaction_add", timeout=15.0, check=check)
-        except Exception:
-            return await ctx.send(f"{self.client.emotes.get('timer', '⏱️')} Drop cancelled — timed out.")
-
-        self.client.db.drop_collection(collection)
-        await ctx.send(
-            f"{self.client.emotes.get('greentick', '✅')} **Drop — {collection}**\n"
-            f"Collection `{collection}` has been dropped."
-        )
+        if view.value is True:
+            self.client.db.drop_collection(collection)
+            await confirm_msg.edit(
+                content=f"{self.client.emotes.get('greentick', '✅')} **Drop — {collection}**\nCollection `{collection}` has been dropped.",
+                view=None
+            )
+        else:
+            await confirm_msg.edit(content=f"{self.client.emotes.get('timer', '⏱️')} Drop cancelled.", view=None)
 
     @mongodb.command(name="count")
     async def mongodb_count(self, ctx, collection: str, *, filter_json: str = "{}"):
@@ -188,6 +207,21 @@ class Owner(commands.Cog):
             f"**Count — {collection}**\n"
             f"`{count:,}` document(s) | Filter: `{filter_json}`"
         )
+
+    # ==========================================
+    #  Command: Sync Application Commands
+    # ==========================================
+
+    @commands.command(name="sync")
+    async def sync_tree(self, ctx, guild_id: int = None):
+        """Sync application / slash command tree globally or to a specific guild."""
+        if guild_id:
+            guild = discord.Object(id=guild_id)
+            synced = await self.client.tree.sync(guild=guild)
+            await ctx.send(f"{self.client.emotes.get('greentick', '✅')} Synced `{len(synced)}` app command(s) to guild `{guild_id}`.")
+        else:
+            synced = await self.client.tree.sync()
+            await ctx.send(f"{self.client.emotes.get('greentick', '✅')} Synced `{len(synced)}` app command(s) globally.")
 
     # ==========================================
     #  Command: Emit (re-process a message)

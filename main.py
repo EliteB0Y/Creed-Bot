@@ -162,7 +162,7 @@ async def on_message(message):
         prefix = await client.get_prefix(message)
         desc = f"My prefix in this server is {client.emotes.get('arrowright','')} **{prefix[-1]}** {client.emotes.get('arrowleft','')}"
         embed = discord.Embed(description = desc)
-        embed.set_author(name=f'Hello {message.author.display_name}', icon_url=message.author.avatar)
+        embed.set_author(name=f'Hello {message.author.display_name}', icon_url=message.author.display_avatar.url)
         await channel.send(embed = embed)
 
     await client.process_commands(message)
