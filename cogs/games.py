@@ -1,7 +1,7 @@
 import discord, json, asyncio, random
 import logging
 from discord.ext import commands
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger("CreedBot")
 
