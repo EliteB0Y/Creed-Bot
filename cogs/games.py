@@ -44,6 +44,27 @@ class RPSView(discord.ui.View):
         await interaction.response.defer()
 
 
+class WTPJoinView(discord.ui.View):
+    def __init__(self, host, emotes, timeout=30.0):
+        super().__init__(timeout=timeout)
+        self.host = host
+        self.players = {host.id: host}
+
+        pokeball_emoji = emotes.get("pokeball") or "🔴"
+        self.join_btn.emoji = pokeball_emoji
+
+    @discord.ui.button(label="Join Game", style=discord.ButtonStyle.success)
+    async def join_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id in self.players:
+            await interaction.response.send_message("You have already joined the game!", ephemeral=True)
+        else:
+            self.players[interaction.user.id] = interaction.user
+            await interaction.response.send_message(
+                f"✅ You joined Who's That Pokémon! ({len(self.players)} player(s) in lobby)",
+                ephemeral=True
+            )
+
+
 class TimingGameView(discord.ui.View):
     def __init__(self, author_id, timeout=20.0):
         super().__init__(timeout=timeout)
@@ -74,91 +95,150 @@ class Games(commands.Cog):
     async def wtp(self, ctx):
         """Who's that pokemon game."""
         if ctx.invoked_subcommand is None:
-            embed = discord.Embed()
+            embed = discord.Embed(color=discord.Color.gold())
             embed.set_author(name="Minigame: Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
-            desc = "```This is a minigame where you have to guess the Pokémon name!\nGame includes Pokémon from 8 generations (Currently includes 897 Pokémons).```"
-            rules = "```1. You have to guess the Pokémon name within 15 seconds.\n2. For every correct guess, the guessing time reduces by 0.2 seconds. (Game gets harder as you score more points!)\n3. Only English names are allowed. (Case Insensitive)\n4. Failing to Guess or Wrong guess will end the game.\n```"
+            desc = "```This is a multiplayer minigame where you guess the Pokémon name!\nIncludes Pokémon from 8 generations (896 Pokémons).```"
+            rules = (
+                "```1. Click 'Join Game' during the 30-second lobby to join.\n"
+                "2. You have 15 seconds to guess the Pokémon name each round.\n"
+                "3. The first participant to type the correct name wins the round point.\n"
+                "4. Only English names are allowed (Case Insensitive).\n"
+                "5. Player with the highest score at the end of all rounds wins!\n```"
+            )
             embed.description = desc
             embed.add_field(name="Rules:", value=rules)
             embed.add_field(name="Good Luck!", value="\u200b", inline=False)
             embed.set_image(url="https://i.imgur.com/yAz3xCI.jpg")
-            embed.set_footer(text= "To Start the Game | wtp start")
+            embed.set_footer(text= "To Start the Game | wtp start [count=10]", icon_url=ctx.author.display_avatar.url)
             await ctx.send(embed=embed)
             return
     
     @wtp.command(name = 'start')
-    async def wtp_start(self, ctx):
-        """Starts who's that pokemon minigame."""
-        if ctx.author.id in self.client.wtpList:
-            await ctx.send(f"`Hello {ctx.author.name}, You are already playing who's that pokemon! Please wait until it ends.`")
+    @commands.guild_only()
+    async def wtp_start(self, ctx, *, args: str = "10"):
+        """Starts Who's That Pokémon minigame. Usage: !wtp start [count=10]"""
+        if ctx.channel.id in self.client.wtpList:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `A Who's That Pokémon game is already running in this channel!`")
             return
-            
-        self.client.wtpList.append(ctx.author.id)
-        with open('./files/wtpNames.json','r') as f:
-            wtpData = json.load(f)
-        start = True
-        points = 0
-        time_left = 15.0
-        count = 0
-        while start:
-            pokeID = random.randrange(1,897)
-            wtpPoke = wtpData.get(f"{pokeID}")
-            pokeName = wtpPoke["name"]
-            pokeImgOrg = f"https://github.com/EliteB0Y/TestBot/raw/master/WTP/{pokeID:03d}.png"
-            pokeImgWtp = f"https://github.com/EliteB0Y/TestBot/raw/master/WTP/{pokeID:03d}x.png"
-            embed = discord.Embed()
-            embed.set_author(name="Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
-            embed.set_image(url=pokeImgWtp)
-            embed.set_footer(text=f"{ctx.author.name} | Current Score: {points} points", icon_url=ctx.author.display_avatar.url)
-            x = await ctx.send(embed=embed)
-                    
-                
-            def check(message):
-                return message.author == ctx.author and message.channel.id == ctx.channel.id
-        
-            try:
-                msg = await self.client.wait_for('message', timeout = time_left, check = check)
-            except asyncio.TimeoutError:
-                embed = discord.Embed(description = f"{self.client.emotes.get('redtick', '')}  **You failed to guess {pokeName.title()}**")
-                embed.set_author(name="Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
-                embed.set_image(url=pokeImgOrg)
-                embed.set_footer(text=f"{ctx.author.name} | Final Score: {points} points", icon_url=ctx.author.display_avatar.url)
-                await x.edit(embed=embed)
-                start = False
-            else:
-                if msg.content.lower() == pokeName:
-                    count += 1
-                    points += 5
-                    time_left -= 0.2
-                    embed = discord.Embed(description = f"{self.client.emotes.get('greentick', '')} **Correct!! It's {pokeName.title()}**")
-                    embed.set_author(name="Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
-                    embed.set_image(url=pokeImgOrg)
-                    embed.set_footer(text=f"{ctx.author.name} | Current Score: {points} points", icon_url=ctx.author.display_avatar.url)
-                    await x.edit(embed=embed)
-                else:
-                    embed = discord.Embed(description = f"{self.client.emotes.get('redtick', '')}  **You failed to guess {pokeName.title()}**")
-                    embed.set_author(name="Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
-                    embed.set_image(url=pokeImgOrg)
-                    embed.set_footer(text=f"{ctx.author.name} | Final Score: {points} points", icon_url=ctx.author.display_avatar.url)
-                    await x.edit(embed=embed)
-                    start = False
 
-        if points > 200:
-            txt = 'Marvelous'
-        elif points > 150:
-            txt = 'Unbelievable'
-        elif points > 100:
-            txt = 'Fantastic'
-        elif points > 50:
-            txt = 'Good Job'
-        else:
-            txt = 'Hello'
-        embed = discord.Embed()
-        embed.set_author(name="Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
-        embed.set_thumbnail(url=ctx.author.display_avatar.url)
-        embed.description = f"```{txt} {ctx.author.name}! You have guessed {count} pokemon(s) correctly and scored {points} points.```"
-        await ctx.send(embed=embed)
-        self.client.wtpList.remove(ctx.author.id)
+        # Parse count argument (e.g. 10 or count=10)
+        count = 10
+        cleaned_args = args.replace("count=", "").strip()
+        try:
+            count = int(cleaned_args)
+        except ValueError:
+            count = 10
+
+        if count < 1 or count > 50:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Number of pokemons must be between 1 and 50.`")
+            return
+
+        self.client.wtpList.append(ctx.channel.id)
+
+        try:
+            # 1. Open 30-second lobby window
+            join_view = WTPJoinView(ctx.author, self.client.emotes, timeout=30.0)
+            embed = discord.Embed(
+                title="🎮 Who's That Pokémon — Lobby Open!",
+                description=(
+                    f"**{ctx.author.display_name}** is starting a WTP game with **{count} Pokémon(s)**!\n\n"
+                    f"Click **Join Game** below to participate! Game starts in **30 seconds**."
+                ),
+                color=discord.Color.gold()
+            )
+            embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
+            embed.set_footer(text=f"Hosted by {ctx.author.display_name}", icon_url=ctx.author.display_avatar.url)
+
+            lobby_msg = await ctx.send(embed=embed, view=join_view)
+            await join_view.wait()
+
+            players = join_view.players
+            player_names = ", ".join([p.display_name for p in players.values()])
+
+            start_embed = discord.Embed(
+                title="🎮 Who's That Pokémon — Game Starting!",
+                description=f"**{len(players)} Player(s) joined:** {player_names}\n\nGet ready! Round 1 is starting in **5 seconds**...",
+                color=discord.Color.green()
+            )
+            start_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
+            await lobby_msg.edit(embed=start_embed, view=None)
+            await asyncio.sleep(5)
+
+            # Load Pokémon dataset
+            with open('./files/wtpNames.json', 'r') as f:
+                wtpData = json.load(f)
+
+            scores = {p_id: 0 for p_id in players}
+            round_time = 15.0
+
+            for current_round in range(1, count + 1):
+                pokeID = random.randrange(1, 897)
+                wtpPoke = wtpData.get(f"{pokeID}")
+                pokeName = wtpPoke["name"].lower().strip()
+                pokeImgOrg = f"https://github.com/EliteB0Y/TestBot/raw/master/WTP/{pokeID:03d}.png"
+                pokeImgWtp = f"https://github.com/EliteB0Y/TestBot/raw/master/WTP/{pokeID:03d}x.png"
+
+                embed = discord.Embed(
+                    title=f"Round {current_round}/{count} — Who's that Pokémon?",
+                    color=discord.Color.blurple()
+                )
+                embed.set_author(name="Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
+                embed.set_image(url=pokeImgWtp)
+                embed.set_footer(text=f"Round {current_round} of {count} | 15 seconds to guess")
+
+                round_msg = await ctx.send(embed=embed)
+
+                def check(message):
+                    return (
+                        message.channel.id == ctx.channel.id and
+                        message.author.id in players and
+                        message.content.lower().strip() == pokeName
+                    )
+
+                try:
+                    msg = await self.client.wait_for('message', timeout=round_time, check=check)
+                except asyncio.TimeoutError:
+                    embed.title = f"Round {current_round}/{count} — Time's Up!"
+                    embed.description = f"{self.client.emotes.get('redtick', '❌')} Nobody guessed **{wtpPoke['name'].title()}**!"
+                    embed.set_image(url=pokeImgOrg)
+                    embed.color = discord.Color.red()
+                    await round_msg.edit(embed=embed)
+                else:
+                    scores[msg.author.id] += 1
+                    embed.title = f"Round {current_round}/{count} — Correct!"
+                    embed.description = f"{self.client.emotes.get('greentick', '✅')} **{msg.author.display_name}** guessed it correctly! It's **{wtpPoke['name'].title()}**!"
+                    embed.set_image(url=pokeImgOrg)
+                    embed.color = discord.Color.green()
+                    await round_msg.edit(embed=embed)
+
+                if current_round < count:
+                    await asyncio.sleep(3)
+
+            # Final Leaderboard
+            sorted_scores = sorted(scores.items(), key=lambda item: item[1], reverse=True)
+
+            lb_embed = discord.Embed(
+                title="🏆 Who's That Pokémon — Final Leaderboard",
+                color=discord.Color.gold()
+            )
+            lb_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
+
+            lb_lines = []
+            medals = ["🥇", "🥈", "🥉"]
+            for rank, (p_id, score) in enumerate(sorted_scores, 1):
+                user = players.get(p_id)
+                name = user.display_name if user else f"User {p_id}"
+                medal = medals[rank - 1] if rank <= 3 else f"`#{rank}`"
+                lb_lines.append(f"{medal} **{name}**: `{score}` point(s)")
+
+            lb_embed.description = "\n".join(lb_lines) if lb_lines else "No participants scored points!"
+            lb_embed.set_footer(text=f"Game Over | Total Rounds: {count}", icon_url=ctx.author.display_avatar.url)
+
+            await ctx.send(embed=lb_embed)
+
+        finally:
+            if ctx.channel.id in self.client.wtpList:
+                self.client.wtpList.remove(ctx.channel.id)
         
     @commands.command(name = "10s")
     @commands.guild_only()
