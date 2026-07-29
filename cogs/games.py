@@ -48,6 +48,7 @@ class RPSJoinView(discord.ui.View):
     def __init__(self, host, emotes, timeout=35.0):
         super().__init__(timeout=timeout)
         self.host = host
+        self.emotes = emotes
         self.players = {}
 
         rock_emoji = emotes.get("rpsrock") or "🪨"
@@ -56,13 +57,31 @@ class RPSJoinView(discord.ui.View):
     @discord.ui.button(label="Join RPS Tournament", style=discord.ButtonStyle.success)
     async def join_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id in self.players:
-            await interaction.response.send_message("You have already joined the tournament!", ephemeral=True)
+            await interaction.response.send_message(
+                f"{self.emotes.get('redtick', '❌')} `You have already joined this tournament lobby!`",
+                ephemeral=True
+            )
         else:
             self.players[interaction.user.id] = interaction.user
             await interaction.response.send_message(
-                f"✅ You joined the Rock-Paper-Scissors Tournament! ({len(self.players)} player(s) in lobby)",
+                f"{self.emotes.get('greentick', '✅')} **You joined the Rock-Paper-Scissors Tournament!**\n👥 **Total Players in Lobby:** `{len(self.players)}`",
                 ephemeral=True
             )
+
+    @discord.ui.button(label="Cancel Tournament", style=discord.ButtonStyle.danger, emoji="🛑")
+    async def cancel_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
+        is_allowed = (
+            interaction.user.id == self.host.id or
+            (hasattr(interaction.client, 'owner_id') and interaction.user.id == interaction.client.owner_id) or
+            (hasattr(interaction.user, 'guild_permissions') and interaction.user.guild_permissions.manage_messages)
+        )
+        if not is_allowed:
+            await interaction.response.send_message(f"{self.emotes.get('redtick', '❌')} `Only the tournament host or server moderator can cancel this tournament.`", ephemeral=True)
+            return
+
+        interaction.client.active_games.pop(interaction.channel.id, None)
+        self.stop()
+        await interaction.response.send_message(f"🛑 **RPS Tournament was cancelled by {interaction.user.display_name}.**")
 
 
 class RPSMatchView(discord.ui.View):
@@ -70,6 +89,7 @@ class RPSMatchView(discord.ui.View):
         super().__init__(timeout=timeout)
         self.player1 = player1
         self.player2 = player2
+        self.emotes = emotes
         self.choices = {}
 
         rock_emoji = emotes.get("rpsrock") or "🪨"
@@ -82,16 +102,19 @@ class RPSMatchView(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id not in (self.player1.id, self.player2.id):
-            await interaction.response.send_message("You are not part of this match!", ephemeral=True)
+            await interaction.response.send_message(f"{self.emotes.get('redtick', '❌')} `You are not part of this match!`", ephemeral=True)
             return False
         if interaction.user.id in self.choices:
-            await interaction.response.send_message("You have already submitted your move!", ephemeral=True)
+            await interaction.response.send_message(f"{self.emotes.get('redtick', '❌')} `You have already submitted your move for this round!`", ephemeral=True)
             return False
         return True
 
     async def record_choice(self, interaction: discord.Interaction, choice: str):
         self.choices[interaction.user.id] = choice
-        await interaction.response.send_message(f"✅ Your move (**{choice.title()}**) has been locked in!", ephemeral=True)
+        await interaction.response.send_message(
+            f"{self.emotes.get('greentick', '✅')} **Move Locked In:** `{choice.title()}`",
+            ephemeral=True
+        )
         if len(self.choices) == 2:
             self.stop()
 
@@ -112,7 +135,8 @@ class WTPJoinView(discord.ui.View):
     def __init__(self, host, emotes, timeout=35.0):
         super().__init__(timeout=timeout)
         self.host = host
-        self.players = {}  # Host is not forced to join automatically
+        self.emotes = emotes
+        self.players = {}
 
         pokeball_emoji = emotes.get("pokeball") or "🔴"
         self.join_btn.emoji = pokeball_emoji
@@ -120,19 +144,38 @@ class WTPJoinView(discord.ui.View):
     @discord.ui.button(label="Join Game", style=discord.ButtonStyle.success)
     async def join_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id in self.players:
-            await interaction.response.send_message("You have already joined the game!", ephemeral=True)
+            await interaction.response.send_message(
+                f"{self.emotes.get('redtick', '❌')} `You have already joined this game lobby!`",
+                ephemeral=True
+            )
         else:
             self.players[interaction.user.id] = interaction.user
             await interaction.response.send_message(
-                f"✅ You joined Who's That Pokémon! ({len(self.players)} player(s) in lobby)",
+                f"{self.emotes.get('greentick', '✅')} **You joined Who's That Pokémon!**\n👥 **Total Players in Lobby:** `{len(self.players)}`",
                 ephemeral=True
             )
+
+    @discord.ui.button(label="Cancel Game", style=discord.ButtonStyle.danger, emoji="🛑")
+    async def cancel_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
+        is_allowed = (
+            interaction.user.id == self.host.id or
+            (hasattr(interaction.client, 'owner_id') and interaction.user.id == interaction.client.owner_id) or
+            (hasattr(interaction.user, 'guild_permissions') and interaction.user.guild_permissions.manage_messages)
+        )
+        if not is_allowed:
+            await interaction.response.send_message(f"{self.emotes.get('redtick', '❌')} `Only the game host or server moderator can cancel this game.`", ephemeral=True)
+            return
+
+        interaction.client.active_games.pop(interaction.channel.id, None)
+        self.stop()
+        await interaction.response.send_message(f"🛑 **Who's That Pokémon game was cancelled by {interaction.user.display_name}.**")
 
 
 class PKQuizJoinView(discord.ui.View):
     def __init__(self, host, emotes, timeout=35.0):
         super().__init__(timeout=timeout)
         self.host = host
+        self.emotes = emotes
         self.players = {}
 
         pokeball_emoji = emotes.get("pokeball") or "🔴"
@@ -141,13 +184,31 @@ class PKQuizJoinView(discord.ui.View):
     @discord.ui.button(label="Join Quiz", style=discord.ButtonStyle.success)
     async def join_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id in self.players:
-            await interaction.response.send_message("You have already joined the quiz!", ephemeral=True)
+            await interaction.response.send_message(
+                f"{self.emotes.get('redtick', '❌')} `You have already joined this quiz lobby!`",
+                ephemeral=True
+            )
         else:
             self.players[interaction.user.id] = interaction.user
             await interaction.response.send_message(
-                f"✅ You joined the Pokédex Quiz! ({len(self.players)} player(s) in lobby)",
+                f"{self.emotes.get('greentick', '✅')} **You joined the Pokédex Quiz!**\n👥 **Total Players in Lobby:** `{len(self.players)}`",
                 ephemeral=True
             )
+
+    @discord.ui.button(label="Cancel Quiz", style=discord.ButtonStyle.danger, emoji="🛑")
+    async def cancel_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
+        is_allowed = (
+            interaction.user.id == self.host.id or
+            (hasattr(interaction.client, 'owner_id') and interaction.user.id == interaction.client.owner_id) or
+            (hasattr(interaction.user, 'guild_permissions') and interaction.user.guild_permissions.manage_messages)
+        )
+        if not is_allowed:
+            await interaction.response.send_message(f"{self.emotes.get('redtick', '❌')} `Only the quiz host or server moderator can cancel this quiz.`", ephemeral=True)
+            return
+
+        interaction.client.active_games.pop(interaction.channel.id, None)
+        self.stop()
+        await interaction.response.send_message(f"🛑 **Pokédex Quiz was cancelled by {interaction.user.display_name}.**")
 
 
 class TimingGameView(discord.ui.View):
@@ -174,6 +235,128 @@ class Games(commands.Cog):
     def __init__(self, client):
         self.client = client
 
+    async def _stop_game_in_channel(self, ctx, target_channel=None):
+        """Helper to stop active minigame by channel mention/ID or current channel."""
+        target_channel_id = ctx.channel.id
+
+        if target_channel is not None:
+            if isinstance(target_channel, discord.TextChannel):
+                target_channel_id = target_channel.id
+            else:
+                try:
+                    cleaned = str(target_channel).replace("<#", "").replace(">", "").strip()
+                    target_channel_id = int(cleaned)
+                except ValueError:
+                    await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Invalid channel format. Please specify a channel mention or numeric Channel ID.`")
+                    return
+
+        game_info = self.client.active_games.get(target_channel_id)
+        if not game_info:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `No active minigame found running in channel ID {target_channel_id}.`")
+            return
+
+        host_id = game_info.get("host_id")
+        game_name = game_info.get("name", "Minigame")
+        is_allowed = (
+            ctx.author.id == self.client.owner_id or
+            ctx.author.id == host_id or
+            (hasattr(ctx.author, 'guild_permissions') and ctx.author.guild_permissions.manage_messages)
+        )
+        if not is_allowed:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Only the game host, server moderators, or bot owner can stop this game.`")
+            return
+
+        self.client.active_games.pop(target_channel_id, None)
+        await ctx.send(f"{self.client.emotes.get('greentick', '✅')} **{game_name} (Channel ID `{target_channel_id}`) has been stopped by {ctx.author.display_name}.**")
+
+    @commands.group(invoke_without_command=True, aliases=["games"])
+    @commands.guild_only()
+    async def game(self, ctx):
+        """Minigame manager and controls."""
+        if ctx.invoked_subcommand is None:
+            embed = discord.Embed(
+                title="🎮 CreedBot Minigames Manager",
+                description=(
+                    "**Available Commands:**\n"
+                    "• `!game stop [channel]` (or `!stopgame`) — Stop active minigame (in current or specified channel)\n"
+                    "• `!game status` — Check active minigames across all channels/servers\n\n"
+                    "**Available Games:**\n"
+                    "• `!wtp` / `!wtp start [count=10]` — Who's That Pokémon\n"
+                    "• `!pkquiz` / `!pkquiz start [count=10]` — Pokédex Entry Quiz\n"
+                    "• `!rps` / `!rps start` — Rock-Paper-Scissors Tournament"
+                ),
+                color=discord.Color.gold()
+            )
+            embed.set_footer(text=f"Requested by {ctx.author.display_name}", icon_url=ctx.author.display_avatar.url)
+            await ctx.send(embed=embed)
+
+    @game.command(name="stop", aliases=["end", "cancel", "quit"])
+    @commands.guild_only()
+    async def game_stop(self, ctx, *, channel: str = None):
+        """Stops minigame in current channel or specified channel ID / mention."""
+        await self._stop_game_in_channel(ctx, target_channel=channel)
+
+    @game.command(name="status", aliases=["list"])
+    @commands.guild_only()
+    async def game_status(self, ctx, *, channel: str = None):
+        """Check active minigames across all channels/servers or in a specific channel."""
+        if channel is not None:
+            target_channel_id = ctx.channel.id
+            if isinstance(channel, discord.TextChannel):
+                target_channel_id = channel.id
+            else:
+                try:
+                    cleaned = str(channel).replace("<#", "").replace(">", "").strip()
+                    target_channel_id = int(cleaned)
+                except ValueError:
+                    await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Invalid channel format. Please specify a channel mention or numeric Channel ID.`")
+                    return
+
+            info = self.client.active_games.get(target_channel_id)
+            if not info:
+                await ctx.send(f"ℹ️ `No active minigame is currently running in channel ID {target_channel_id}.`")
+                return
+
+            embed = discord.Embed(title="🎮 Active Minigame Status", color=discord.Color.blue())
+            ch_obj = self.client.get_channel(target_channel_id)
+            if ch_obj:
+                ch_str = f"{ch_obj.mention} (`{target_channel_id}`)"
+                guild_str = f" in **{ch_obj.guild.name}**"
+            else:
+                ch_str = f"Channel ID `{target_channel_id}`"
+                guild_str = ""
+
+            embed.description = f"• **{info.get('name', 'Minigame')}**{guild_str} — Channel {ch_str} (Host: <@{info.get('host_id')}>)"
+            embed.set_footer(text=f"To stop this game: !game stop {target_channel_id}", icon_url=ctx.author.display_avatar.url)
+            await ctx.send(embed=embed)
+            return
+
+        if not self.client.active_games:
+            await ctx.send(f"ℹ️ `No active minigames are running right now.`")
+            return
+
+        embed = discord.Embed(title="🎮 Active Minigames Status", color=discord.Color.blue())
+        lines = []
+        for ch_id, info in self.client.active_games.items():
+            channel_obj = self.client.get_channel(ch_id)
+            if channel_obj:
+                ch_str = f"{channel_obj.mention} (`{ch_id}`)"
+                guild_str = f" in **{channel_obj.guild.name}**"
+            else:
+                ch_str = f"Channel ID `{ch_id}`"
+                guild_str = ""
+            lines.append(f"• **{info.get('name', 'Minigame')}**{guild_str} — Channel {ch_str} (Host: <@{info.get('host_id')}>)")
+
+        embed.description = "\n".join(lines) if lines else "No active minigames running."
+        embed.set_footer(text="To stop a game remotely: !game stop <channel_id>", icon_url=ctx.author.display_avatar.url)
+        await ctx.send(embed=embed)
+
+    @commands.command(name="stopgame", aliases=["cancelgame", "endgame"])
+    @commands.guild_only()
+    async def stopgame_cmd(self, ctx, *, channel: str = None):
+        """Universal command to stop any active minigame in current or specified channel."""
+        await self._stop_game_in_channel(ctx, target_channel=channel)
+
     
     @commands.group()
     @commands.guild_only()
@@ -197,34 +380,20 @@ class Games(commands.Cog):
             embed.set_footer(text= "To Start the Game | wtp start [count=10]", icon_url=ctx.author.display_avatar.url)
             await ctx.send(embed=embed)
             return
-    
+
     @wtp.command(name='stop', aliases=['end', 'cancel', 'quit'])
     @commands.guild_only()
-    async def wtp_stop(self, ctx):
-        """Stops an ongoing Who's That Pokémon game in the channel."""
-        if ctx.channel.id not in self.client.wtpList:
-            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `No Who's That Pokémon game is currently running in this channel.`")
-            return
-
-        host_id = self.client.wtpList.get(ctx.channel.id)
-        is_allowed = (
-            ctx.author.id == self.client.owner_id or
-            ctx.author.id == host_id or
-            (hasattr(ctx.author, 'guild_permissions') and ctx.author.guild_permissions.manage_messages)
-        )
-        if not is_allowed:
-            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Only the game host, server moderators, or bot owner can stop this game.`")
-            return
-
-        self.client.wtpList.pop(ctx.channel.id, None)
-        await ctx.send(f"{self.client.emotes.get('greentick', '✅')} **Who's That Pokémon game has been stopped by {ctx.author.display_name}.**")
+    async def wtp_stop(self, ctx, *, channel: str = None):
+        """Stops an ongoing Who's That Pokémon game in current or specified channel."""
+        await self._stop_game_in_channel(ctx, target_channel=channel)
 
     @wtp.command(name = 'start')
     @commands.guild_only()
     async def wtp_start(self, ctx, *, args: str = "10"):
         """Starts Who's That Pokémon minigame. Usage: !wtp start [count=10]"""
-        if ctx.channel.id in self.client.wtpList:
-            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `A Who's That Pokémon game is already running in this channel!`")
+        if ctx.channel.id in self.client.active_games:
+            game_name = self.client.active_games[ctx.channel.id].get("name", "minigame")
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `A {game_name} is already running in this channel!`")
             return
 
         # Parse count argument (e.g. 10 or count=10)
@@ -239,7 +408,11 @@ class Games(commands.Cog):
             await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Number of pokemons must be between 1 and 50.`")
             return
 
-        self.client.wtpList[ctx.channel.id] = ctx.author.id
+        self.client.active_games[ctx.channel.id] = {
+            "name": "Who's That Pokémon",
+            "type": "wtp",
+            "host_id": ctx.author.id
+        }
 
         try:
             # 1. Open 30-second lobby window
@@ -260,7 +433,7 @@ class Games(commands.Cog):
 
             # Check for early cancellation during 30s lobby
             for _ in range(30):
-                if ctx.channel.id not in self.client.wtpList:
+                if ctx.channel.id not in self.client.active_games:
                     join_view.stop()
                     for child in join_view.children:
                         child.disabled = True
@@ -289,12 +462,13 @@ class Games(commands.Cog):
                 await lobby_msg.edit(embed=cancel_embed, view=join_view)
                 return
 
-            player_names = ", ".join([p.display_name for p in players.values()])
+            player_names = " • ".join([f"`{p.display_name}`" for p in players.values()])
+            lobby_url = lobby_msg.jump_url
 
             game_start_time = int(datetime.now(timezone.utc).timestamp()) + 5
             start_embed = discord.Embed(
                 title="🎮 Who's That Pokémon — Game Starting!",
-                description=f"**{len(players)} Player(s) joined:** {player_names}\n\nGet ready! Round 1 is starting <t:{game_start_time}:R>...",
+                description=f"👥 **{len(players)} Player(s) registered:**\n{player_names}\n\nGet ready! Round 1 is starting <t:{game_start_time}:R>...",
                 color=discord.Color.green()
             )
             start_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
@@ -309,7 +483,7 @@ class Games(commands.Cog):
             round_time = 15.0
 
             for current_round in range(1, count + 1):
-                if ctx.channel.id not in self.client.wtpList:
+                if ctx.channel.id not in self.client.active_games:
                     break
 
                 pokeID = random.randrange(1, 897)
@@ -335,15 +509,16 @@ class Games(commands.Cog):
                         return False
 
                     # Check if stop requested
-                    if message.content.lower().strip() in ["!wtp stop", "wtp stop", "!wtp end", "!wtp cancel"]:
-                        host_id = self.client.wtpList.get(ctx.channel.id)
+                    if message.content.lower().strip() in ["!game stop", "!stopgame", "!wtp stop", "wtp stop", "!wtp end", "!wtp cancel"]:
+                        game_info = self.client.active_games.get(ctx.channel.id)
+                        host_id = game_info.get("host_id") if game_info else None
                         is_allowed = (
                             message.author.id == self.client.owner_id or
                             message.author.id == host_id or
                             (hasattr(message.author, 'guild_permissions') and message.author.guild_permissions.manage_messages)
                         )
                         if is_allowed:
-                            self.client.wtpList.pop(ctx.channel.id, None)
+                            self.client.active_games.pop(ctx.channel.id, None)
                             return True
 
                     return message.author.id in players and message.content.lower().strip() == pokeName
@@ -351,7 +526,7 @@ class Games(commands.Cog):
                 try:
                     msg = await self.client.wait_for('message', timeout=round_time, check=check)
                 except asyncio.TimeoutError:
-                    if ctx.channel.id not in self.client.wtpList:
+                    if ctx.channel.id not in self.client.active_games:
                         break
                     embed.title = f"Round {current_round}/{count} — Time's Up!"
                     embed.description = f"{self.client.emotes.get('redtick', '❌')} Nobody guessed **{wtpPoke['name'].title()}**!"
@@ -359,7 +534,7 @@ class Games(commands.Cog):
                     embed.color = discord.Color.red()
                     await round_msg.edit(embed=embed)
                 else:
-                    if ctx.channel.id not in self.client.wtpList:
+                    if ctx.channel.id not in self.client.active_games:
                         break
                     if msg.content.lower().strip() == pokeName:
                         scores[msg.author.id] += 1
@@ -370,12 +545,12 @@ class Games(commands.Cog):
                         await round_msg.edit(embed=embed)
 
                 if current_round < count:
-                    if ctx.channel.id not in self.client.wtpList:
+                    if ctx.channel.id not in self.client.active_games:
                         break
                     await asyncio.sleep(3)
 
             # Final Leaderboard (if not forcibly stopped early)
-            if ctx.channel.id in self.client.wtpList:
+            if ctx.channel.id in self.client.active_games:
                 sorted_scores = sorted(scores.items(), key=lambda item: item[1], reverse=True)
 
                 lb_embed = discord.Embed(
@@ -392,13 +567,14 @@ class Games(commands.Cog):
                     medal = medals[rank - 1] if rank <= 3 else f"`#{rank}`"
                     lb_lines.append(f"{medal} **{name}**: `{score}` point(s)")
 
-                lb_embed.description = "\n".join(lb_lines) if lb_lines else "No participants scored points!"
+                scores_str = "\n".join(lb_lines) if lb_lines else "No participants scored points!"
+                lb_embed.description = f"🔗 [**Jump to Game Lobby**]({lobby_url})\n\n{scores_str}"
                 lb_embed.set_footer(text=f"Game Over | Total Rounds: {count}", icon_url=ctx.author.display_avatar.url)
 
                 await ctx.send(embed=lb_embed)
 
         finally:
-            self.client.wtpList.pop(ctx.channel.id, None)
+            self.client.active_games.pop(ctx.channel.id, None)
         
     @commands.command(name = "10s")
     @commands.guild_only()
@@ -519,34 +695,24 @@ class Games(commands.Cog):
 
     @rps.command(name='stop', aliases=['end', 'cancel', 'quit'])
     @commands.guild_only()
-    async def rps_stop(self, ctx):
-        """Stops an ongoing Rock-Paper-Scissors tournament in the channel."""
-        if ctx.channel.id not in self.client.rpsList:
-            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `No RPS tournament is currently running in this channel.`")
-            return
-
-        host_id = self.client.rpsList.get(ctx.channel.id)
-        is_allowed = (
-            ctx.author.id == self.client.owner_id or
-            ctx.author.id == host_id or
-            (hasattr(ctx.author, 'guild_permissions') and ctx.author.guild_permissions.manage_messages)
-        )
-        if not is_allowed:
-            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Only the tournament host, server moderators, or bot owner can stop this tournament.`")
-            return
-
-        self.client.rpsList.pop(ctx.channel.id, None)
-        await ctx.send(f"{self.client.emotes.get('greentick', '✅')} **Rock-Paper-Scissors tournament has been stopped by {ctx.author.display_name}.**")
+    async def rps_stop(self, ctx, *, channel: str = None):
+        """Stops an ongoing Rock-Paper-Scissors tournament in current or specified channel."""
+        await self._stop_game_in_channel(ctx, target_channel=channel)
 
     @rps.command(name='start')
     @commands.guild_only()
     async def rps_start(self, ctx):
         """Starts a multiplayer Rock-Paper-Scissors tournament."""
-        if ctx.channel.id in self.client.rpsList:
-            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `An RPS tournament is already running in this channel!`")
+        if ctx.channel.id in self.client.active_games:
+            game_name = self.client.active_games[ctx.channel.id].get("name", "minigame")
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `A {game_name} is already running in this channel!`")
             return
 
-        self.client.rpsList[ctx.channel.id] = ctx.author.id
+        self.client.active_games[ctx.channel.id] = {
+            "name": "Rock-Paper-Scissors Tournament",
+            "type": "rps",
+            "host_id": ctx.author.id
+        }
 
         try:
             # 1. 30-second lobby window
@@ -567,7 +733,7 @@ class Games(commands.Cog):
 
             # Check for cancellation during 30s lobby
             for _ in range(30):
-                if ctx.channel.id not in self.client.rpsList:
+                if ctx.channel.id not in self.client.active_games:
                     join_view.stop()
                     for child in join_view.children:
                         child.disabled = True
@@ -595,11 +761,13 @@ class Games(commands.Cog):
                 await lobby_msg.edit(embed=cancel_embed, view=join_view)
                 return
 
-            player_names = ", ".join([p.display_name for p in active_players])
+            player_names = " • ".join([f"`{p.display_name}`" for p in active_players])
+            lobby_url = lobby_msg.jump_url
+
             game_start_time = int(datetime.now(timezone.utc).timestamp()) + 5
             start_embed = discord.Embed(
                 title="🎮 RPS Tournament — Starting!",
-                description=f"**{len(active_players)} Player(s) registered:** {player_names}\n\nRound 1 pairings starting <t:{game_start_time}:R>...",
+                description=f"👥 **{len(active_players)} Player(s) registered:**\n{player_names}\n\nRound 1 pairings starting <t:{game_start_time}:R>...",
                 color=discord.Color.green()
             )
             start_embed.set_thumbnail(url=ctx.me.display_avatar.url)
@@ -615,7 +783,7 @@ class Games(commands.Cog):
             }
 
             while len(active_players) > 1 and round_num <= max_rounds:
-                if ctx.channel.id not in self.client.rpsList:
+                if ctx.channel.id not in self.client.active_games:
                     break
 
                 random.shuffle(active_players)
@@ -636,7 +804,7 @@ class Games(commands.Cog):
                     await ctx.send(f"ℹ️ **{bye_player.display_name}** gets a bye for Round {round_num} and automatically advances to the next round!")
 
                 for match_idx, (p1, p2) in enumerate(pairs, 1):
-                    if ctx.channel.id not in self.client.rpsList:
+                    if ctx.channel.id not in self.client.active_games:
                         break
 
                     match_end_time = int(datetime.now(timezone.utc).timestamp()) + 15
@@ -655,7 +823,7 @@ class Games(commands.Cog):
 
                     await match_view.wait()
 
-                    if ctx.channel.id not in self.client.rpsList:
+                    if ctx.channel.id not in self.client.active_games:
                         break
 
                     # Disable buttons
@@ -700,29 +868,29 @@ class Games(commands.Cog):
                 round_num += 1
 
             # Tournament Outcome
-            if ctx.channel.id in self.client.rpsList:
+            if ctx.channel.id in self.client.active_games:
                 if len(active_players) == 1:
                     winner = active_players[0]
                     win_embed = discord.Embed(
                         title="🏆 RPS Tournament — Champion!",
-                        description=f"🎉 **{winner.mention} ({winner.display_name})** has defeated all opponents and won the Rock-Paper-Scissors Tournament!",
+                        description=f"🎉 **{winner.mention} ({winner.display_name})** has defeated all opponents and won the Rock-Paper-Scissors Tournament!\n\n🔗 [**Jump to Tournament Lobby**]({lobby_url})",
                         color=discord.Color.gold()
                     )
                     win_embed.set_thumbnail(url=winner.display_avatar.url)
                     await ctx.send(embed=win_embed)
                 elif len(active_players) > 1:
-                    co_champs = ", ".join([p.display_name for p in active_players])
+                    co_champs = " • ".join([f"`{p.display_name}`" for p in active_players])
                     tie_embed = discord.Embed(
                         title="🏆 RPS Tournament — Co-Champions!",
-                        description=f"🤝 **Tournament tied after {max_rounds} rounds!**\n\n**Co-Champions:** {co_champs}",
+                        description=f"🤝 **Tournament tied after {max_rounds} rounds!**\n\n🏆 **Co-Champions:**\n{co_champs}\n\n🔗 [**Jump to Tournament Lobby**]({lobby_url})",
                         color=discord.Color.gold()
                     )
                     await ctx.send(embed=tie_embed)
                 else:
-                    await ctx.send("🎮 **RPS Tournament finished with no remaining players!**")
+                    await ctx.send(f"🎮 **RPS Tournament finished with no remaining players!**\n🔗 [**Jump to Tournament Lobby**]({lobby_url})")
 
         finally:
-            self.client.rpsList.pop(ctx.channel.id, None)
+            self.client.active_games.pop(ctx.channel.id, None)
 
     @commands.group(aliases=["pkq"])
     @commands.guild_only()
@@ -749,31 +917,17 @@ class Games(commands.Cog):
 
     @pkquiz.command(name='stop', aliases=['end', 'cancel', 'quit'])
     @commands.guild_only()
-    async def pkquiz_stop(self, ctx):
-        """Stops an ongoing Pokédex Quiz in the channel."""
-        if ctx.channel.id not in self.client.activeQuiz:
-            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `No Pokédex Quiz is currently running in this channel.`")
-            return
-
-        host_id = self.client.activeQuiz.get(ctx.channel.id)
-        is_allowed = (
-            ctx.author.id == self.client.owner_id or
-            ctx.author.id == host_id or
-            (hasattr(ctx.author, 'guild_permissions') and ctx.author.guild_permissions.manage_messages)
-        )
-        if not is_allowed:
-            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Only the quiz host, server moderators, or bot owner can stop this quiz.`")
-            return
-
-        self.client.activeQuiz.pop(ctx.channel.id, None)
-        await ctx.send(f"{self.client.emotes.get('greentick', '✅')} **Pokédex Quiz has been stopped by {ctx.author.display_name}.**")
+    async def pkquiz_stop(self, ctx, *, channel: str = None):
+        """Stops an ongoing Pokédex Quiz in current or specified channel."""
+        await self._stop_game_in_channel(ctx, target_channel=channel)
 
     @pkquiz.command(name='start')
     @commands.guild_only()
     async def pkquiz_start(self, ctx, *, args: str = "10"):
         """Starts Pokédex Quiz minigame. Usage: !pkquiz start [count=10]"""
-        if ctx.channel.id in self.client.activeQuiz:
-            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `A Pokédex Quiz is already running in this channel!`")
+        if ctx.channel.id in self.client.active_games:
+            game_name = self.client.active_games[ctx.channel.id].get("name", "minigame")
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `A {game_name} is already running in this channel!`")
             return
 
         count = 10
@@ -787,7 +941,11 @@ class Games(commands.Cog):
             await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Number of questions must be between 1 and 50.`")
             return
 
-        self.client.activeQuiz[ctx.channel.id] = ctx.author.id
+        self.client.active_games[ctx.channel.id] = {
+            "name": "Pokédex Quiz",
+            "type": "pkquiz",
+            "host_id": ctx.author.id
+        }
 
         try:
             # 1. Open 30-second lobby window
@@ -808,7 +966,7 @@ class Games(commands.Cog):
 
             # Check for early cancellation during 30s lobby
             for _ in range(30):
-                if ctx.channel.id not in self.client.activeQuiz:
+                if ctx.channel.id not in self.client.active_games:
                     join_view.stop()
                     for child in join_view.children:
                         child.disabled = True
@@ -837,12 +995,13 @@ class Games(commands.Cog):
                 await lobby_msg.edit(embed=cancel_embed, view=join_view)
                 return
 
-            player_names = ", ".join([p.display_name for p in players.values()])
+            player_names = " • ".join([f"`{p.display_name}`" for p in players.values()])
+            lobby_url = lobby_msg.jump_url
 
             game_start_time = int(datetime.now(timezone.utc).timestamp()) + 5
             start_embed = discord.Embed(
                 title="📖 Pokédex Quiz — Game Starting!",
-                description=f"**{len(players)} Player(s) joined:** {player_names}\n\nGet ready! Question 1 is starting <t:{game_start_time}:R>...",
+                description=f"👥 **{len(players)} Player(s) registered:**\n{player_names}\n\nGet ready! Question 1 is starting <t:{game_start_time}:R>...",
                 color=discord.Color.green()
             )
             start_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
@@ -857,7 +1016,7 @@ class Games(commands.Cog):
             round_time = 45.0
 
             for current_round in range(1, count + 1):
-                if ctx.channel.id not in self.client.activeQuiz:
+                if ctx.channel.id not in self.client.active_games:
                     break
 
                 c = random.choice(list(data.keys()))
@@ -867,7 +1026,6 @@ class Games(commands.Cog):
                 # Mask Pokemon name in clue
                 masked_name = "_" * len(c)
                 if c.lower() in quiz_raw.lower():
-                    # Replace case-insensitively
                     import re
                     quiz_raw = re.sub(re.escape(c), masked_name, quiz_raw, flags=re.IGNORECASE)
 
@@ -890,15 +1048,16 @@ class Games(commands.Cog):
                         return False
 
                     # Check for stop request
-                    if message.content.lower().strip() in ["!pkquiz stop", "pkquiz stop", "!pkquiz end", "!pkquiz cancel"]:
-                        host_id = self.client.activeQuiz.get(ctx.channel.id)
+                    if message.content.lower().strip() in ["!game stop", "!stopgame", "!pkquiz stop", "pkquiz stop", "!pkquiz end", "!pkquiz cancel"]:
+                        game_info = self.client.active_games.get(ctx.channel.id)
+                        host_id = game_info.get("host_id") if game_info else None
                         is_allowed = (
                             message.author.id == self.client.owner_id or
                             message.author.id == host_id or
                             (hasattr(message.author, 'guild_permissions') and message.author.guild_permissions.manage_messages)
                         )
                         if is_allowed:
-                            self.client.activeQuiz.pop(ctx.channel.id, None)
+                            self.client.active_games.pop(ctx.channel.id, None)
                             return True
 
                     return message.author.id in players and message.content.lower().strip() == answer
@@ -906,14 +1065,14 @@ class Games(commands.Cog):
                 try:
                     msg = await self.client.wait_for('message', timeout=round_time, check=check)
                 except asyncio.TimeoutError:
-                    if ctx.channel.id not in self.client.activeQuiz:
+                    if ctx.channel.id not in self.client.active_games:
                         break
                     embed.title = f"Question {current_round}/{count} — Time's Up!"
                     embed.description = f"{self.client.emotes.get('redtick', '❌')} Nobody guessed **{c.title()}**!\n\n{quiz_styled}"
                     embed.color = discord.Color.red()
                     await round_msg.edit(embed=embed)
                 else:
-                    if ctx.channel.id not in self.client.activeQuiz:
+                    if ctx.channel.id not in self.client.active_games:
                         break
                     if msg.content.lower().strip() == answer:
                         scores[msg.author.id] += 1
@@ -923,12 +1082,12 @@ class Games(commands.Cog):
                         await round_msg.edit(embed=embed)
 
                 if current_round < count:
-                    if ctx.channel.id not in self.client.activeQuiz:
+                    if ctx.channel.id not in self.client.active_games:
                         break
                     await asyncio.sleep(4)
 
             # Final Leaderboard (if not forcibly stopped early)
-            if ctx.channel.id in self.client.activeQuiz:
+            if ctx.channel.id in self.client.active_games:
                 sorted_scores = sorted(scores.items(), key=lambda item: item[1], reverse=True)
 
                 lb_embed = discord.Embed(
@@ -945,13 +1104,14 @@ class Games(commands.Cog):
                     medal = medals[rank - 1] if rank <= 3 else f"`#{rank}`"
                     lb_lines.append(f"{medal} **{name}**: `{score}` point(s)")
 
-                lb_embed.description = "\n".join(lb_lines) if lb_lines else "No participants scored points!"
+                scores_str = "\n".join(lb_lines) if lb_lines else "No participants scored points!"
+                lb_embed.description = f"🔗 [**Jump to Quiz Lobby**]({lobby_url})\n\n{scores_str}"
                 lb_embed.set_footer(text=f"Quiz Complete | Total Questions: {count}", icon_url=ctx.author.display_avatar.url)
 
                 await ctx.send(embed=lb_embed)
 
         finally:
-            self.client.activeQuiz.pop(ctx.channel.id, None)
+            self.client.active_games.pop(ctx.channel.id, None)
 
             
 async def setup(client):

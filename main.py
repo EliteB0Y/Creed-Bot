@@ -47,9 +47,7 @@ logger = logging.getLogger('CreedBot')
 class MyBot(commands.Bot):
     #Declare Bot variables here (can be accessed in cogs using self.client.variable)
     promo = ""
-    wtpList = {}
-    activeQuiz = {}
-    rpsList = {}
+    active_games = {}  # {channel_id: {"name": str, "type": str, "host_id": int}}
     disabledCogs = [] #add cogs.namehere to disable
     inviteurl = ""
     boxrateconfig = {"base": 1, "unbase": 0.8, "other": 3}
