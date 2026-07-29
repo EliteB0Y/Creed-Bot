@@ -6,10 +6,18 @@ from datetime import datetime, timezone
 logger = logging.getLogger("CreedBot")
 
 class RPSView(discord.ui.View):
-    def __init__(self, author_id, timeout=20.0):
+    def __init__(self, author_id, emotes, timeout=20.0):
         super().__init__(timeout=timeout)
         self.author_id = author_id
         self.user_choice = None
+
+        rock_emoji = emotes.get("rpsrock") or "🪨"
+        paper_emoji = emotes.get("rpspaper") or "📄"
+        scissors_emoji = emotes.get("rpsscissors") or "✂️"
+
+        self.rock_btn.emoji = rock_emoji
+        self.paper_btn.emoji = paper_emoji
+        self.scissors_btn.emoji = scissors_emoji
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if interaction.user.id != self.author_id:
@@ -17,20 +25,20 @@ class RPSView(discord.ui.View):
             return False
         return True
 
-    @discord.ui.button(label="Rock", emoji="🪨", style=discord.ButtonStyle.primary)
-    async def rock(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(label="Rock", style=discord.ButtonStyle.primary)
+    async def rock_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.user_choice = "rock"
         self.stop()
         await interaction.response.defer()
 
-    @discord.ui.button(label="Paper", emoji="📄", style=discord.ButtonStyle.primary)
-    async def paper(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(label="Paper", style=discord.ButtonStyle.primary)
+    async def paper_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.user_choice = "paper"
         self.stop()
         await interaction.response.defer()
 
-    @discord.ui.button(label="Scissors", emoji="✂️", style=discord.ButtonStyle.primary)
-    async def scissors(self, interaction: discord.Interaction, button: discord.ui.Button):
+    @discord.ui.button(label="Scissors", style=discord.ButtonStyle.primary)
+    async def scissors_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.user_choice = "scissors"
         self.stop()
         await interaction.response.defer()
@@ -211,32 +219,40 @@ class Games(commands.Cog):
         """Rock-Paper-Scissors game"""
         options = ["rock", "paper", "scissors"]
         mine = random.choice(options)
-        emoji_map = {"rock": "🪨", "paper": "📄", "scissors": "✂️"}
+        emoji_map = {
+            "rock": self.client.emotes.get("rpsrock", "🪨"),
+            "paper": self.client.emotes.get("rpspaper", "📄"),
+            "scissors": self.client.emotes.get("rpsscissors", "✂️"),
+        }
 
-        embed = discord.Embed()
+        embed = discord.Embed(color=discord.Color.blurple())
         embed.set_author(name="Rock Paper Scissors!", icon_url=ctx.me.display_avatar.url)
-        embed.description = "Okay! Let's see if you can beat me in Rock-Paper-Scissors game!\n\nI have made my move. Click a button to choose yours!"
-        embed.set_footer(text=ctx.author.display_name, icon_url=ctx.author.display_avatar.url)
-        
-        view = RPSView(ctx.author.id, timeout=20.0)
+        embed.description = "🎮 **Rock-Paper-Scissors!**\n\nI have made my choice! Pick yours by clicking a button below to see who wins!"
+        embed.set_footer(text=f"Requested by {ctx.author.display_name}", icon_url=ctx.author.display_avatar.url)
+
+        view = RPSView(ctx.author.id, self.client.emotes, timeout=20.0)
         x = await ctx.send(embed=embed, view=view)
         await view.wait()
 
         if view.user_choice is None:
-            embed.description = "You've lost the Rock-Paper-Scissors game due to inactivity..."
+            embed.color = discord.Color.dark_gray()
+            embed.description = f"{self.client.emotes.get('timer', '⏱️')} You lost the Rock-Paper-Scissors game due to inactivity..."
             return await x.edit(embed=embed, view=None)
 
         yours = view.user_choice
         if yours == mine:
             result = "It's a draw!"
+            embed.color = discord.Color.gold()
         elif (yours == "rock" and mine == "scissors") or (yours == "paper" and mine == "rock") or (yours == "scissors" and mine == "paper"):
             result = "Oh Noo!! You have won. I'll get you next time..."
+            embed.color = discord.Color.green()
         else:
             result = "Haha, You have lost this one."
+            embed.color = discord.Color.red()
 
         embed.description = (
-            f"Your choice: {emoji_map[yours]} **{yours.title()}**\n"
-            f"My choice: {emoji_map[mine]} **{mine.title()}**\n\n"
+            f"**Your choice:** {emoji_map[yours]} **{yours.title()}**\n"
+            f"**My choice:** {emoji_map[mine]} **{mine.title()}**\n\n"
             f"**{result}**"
         )
         await x.edit(embed=embed, view=None)
