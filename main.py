@@ -46,18 +46,25 @@ logger = logging.getLogger('CreedBot')
 
 class MyBot(commands.Bot):
     #Declare Bot variables here (can be accessed in cogs using self.client.variable)
-    promo = ""
-    active_games = {}  # {channel_id: {"name": str, "type": str, "host_id": int}}
-    disabledCogs = [] #add cogs.namehere to disable
-    inviteurl = ""
-    boxrateconfig = {"base": 1, "unbase": 0.8, "other": 3}
-    rate_cache = {}
-    collection_allowed_guilds = []  # Add guild IDs that can use !collection
 
     def __init__(self, command_prefix, intents):
         super().__init__(command_prefix=command_prefix, intents=intents)
         self._cache_block = None
         self._cache_emoji = None
+        # Runtime state
+        self.promo = ""
+        self.active_games = {}  # {channel_id: {"name": str, "type": str, "host_id": int}}
+        self.inviteurl = ""
+        self.rate_cache = {}
+        # Config defaults — overridden at startup from the bot_config MongoDB collection.
+        # Any key present in the DB document is set dynamically via setattr in load_bot_config().
+        self.disabledCogs = []              # cogs to skip loading, e.g. ["cogs.extra"]
+        self.enabledCogs = [                # cogs to load; override this list from MongoDB
+            'cogs.pokemoncreed', 'cogs.basic', 'cogs.games',
+            'cogs.extra', 'cogs.error', 'cogs.owner', 'jishaku'
+        ]
+        self.boxrateconfig = {"base": 1, "unbase": 0.8, "other": 3}
+        self.collection_allowed_guilds = [] # guild IDs allowed to use !collection
         
     @property
     def emotes(self):
@@ -123,6 +130,27 @@ async def create_db_connection():
     except Exception as e:
         logger.error("Database connection failed!", exc_info=e)
 
+async def load_bot_config():
+    """Load ALL keys from the single bot_config MongoDB document as client attributes.
+
+    Every key in the document (except _id) is set as client.<key>, making it
+    accessible across all cogs as self.client.<key>. Defaults defined in
+    MyBot.__init__ are used as fallbacks if the document is missing or a key
+    is absent.
+    """
+    try:
+        config = client.db.bot_config.find_one()
+        if config:
+            for key, value in config.items():
+                if key == "_id":
+                    continue
+                setattr(client, key, value)
+            logger.info("Bot config loaded from MongoDB: %s", [k for k in config if k != "_id"])
+        else:
+            logger.warning("No bot_config document found in MongoDB — using hardcoded defaults.")
+    except Exception as e:
+        logger.error("Failed to load bot config from MongoDB!", exc_info=e)
+
 
 @client.tree.command(name="ping", description="shows the bot latency.")
 async def _ping(interaction: discord.Interaction):
@@ -174,6 +202,7 @@ os.environ["JISHAKU_HIDE"]="True"
 
 async def main():
     await create_db_connection()
+    await load_bot_config()
 
     # Restore rate_cache from MongoDB backup
     backup = client.db.backups.find_one({"_id": "rate_cache"})
@@ -183,14 +212,13 @@ async def main():
     else:
         logger.info("No rate_cache backup found — starting with empty cache.")
 
-    extensions = ['cogs.pokemoncreed', 'cogs.basic', 'cogs.games', 'cogs.extra', 'cogs.error', 'cogs.owner', 'jishaku'] #
     async with client:
         # Register signal handlers for graceful shutdown
         loop = asyncio.get_event_loop()
         for sig in (signal.SIGINT, signal.SIGTERM):
             loop.add_signal_handler(sig, lambda: asyncio.ensure_future(client.close()))
 
-        for extension in extensions:
+        for extension in client.enabledCogs:
             if extension not in client.disabledCogs:
                 try:
                     await client.load_extension(extension)
