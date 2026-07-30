@@ -925,11 +925,11 @@ class Games(commands.Cog):
                             next_round_players.append(p2)
                             match_embed.color = discord.Color.green()
                     elif c1 and not c2:
-                        res_desc = f"⏱️ **{p2.display_name}** timed out! 🏆 **{p1.display_name}** advances!"
+                        res_desc = f"⏱️ **{p2.display_name}** timed out! \n🏆 **{p1.display_name}** advances!"
                         next_round_players.append(p1)
                         match_embed.color = discord.Color.green()
                     elif c2 and not c1:
-                        res_desc = f"⏱️ **{p1.display_name}** timed out! 🏆 **{p2.display_name}** advances!"
+                        res_desc = f"⏱️ **{p1.display_name}** timed out! \n🏆 **{p2.display_name}** advances!"
                         next_round_players.append(p2)
                         match_embed.color = discord.Color.green()
                     else:
