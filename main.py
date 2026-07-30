@@ -48,7 +48,7 @@ class MyBot(commands.Bot):
     #Declare Bot variables here (can be accessed in cogs using self.client.variable)
 
     def __init__(self, command_prefix, intents):
-        super().__init__(command_prefix=command_prefix, intents=intents)
+        super().__init__(command_prefix=command_prefix, intents=intents, help_command=None)
         self._cache_block = None
         self._cache_emoji = None
         # Runtime state
@@ -61,7 +61,7 @@ class MyBot(commands.Bot):
         self.disabledCogs = []              # cogs to skip loading, e.g. ["cogs.extra"]
         self.enabledCogs = [                # cogs to load; override this list from MongoDB
             'cogs.pokemoncreed', 'cogs.basic', 'cogs.games',
-            'cogs.extra', 'cogs.error', 'cogs.owner', 'jishaku'
+            'cogs.extra', 'cogs.error', 'cogs.owner', 'cogs.help', 'jishaku'
         ]
         self.boxrateconfig = {"base": 1, "unbase": 0.8, "other": 3}
         self.collection_allowed_guilds = [] # guild IDs allowed to use !collection
