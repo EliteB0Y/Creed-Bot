@@ -3,7 +3,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 import sys
 from discord.ext import commands
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from pymongo import MongoClient
 
 # Configure logging
@@ -20,6 +20,14 @@ def setup_logging():
         '[%(asctime)s] [%(levelname)-8s] %(name)s: %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
+    
+    # Custom converter to output IST times
+    def ist_converter(timestamp):
+        dt = datetime.fromtimestamp(timestamp, tz=timezone.utc)
+        ist_dt = dt.astimezone(timezone(timedelta(hours=5, minutes=30)))
+        return ist_dt.timetuple()
+        
+    formatter.converter = ist_converter
     
     # Console Handler (Stdout)
     console_handler = logging.StreamHandler(sys.stdout)
@@ -104,7 +112,8 @@ class MyBot(commands.Bot):
 
     @property
     def get_time(self):
-        return datetime.now().strftime("%d %b, %Y | %I:%M:%S %p")
+        ist_tz = timezone(timedelta(hours=5, minutes=30))
+        return datetime.now(ist_tz).strftime("%d %b, %Y | %I:%M:%S %p")
         
 async def get_prefix(client, message):
     if not message.guild:
