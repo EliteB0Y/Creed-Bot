@@ -470,6 +470,7 @@ class Games(commands.Cog):
             "task": asyncio.current_task()
         }
 
+        lobby_ended = False
         try:
             # 1. Open 30-second lobby window
             lobby_end_time = int(datetime.now(timezone.utc).timestamp()) + 30
@@ -529,6 +530,7 @@ class Games(commands.Cog):
             )
             start_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
             await lobby_msg.edit(embed=start_embed, view=join_view)
+            lobby_ended = True
             await asyncio.sleep(5)
 
             # Load Pokémon dataset
@@ -603,7 +605,7 @@ class Games(commands.Cog):
                 if current_round < count:
                     if ctx.channel.id not in self.client.active_games:
                         break
-                    await asyncio.sleep(3)
+                    await asyncio.sleep(5)
 
             # Final Leaderboard (if not forcibly stopped early)
             if ctx.channel.id in self.client.active_games:
@@ -630,7 +632,20 @@ class Games(commands.Cog):
                 await ctx.send(embed=lb_embed)
 
         except asyncio.CancelledError:
-            pass
+            if not lobby_ended and 'join_view' in locals() and 'lobby_msg' in locals():
+                try:
+                    join_view.stop()
+                    for child in join_view.children:
+                        child.disabled = True
+                    cancel_embed = discord.Embed(
+                        title="🎮 Who's That Pokémon — Stopped",
+                        description="Game was stopped by host or administrator.",
+                        color=discord.Color.red()
+                    )
+                    cancel_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
+                    await lobby_msg.edit(embed=cancel_embed, view=join_view)
+                except Exception:
+                    pass
         finally:
             self.client.active_games.pop(ctx.channel.id, None)
         
@@ -773,6 +788,7 @@ class Games(commands.Cog):
             "task": asyncio.current_task()
         }
 
+        lobby_ended = False
         try:
             # 1. 30-second lobby window
             lobby_end_time = int(datetime.now(timezone.utc).timestamp()) + 30
@@ -831,6 +847,7 @@ class Games(commands.Cog):
             )
             start_embed.set_thumbnail(url=ctx.me.display_avatar.url)
             await lobby_msg.edit(embed=start_embed, view=join_view)
+            lobby_ended = True
             await asyncio.sleep(5)
 
             round_num = 1
@@ -847,7 +864,7 @@ class Games(commands.Cog):
 
                 random.shuffle(active_players)
                 next_round_players = []
-                byes = []
+                free_passes = []
 
                 # Group into pairs of 2
                 pairs = []
@@ -855,12 +872,12 @@ class Games(commands.Cog):
                     if i + 1 < len(active_players):
                         pairs.append((active_players[i], active_players[i + 1]))
                     else:
-                        byes.append(active_players[i])
+                        free_passes.append(active_players[i])
 
-                # Process byes
-                for bye_player in byes:
-                    next_round_players.append(bye_player)
-                    await ctx.send(f"ℹ️ **{bye_player.display_name}** gets a bye for Round {round_num} and automatically advances to the next round!")
+                # Process free passes
+                for pass_player in free_passes:
+                    next_round_players.append(pass_player)
+                    await ctx.send(f"ℹ️ {pass_player.mention} gets a free pass for Round {round_num} and automatically advances to the next round!")
 
                 for match_idx, (p1, p2) in enumerate(pairs, 1):
                     if ctx.channel.id not in self.client.active_games:
@@ -878,7 +895,7 @@ class Games(commands.Cog):
                         color=discord.Color.blurple()
                     )
                     match_embed.set_footer(text=f"Round {round_num} | Match {match_idx}")
-                    match_msg = await ctx.send(embed=match_embed, view=match_view)
+                    match_msg = await ctx.send(content=f"{p1.mention} vs {p2.mention}", embed=match_embed, view=match_view)
 
                     await match_view.wait()
 
@@ -900,11 +917,11 @@ class Games(commands.Cog):
                             next_round_players.extend([p1, p2])
                             match_embed.color = discord.Color.gold()
                         elif (c1 == "rock" and c2 == "scissors") or (c1 == "paper" and c2 == "rock") or (c1 == "scissors" and c2 == "paper"):
-                            res_desc += f"🏆 **{p1.display_name}** wins and advances! ❌ **{p2.display_name}** is eliminated!"
+                            res_desc += f"🏆 **{p1.display_name}** wins and advances!\n~~❌ **{p2.display_name}** is eliminated!~~"
                             next_round_players.append(p1)
                             match_embed.color = discord.Color.green()
                         else:
-                            res_desc += f"🏆 **{p2.display_name}** wins and advances! ❌ **{p1.display_name}** is eliminated!"
+                            res_desc += f"🏆 **{p2.display_name}** wins and advances!\n~~❌ **{p1.display_name}** is eliminated!~~"
                             next_round_players.append(p2)
                             match_embed.color = discord.Color.green()
                     elif c1 and not c2:
@@ -921,7 +938,7 @@ class Games(commands.Cog):
 
                     match_embed.description = res_desc
                     await match_msg.edit(embed=match_embed, view=match_view)
-                    await asyncio.sleep(3)
+                    await asyncio.sleep(5)
 
                 active_players = next_round_players
                 round_num += 1
@@ -949,7 +966,20 @@ class Games(commands.Cog):
                     await ctx.send(f"🎮 **RPS Tournament finished with no remaining players!**\n🔗 [**Jump to Tournament Lobby**]({lobby_url})")
 
         except asyncio.CancelledError:
-            pass
+            if not lobby_ended and 'join_view' in locals() and 'lobby_msg' in locals():
+                try:
+                    join_view.stop()
+                    for child in join_view.children:
+                        child.disabled = True
+                    cancel_embed = discord.Embed(
+                        title="🎮 RPS Tournament — Stopped",
+                        description="Tournament was stopped by host or administrator.",
+                        color=discord.Color.red()
+                    )
+                    cancel_embed.set_thumbnail(url=ctx.me.display_avatar.url)
+                    await lobby_msg.edit(embed=cancel_embed, view=join_view)
+                except Exception:
+                    pass
         finally:
             self.client.active_games.pop(ctx.channel.id, None)
 
@@ -1009,6 +1039,7 @@ class Games(commands.Cog):
             "task": asyncio.current_task()
         }
 
+        lobby_ended = False
         try:
             # 1. Open 30-second lobby window
             lobby_end_time = int(datetime.now(timezone.utc).timestamp()) + 30
@@ -1068,6 +1099,7 @@ class Games(commands.Cog):
             )
             start_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
             await lobby_msg.edit(embed=start_embed, view=join_view)
+            lobby_ended = True
             await asyncio.sleep(5)
 
             # Load Pokédex entries dataset
@@ -1146,7 +1178,7 @@ class Games(commands.Cog):
                 if current_round < count:
                     if ctx.channel.id not in self.client.active_games:
                         break
-                    await asyncio.sleep(4)
+                    await asyncio.sleep(5)
 
             # Final Leaderboard (if not forcibly stopped early)
             if ctx.channel.id in self.client.active_games:
@@ -1173,7 +1205,20 @@ class Games(commands.Cog):
                 await ctx.send(embed=lb_embed)
 
         except asyncio.CancelledError:
-            pass
+            if not lobby_ended and 'join_view' in locals() and 'lobby_msg' in locals():
+                try:
+                    join_view.stop()
+                    for child in join_view.children:
+                        child.disabled = True
+                    cancel_embed = discord.Embed(
+                        title="📖 Pokédex Quiz — Stopped",
+                        description="Quiz was stopped by host or administrator.",
+                        color=discord.Color.red()
+                    )
+                    cancel_embed.set_thumbnail(url="https://i.imgur.com/MItw5zU.png")
+                    await lobby_msg.edit(embed=cancel_embed, view=join_view)
+                except Exception:
+                    pass
         finally:
             self.client.active_games.pop(ctx.channel.id, None)
 
