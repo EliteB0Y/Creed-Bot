@@ -165,13 +165,15 @@ async def on_ready():
 @client.event
 async def on_command(ctx):
     logger.info(
-        "Command: %s | User: %s (%s) | Guild: %s (%s) | Channel: %s",
+        "CMD: %s | Cog: %s | User: %s (%s) | Guild: %s (%s) | Channel: %s | Input: %s",
         ctx.command.qualified_name,
+        ctx.command.cog_name or "None",
         ctx.author,
         ctx.author.id,
         ctx.guild.name if ctx.guild else "DM",
         ctx.guild.id if ctx.guild else "N/A",
         ctx.channel.id,
+        ctx.message.content,
     )
 
 @client.event

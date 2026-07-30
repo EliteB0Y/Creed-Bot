@@ -592,6 +592,18 @@ class Owner(commands.Cog):
         return await self.client.is_owner(ctx.author)
 
     # ==========================================
+    #  Command: Reload Bot Config
+    # ==========================================
+
+    @commands.command(name="reloadconfig", aliases=["rcfg"])
+    async def reload_config(self, ctx):
+        """Reload bot config from the bot_config MongoDB collection."""
+        import sys
+        load_bot_config = sys.modules['__main__'].load_bot_config
+        await load_bot_config()
+        await ctx.message.add_reaction(self.client.emotes.get("greentick", "✅"))
+
+    # ==========================================
     #  Command: MongoDB Manager
     # ==========================================
 
