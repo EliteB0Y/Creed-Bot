@@ -607,7 +607,7 @@ class Owner(commands.Cog):
     #  Command: MongoDB Manager
     # ==========================================
 
-    @commands.command(name="mdb", aliases=["mongodb"])
+    @commands.command(name="db", aliases=["mongodb"])
     async def mdb(self, ctx):
         """Open the interactive MongoDB Manager."""
         hub_embed, _ = _make_hub_embed(self.client.db)

@@ -92,6 +92,36 @@ class RPSJoinView(discord.ui.View):
         await interaction.response.send_message(f"🛑 **RPS Tournament was cancelled by {interaction.user.display_name}.**")
 
 
+class RPSChallengeView(discord.ui.View):
+    def __init__(self, challenger, target_user, emotes, timeout=30.0):
+        super().__init__(timeout=timeout)
+        self.challenger = challenger
+        self.target_user = target_user
+        self.emotes = emotes
+        self.accepted = None
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user.id != self.target_user.id:
+            await interaction.response.send_message(
+                f"{self.emotes.get('redtick', '❌')} **This challenge is not for you!**",
+                ephemeral=True
+            )
+            return False
+        return True
+
+    @discord.ui.button(label="Accept", style=discord.ButtonStyle.success)
+    async def accept_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.accepted = True
+        self.stop()
+        await interaction.response.defer()
+
+    @discord.ui.button(label="Decline", style=discord.ButtonStyle.danger)
+    async def decline_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.accepted = False
+        self.stop()
+        await interaction.response.defer()
+
+
 class RPSMatchView(discord.ui.View):
     def __init__(self, player1, player2, emotes, timeout=15.0):
         super().__init__(timeout=timeout)
@@ -765,6 +795,117 @@ class Games(commands.Cog):
             f"**{result}**"
         )
         await x.edit(embed=embed, view=None)
+
+    @rps.command(name='duo')
+    @commands.guild_only()
+    async def rps_duo(self, ctx, target_user: discord.Member):
+        """Challenge another user to a 1v1 Rock-Paper-Scissors game."""
+        if target_user.bot:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} **You cannot challenge a bot!**")
+            return
+        if target_user.id == ctx.author.id:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} **You cannot challenge yourself!**")
+            return
+
+        embed = discord.Embed(
+            title="⚔️ RPS Challenge!",
+            description=f"**{ctx.author.display_name}** has challenged **{target_user.display_name}** to a Rock-Paper-Scissors game!\n\nDo you accept the challenge, {target_user.mention}?",
+            color=discord.Color.blurple()
+        )
+        embed.set_footer(text=f"Challenged by {ctx.author.display_name}", icon_url=ctx.author.display_avatar.url)
+
+        challenge_view = RPSChallengeView(ctx.author, target_user, self.client.emotes, timeout=30.0)
+        challenge_msg = await ctx.send(embed=embed, view=challenge_view)
+        await challenge_view.wait()
+
+        if challenge_view.accepted is None:
+            embed.color = discord.Color.dark_gray()
+            embed.description = f"⏱️ Challenge timed out..."
+            await challenge_msg.edit(embed=embed, view=None)
+            return
+
+        if not challenge_view.accepted:
+            embed.color = discord.Color.red()
+            embed.description = f"{self.client.emotes.get('redtick', '❌')} **{target_user.display_name}** declined the challenge."
+            await challenge_msg.edit(embed=embed, view=None)
+            return
+
+        # Game starts!
+        emoji_map = {
+            "rock": self.client.emotes.get("rpsrock", "🪨"),
+            "paper": self.client.emotes.get("rpspaper", "📄"),
+            "scissors": self.client.emotes.get("rpsscissors", "✂️"),
+        }
+
+        match_end_time = int(datetime.now(timezone.utc).timestamp()) + 15
+        match_view = RPSMatchView(ctx.author, target_user, self.client.emotes, timeout=15.0)
+
+        match_embed = discord.Embed(
+            title="⚔️ RPS Duo Match!",
+            description=(
+                f"🤼 **{ctx.author.display_name}** vs **{target_user.display_name}**\n\n"
+                f"Click your choice below! Time ends <t:{match_end_time}:R>."
+            ),
+            color=discord.Color.blurple()
+        )
+        match_embed.set_footer(text=f"RPS Duo Game", icon_url=ctx.author.display_avatar.url)
+
+        # Ping both players outside the embed
+        await challenge_msg.edit(content=f"{ctx.author.mention} vs {target_user.mention}", embed=match_embed, view=match_view)
+        await match_view.wait()
+
+        # Disable buttons
+        for child in match_view.children:
+            child.disabled = True
+
+        c1 = match_view.choices.get(ctx.author.id)
+        c2 = match_view.choices.get(target_user.id)
+
+        # Evaluate outcome
+        if c1 and c2:
+            c1_emoji = emoji_map.get(c1, "❓")
+            c2_emoji = emoji_map.get(c2, "❓")
+            if c1 == c2:
+                result = "It's a draw!"
+                match_embed.color = discord.Color.gold()
+            elif (c1 == "rock" and c2 == "scissors") or (c1 == "paper" and c2 == "rock") or (c1 == "scissors" and c2 == "paper"):
+                result = f"🏆 **{ctx.author.display_name}** wins!"
+                match_embed.color = discord.Color.green()
+            else:
+                result = f"🏆 **{target_user.display_name}** wins!"
+                match_embed.color = discord.Color.green()
+            
+            match_embed.description = (
+                f"**{ctx.author.display_name}'s choice:** {c1_emoji} **{c1.title()}**\n"
+                f"**{target_user.display_name}'s choice:** {c2_emoji} **{c2.title()}**\n\n"
+                f"**{result}**"
+            )
+        elif c1 and not c2:
+            c1_emoji = emoji_map.get(c1, "❓")
+            match_embed.description = (
+                f"**{ctx.author.display_name}'s choice:** {c1_emoji} **{c1.title()}**\n"
+                f"⏱️ **{target_user.display_name}** timed out!\n\n"
+                f"🏆 **{ctx.author.display_name}** wins!"
+            )
+            match_embed.color = discord.Color.green()
+        elif c2 and not c1:
+            c2_emoji = emoji_map.get(c2, "❓")
+            match_embed.description = (
+                f"⏱️ **{ctx.author.display_name}** timed out!\n"
+                f"**{target_user.display_name}'s choice:** {c2_emoji} **{c2.title()}**\n\n"
+                f"🏆 **{target_user.display_name}** wins!"
+            )
+            match_embed.color = discord.Color.green()
+        else:
+            match_embed.description = (
+                f"⏱️ Both **{ctx.author.display_name}** and **{target_user.display_name}** timed out!\n\n"
+                f"**No one wins.**"
+            )
+            match_embed.color = discord.Color.red()
+
+        match_embed.title = "⚔️ RPS Duo Match — Results!"
+        # Clear content (remove pings)
+        await challenge_msg.edit(content=None, embed=match_embed, view=None)
 
     @rps.command(name='stop', aliases=['end', 'cancel', 'quit'])
     @commands.guild_only()
