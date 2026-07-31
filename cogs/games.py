@@ -739,17 +739,17 @@ class Games(commands.Cog):
         if ctx.invoked_subcommand is None:
             embed = discord.Embed(color=discord.Color.gold())
             embed.set_author(name="Minigame: Rock-Paper-Scissors", icon_url=ctx.me.display_avatar.url)
-            desc = "```Play Rock-Paper-Scissors in 1v1 solo mode or join a multiplayer tournament!```"
+            desc = "```Play Rock-Paper-Scissors against the bot, challenge a friend, or join a multiplayer tournament!```"
             rules = (
-                "```1. Use '!rps start' to launch a multiplayer tournament lobby (30s).\n"
-                "2. Players are paired each round to pick Rock, Paper, or Scissors (15s limit).\n"
-                "3. Loser is eliminated; winner and tied players advance to the next round!\n"
-                "4. Last player standing wins the tournament!\n"
-                "5. Use '!rps solo' to play a quick 1v1 game against the bot.```"
+                "```1. Use '!rps solo' to play a quick 1v1 game against the bot.\n"
+                "2. Use '!rps duo @user' to challenge another player to a 1v1 duel.\n"
+                "3. Use '!rps start' to launch a multiplayer tournament lobby (30s).\n"
+                "4. Tournament: Players are paired each round to make a move (15s limit).\n"
+                "5. Tournament: Losers are eliminated, while winners and tied players advance. Last player standing wins!```"
             )
             embed.description = desc
-            embed.add_field(name="Rules & Usage:", value=rules)
-            embed.set_footer(text="Multiplayer: !rps start | Solo: !rps solo", icon_url=ctx.author.display_avatar.url)
+            embed.add_field(name="Game Modes & Rules:", value=rules)
+            embed.set_footer(text="Solo: !rps solo | Duo: !rps duo @user | Tournament: !rps start", icon_url=ctx.author.display_avatar.url)
             await ctx.send(embed=embed)
 
     @rps.command(name='solo', aliases=['bot'])
