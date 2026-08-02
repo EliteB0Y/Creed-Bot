@@ -83,7 +83,6 @@ def make_hub_embed(
         description=(
             f"Browse commands using the **select menu** below.\n"
             f"Current prefix: **`{prefix}`**\n"
-            f"Only commands **you can run** are shown.\n\u200b"
         ),
         color=_COLOR,
     )
@@ -116,11 +115,11 @@ def make_category_embed(
     lines = []
     for cmd in cmds:
         short = (cmd.brief or (cmd.help or "No description.").split("\n")[0])[:80]
-        alias_str = f"  `[{', '.join(cmd.aliases)}]`" if cmd.aliases else ""
-        group_tag = " `[group]`" if isinstance(cmd, commands.Group) else ""
+        alias_str = f"\n   *(Aliases: {', '.join(f'`{a}`' for a in cmd.aliases)})*" if cmd.aliases else ""
+        
         lines.append(
-            f"**`{prefix}{cmd.name}`**{alias_str}{group_tag}\n"
-            f"↳ {short}"
+            f"**`{prefix}{cmd.name}`**\n"
+            f"↳ {short}{alias_str}"
         )
 
     embed = discord.Embed(
