@@ -56,7 +56,7 @@ class MyBot(commands.Bot):
     #Declare Bot variables here (can be accessed in cogs using self.client.variable)
 
     def __init__(self, command_prefix, intents):
-        super().__init__(command_prefix=command_prefix, intents=intents, help_command=None)
+        super().__init__(command_prefix=command_prefix, intents=intents, help_command=None, case_insensitive=True)
         self._cache_block = None
         self._cache_emoji = None
         # Runtime state
