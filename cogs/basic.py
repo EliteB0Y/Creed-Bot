@@ -179,7 +179,7 @@ class Basic(commands.Cog):
             except Exception:
                 owner = "Unknown"
 
-        owner_display = f"{owner.mention} ({owner.name})" if isinstance(owner, discord.User) else str(owner)
+        owner_display = f"{owner.mention}" if isinstance(owner, discord.User) else str(owner)
 
         # 2. Uptime calculation
         uptime_str = "Unknown"
@@ -201,9 +201,6 @@ class Basic(commands.Cog):
                 parts.append(f"{minutes}m")
             parts.append(f"{seconds}s")
             uptime_str = " ".join(parts)
-            
-            epoch_time = int(self.client.start_time.timestamp())
-            uptime_relative = f"<t:{epoch_time}:R>"
 
         # 3. System resources
         # CPU
@@ -227,20 +224,22 @@ class Basic(commands.Cog):
         ping_emoji = self.client.emotes.get('typing', '🏓')
         ram_emoji = self.client.emotes.get('info', '💾')
         cpu_emoji = self.client.emotes.get('info', '⚙️')
+        setting_emoji = self.client.emotes.get('settings', '⚙️')
+        host_emoji = self.client.emotes.get('maintenance', '🖥️')
 
-        uptime_info = f"{uptime_str} ({uptime_relative})" if uptime_relative else uptime_str
+        uptime_info = f"{uptime_str}"
 
         # 5. Build Embed
         desc = (
-            f"{bot_emoji} **Creed-Bot** is a custom bot designed for Pokémon Creed!\n\n"
+            f"**Creed-Bot** is a custom bot designed for Pokémon Creed!\n\n"
             f"{dev_emoji} **Developer:** {owner_display}\n"
             f"{uptime_emoji} **Uptime:** {uptime_info}\n\n"
-            f"**{info_emoji} Bot Statistics**\n"
+            f"**{bot_emoji} Bot Statistics**\n"
             f"• {server_emoji} **Servers:** `{len(self.client.guilds)}`\n"
             f"• {user_emoji} **Users:** `{len(self.client.users)}`\n"
             f"• {ping_emoji} **Ping:** `{round(self.client.latency * 1000, 2)}ms`\n"
-            f"• 🐍 **Library:** `discord.py v{discord.__version__}`\n\n"
-            f"**🖥️ Host Resources**\n"
+            f"• {setting_emoji} **Library:** `discord.py v{discord.__version__}` | `Python v{platform.python_version()}`\n\n"
+            f"**{host_emoji} Host Resources**\n"
             f"• {cpu_emoji} **CPU Usage:** `{cpu_usage}%`\n"
             f"• {ram_emoji} **Bot RAM:** `{bot_mem:.1f} MB`\n"
             f"• {ram_emoji} **Server RAM:** `{host_mem_used:.1f} GB / {host_mem_total:.1f} GB ({host_mem_percent}%)`"
@@ -255,7 +254,7 @@ class Basic(commands.Cog):
         embed.set_thumbnail(url=self.client.user.display_avatar.url)
         
         embed.set_footer(
-            text=f"Requested by {ctx.author.name} | Python v{platform.python_version()}",
+            text=f"Requested by {ctx.author.name}",
             icon_url=ctx.author.display_avatar.url
         )
         
