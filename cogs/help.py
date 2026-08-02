@@ -115,7 +115,7 @@ def make_category_embed(
     lines = []
     for cmd in cmds:
         short = (cmd.brief or (cmd.help or "No description.").split("\n")[0])[:80]
-        alias_str = f"\n   *(Aliases: {', '.join(f'`{a}`' for a in cmd.aliases)})*" if cmd.aliases else ""
+        alias_str = f"\n   (**Aliases:** {', '.join(f'**`{a}`**' for a in cmd.aliases)})" if cmd.aliases else ""
         
         lines.append(
             f"**`{prefix}{cmd.name}`**\n"
