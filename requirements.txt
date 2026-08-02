@@ -3,3 +3,4 @@ mechanicalsoup
 beautifulsoup4
 pymongo
 jishaku
+psutil

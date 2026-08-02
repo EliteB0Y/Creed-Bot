@@ -1,5 +1,8 @@
 import discord, random, asyncio, io
 import logging
+import psutil
+import platform
+from datetime import datetime, timezone
 from discord.ext import commands
 
 logger = logging.getLogger("CreedBot")
@@ -156,6 +159,107 @@ class Basic(commands.Cog):
             raise e
         result = random.choice(args)
         await ctx.send(f"{result}")
+
+    @commands.command(name="botinfo", aliases=["about", "info", "stats"])
+    async def botinfo(self, ctx):
+        """Displays information about the bot and its host server."""
+        # 1. Fetch Owner Info
+        owner = None
+        if self.client.owner_id:
+            try:
+                owner = self.client.get_user(self.client.owner_id) or await self.client.fetch_user(self.client.owner_id)
+            except Exception:
+                pass
+        
+        if not owner:
+            try:
+                app_info = await self.client.application_info()
+                owner = app_info.owner
+                self.client.owner_id = owner.id
+            except Exception:
+                owner = "Unknown"
+
+        owner_display = f"{owner.mention} ({owner.name})" if isinstance(owner, discord.User) else str(owner)
+
+        # 2. Uptime calculation
+        uptime_str = "Unknown"
+        uptime_relative = ""
+        if hasattr(self.client, 'start_time'):
+            now = datetime.now(timezone.utc)
+            uptime_diff = now - self.client.start_time
+            
+            days = uptime_diff.days
+            hours, remainder = divmod(uptime_diff.seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+            
+            parts = []
+            if days > 0:
+                parts.append(f"{days}d")
+            if hours > 0:
+                parts.append(f"{hours}h")
+            if minutes > 0:
+                parts.append(f"{minutes}m")
+            parts.append(f"{seconds}s")
+            uptime_str = " ".join(parts)
+            
+            epoch_time = int(self.client.start_time.timestamp())
+            uptime_relative = f"<t:{epoch_time}:R>"
+
+        # 3. System resources
+        # CPU
+        cpu_usage = psutil.cpu_percent()
+        # Memory
+        mem = psutil.virtual_memory()
+        host_mem_used = mem.used / (1024 ** 3)
+        host_mem_total = mem.total / (1024 ** 3)
+        host_mem_percent = mem.percent
+        # Bot process memory
+        proc = psutil.Process()
+        bot_mem = proc.memory_info().rss / (1024 * 1024)
+
+        # 4. Emojis
+        dev_emoji = self.client.emotes.get('developer', '👑')
+        bot_emoji = self.client.emotes.get('bot', '🤖')
+        info_emoji = self.client.emotes.get('info', 'ℹ️')
+        uptime_emoji = self.client.emotes.get('timer', '⏳')
+        server_emoji = self.client.emotes.get('discord', '🖥️')
+        user_emoji = self.client.emotes.get('user', '👥')
+        ping_emoji = self.client.emotes.get('typing', '🏓')
+        ram_emoji = self.client.emotes.get('info', '💾')
+        cpu_emoji = self.client.emotes.get('info', '⚙️')
+
+        uptime_info = f"{uptime_str} ({uptime_relative})" if uptime_relative else uptime_str
+
+        # 5. Build Embed
+        desc = (
+            f"{bot_emoji} **Creed-Bot** is a custom bot designed for Pokémon Creed!\n\n"
+            f"{dev_emoji} **Developer:** {owner_display}\n"
+            f"{uptime_emoji} **Uptime:** {uptime_info}\n\n"
+            f"**{info_emoji} Bot Statistics**\n"
+            f"• {server_emoji} **Servers:** `{len(self.client.guilds)}`\n"
+            f"• {user_emoji} **Users:** `{len(self.client.users)}`\n"
+            f"• {ping_emoji} **Ping:** `{round(self.client.latency * 1000, 2)}ms`\n"
+            f"• 🐍 **Library:** `discord.py v{discord.__version__}`\n\n"
+            f"**🖥️ Host Resources**\n"
+            f"• {cpu_emoji} **CPU Usage:** `{cpu_usage}%`\n"
+            f"• {ram_emoji} **Bot RAM:** `{bot_mem:.1f} MB`\n"
+            f"• {ram_emoji} **Server RAM:** `{host_mem_used:.1f} GB / {host_mem_total:.1f} GB ({host_mem_percent}%)`"
+        )
+
+        embed = discord.Embed(
+            title="Bot Information",
+            description=desc,
+            color=0x5865F2,
+            timestamp=datetime.now(timezone.utc)
+        )
+        embed.set_thumbnail(url=self.client.user.display_avatar.url)
+        
+        embed.set_footer(
+            text=f"Requested by {ctx.author.name} | Python v{platform.python_version()}",
+            icon_url=ctx.author.display_avatar.url
+        )
+        
+        await ctx.send(embed=embed)
 
 async def setup(client):
     await client.add_cog(Basic(client))

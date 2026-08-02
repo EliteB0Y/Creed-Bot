@@ -64,6 +64,7 @@ class MyBot(commands.Bot):
         self.active_games = {}  # {channel_id: {"name": str, "type": str, "host_id": int}}
         self.inviteurl = ""
         self.rate_cache = {}
+        self.start_time = datetime.now(timezone.utc)
         # Config defaults — overridden at startup from the bot_config MongoDB collection.
         # Any key present in the DB document is set dynamically via setattr in load_bot_config().
         self.disabledCogs = []              # cogs to skip loading, e.g. ["cogs.extra"]
