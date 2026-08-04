@@ -2,6 +2,7 @@ import discord, asyncio, json, aiohttp
 from datetime import datetime, timezone
 import logging
 from discord.ext import commands
+from views import ProfileView
 
 logger = logging.getLogger("CreedBot")
 
@@ -439,85 +440,68 @@ class PokemonCreed(commands.Cog):
     async def profile(self, ctx, *, userName):
         """Displays the profile of a Pokemon Creed user."""
         host = "https://pokemoncreed.net"
-        
+
         loading_embed = discord.Embed(title=f"Profile: {userName}")
         loading_embed.description = f"{self.client.emotes.get('loading', '')} Fetching user profile...\n"
         zzz = await ctx.send(embed=loading_embed)
 
+        # ── 1. Fetch user profile ─────────────────────────────────────
         timeout = aiohttp.ClientTimeout(total=15)
         try:
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(f"{host}/ajax/user.php?user={userName}") as r:
-                    data = await r.text()
+                    raw = await r.text()
         except asyncio.TimeoutError:
             await zzz.edit(content="`Request timed out. The site may be down — please try again later.`", embed=None)
             return
 
-        resp = json.loads(data)
-
+        resp = json.loads(raw)
         data = resp.get("data", {})
         if not data:
             await zzz.edit(content="`User not found! Please provide a valid username.`", embed=None)
             return
 
-        username = data.get("username", "N/A")
-        user_id = data.get("id", "N/A")
-        level = f"{int(data.get('trainerlevel', 0)):,}"
-        coins = f"{int(data.get('coins', 0)):,}"
-        money = f"${int(data.get('money', 0)):,}"
+        username   = data.get("username", "N/A")
+        user_id    = data.get("id", "N/A")
+        level      = f"{int(data.get('trainerlevel', 0)):,}"
+        coins      = f"{int(data.get('coins', 0)):,}"
+        money      = f"${int(data.get('money', 0)):,}"
         last_active = data.get("lastactive", "0")
-        avatar = data.get("avatar", "88882")
+        avatar     = data.get("avatar", "88882")
+        roster     = data.get("roster", [])
 
-        # Grab the first Pokemon from the roster array safely
-        roster = data.get("roster", [])
-        first_mon = roster[0] if roster else {}
-        mon_name = first_mon.get("name", "Ghost")
-        mon_exp = int(first_mon.get("totalexp", 0))
-
-        # Fetch embed color from the starter pokemon's pokedex entry
+        # ── 2. Derive accent colour from the first roster mon ─────────
+        first_mon_name = roster[0].get("name", "Ghost") if roster else "Ghost"
         embed_color = 0x2B2D31
         try:
             async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(f"{host}/ajax/pokedex.php?pokemon={mon_name}") as r:
+                async with session.get(f"{host}/ajax/pokedex.php?pokemon={first_mon_name}") as r:
                     poke_data = json.loads(await r.text())
             if poke_data.get("success"):
                 embed_color = poke_data.get("color", embed_color)
         except Exception:
             pass
 
-        embed = discord.Embed(
-            title=f"{username} - #{user_id}",
-            color=embed_color,
-            url=f"{host}/prof.php?user={discord.utils.escape_markdown(username).replace(' ', '%20')}"
-        )
-
-        embed.description = (
-            f"**Last Seen:** <t:{last_active}:R>\n"
-            f"**Trainer Level:** `{level}`\n"
-            f"**Coins:** `{coins}`\n"
-            f"**Cash:** `{money}`"
-        )
-
-        # Fetch box rating in the background
+        # ── 3. Fetch box rating ───────────────────────────────────────
         rating = await self.calculate_box_rating(username)
-        if rating.get("error"):
-            embed.description += "\n\n-# **Box Rating:** `N/A`"
-        else:
-            embed.description += f"\n\n-# **Box Rating:** `{rating['total_rating_formatted']}`"
-            embed.description += f"\n-# [Details Here]({rating['paste_url']})"
 
-        embed.description += f"\n\n-# **Starter Pokemon**"
-
-        embed.set_thumbnail(url=f"{host}/img/avatars/{avatar}.png")
-
-        safe_name = mon_name.replace(".", "").replace(" ", "%20")
-        embed.set_footer(
-            text=f"{mon_name} - Level: {round(mon_exp**(1/3))}",
-            icon_url=f"{host}/img/icon/{safe_name}.gif"
+        # ── 4. Build and send the component view ──────────────────────
+        view = ProfileView(
+            author_id=ctx.author.id,
+            username=username,
+            user_id=user_id,
+            trainer_level=level,
+            coins=coins,
+            cash=money,
+            last_active=last_active,
+            avatar=avatar,
+            roster=roster,
+            box_rating=rating,
+            embed_color=embed_color,
         )
-        embed.set_image(url=f"{host}/sprites/{safe_name}.png")
 
-        await zzz.edit(content=None, embed=embed)
+        await zzz.edit(content=None, embed=None, view=view)
+        view.message = zzz
 
     @commands.group()
     async def exp(self, ctx):
