@@ -1,6 +1,6 @@
 discord.py>=2.4.0
 mechanicalsoup
 beautifulsoup4
-pymongo
+motor
 jishaku
 psutil

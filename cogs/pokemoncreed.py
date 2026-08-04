@@ -790,7 +790,7 @@ class PokemonCreed(commands.Cog):
             return
 
         col = self.client.db.get_collection("collections")
-        record = col.find_one({"user_id": target.id})
+        record = await col.find_one({"user_id": target.id})
 
         if not record:
             logger.info("collection view: no collection found for %s (%s), requested by %s (%s)", target, target.id, ctx.author, ctx.author.id)
@@ -817,7 +817,7 @@ class PokemonCreed(commands.Cog):
         col = self.client.db.get_collection("collections")
         now = datetime.now(timezone.utc).strftime("%d %b, %Y | %I:%M:%S %p UTC")
 
-        existing = col.find_one({"user_id": ctx.author.id})
+        existing = await col.find_one({"user_id": ctx.author.id})
 
         update_data = {
             "$set": {
@@ -829,7 +829,7 @@ class PokemonCreed(commands.Cog):
         if not existing:
             update_data["$set"]["created_at"] = now
 
-        col.update_one({"user_id": ctx.author.id}, update_data, upsert=True)
+        await col.update_one({"user_id": ctx.author.id}, update_data, upsert=True)
         action = "created" if not existing else "updated"
         logger.info("collection set: %s (%s) %s their collection (%d/4096 chars)", ctx.author, ctx.author.id, action, len(text))
         await ctx.send(
@@ -841,7 +841,7 @@ class PokemonCreed(commands.Cog):
     async def collection_clear(self, ctx):
         """Clears your collection after confirmation."""
         col = self.client.db.get_collection("collections")
-        record = col.find_one({"user_id": ctx.author.id})
+        record = await col.find_one({"user_id": ctx.author.id})
 
         if not record:
             await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `You don't have a collection to clear.`")
@@ -852,7 +852,7 @@ class PokemonCreed(commands.Cog):
         await view.wait()
 
         if view.value is True:
-            col.delete_one({"user_id": ctx.author.id})
+            await col.delete_one({"user_id": ctx.author.id})
             logger.info("collection clear: %s (%s) cleared their collection", ctx.author, ctx.author.id)
             await confirm_msg.edit(content=f"{self.client.emotes.get('greentick', '✅')} `Your collection has been cleared.`", view=None)
         else:

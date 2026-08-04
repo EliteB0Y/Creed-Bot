@@ -4,7 +4,7 @@ from logging.handlers import TimedRotatingFileHandler
 import sys
 from discord.ext import commands
 from datetime import datetime, timezone, timedelta
-from pymongo import MongoClient
+import motor.motor_asyncio
 
 # Configure logging
 def setup_logging():
@@ -78,29 +78,31 @@ class MyBot(commands.Bot):
         
     @property
     def emotes(self):
-        if self._cache_emoji is None:
-            records = self.db.emojis.find()
-            self._cache_emoji = {r['name'] : r['emoji'] for r in records}
-        return self._cache_emoji
+        """Returns the in-memory emoji cache (populated at startup via load_cache)."""
+        return self._cache_emoji or {}
         
     @property
     def blocklist(self):
-        if self._cache_block is None:
-            records = self.db.blocklist.find()
-            self._cache_block = [r['userid'] for r in records]
-        return self._cache_block
-        
-    @property
-    def update_cache(self):
-        self._cache_emoji = {r['name'] : r['emoji'] for r in self.db.emojis.find()}
-        self._cache_block = [r['userid'] for r in self.db.blocklist.find()]
+        """Returns the in-memory blocklist cache (populated at startup via load_cache)."""
+        return self._cache_block or []
+
+    async def load_cache(self):
+        """Populate emoji and blocklist caches from MongoDB (motor async iterators)."""
+        self._cache_emoji = {r['name']: r['emoji'] async for r in self.db.emojis.find()}
+        self._cache_block = [r['userid'] async for r in self.db.blocklist.find()]
+        logger.info("Cache loaded: %d emote(s), %d blocked user(s).", len(self._cache_emoji), len(self._cache_block))
+
+    async def update_cache(self):
+        """Refresh the in-memory emoji and blocklist caches from MongoDB."""
+        self._cache_emoji = {r['name']: r['emoji'] async for r in self.db.emojis.find()}
+        self._cache_block  = [r['userid'] async for r in self.db.blocklist.find()]
         return "`Updated the cache`"
 
     async def close(self):
         """Graceful shutdown: backup rate_cache to MongoDB before closing."""
         try:
             if hasattr(self, 'db') and self.rate_cache:
-                self.db.backups.update_one(
+                await self.db.backups.update_one(
                     {"_id": "rate_cache"},
                     {"$set": {"data": self.rate_cache}},
                     upsert=True
@@ -121,12 +123,12 @@ async def get_prefix(client, message):
     if not message.guild:
         return commands.when_mentioned_or(*("",))(client, message)
     prefixes = client.db.get_collection("prefixes_cb")
-    p = prefixes.find_one({"serverid": message.guild.id})
+    p = await prefixes.find_one({"serverid": message.guild.id})
     if p:
         pf = p["prefix"]
         return commands.when_mentioned_or(*(pf,))(client, message)
     else:
-        prefixes.insert_one({"serverid": message.guild.id, "prefix" : "!"})
+        await prefixes.insert_one({"serverid": message.guild.id, "prefix": "!"})
         return commands.when_mentioned_or(*("!",))(client, message)
         
 # Creating the Bot using MyBot class
@@ -135,7 +137,7 @@ client = MyBot(command_prefix = get_prefix, intents = discord.Intents.all())
 #Connect to the database
 async def create_db_connection():
     try:
-        mclient = MongoClient(os.environ.get('MONGODB'))
+        mclient = motor.motor_asyncio.AsyncIOMotorClient(os.environ.get('MONGODB'))
         client.db = mclient.get_database("my_db")
         logger.info("Database connection successful!")
     except Exception as e:
@@ -150,7 +152,7 @@ async def load_bot_config():
     is absent.
     """
     try:
-        config = client.db.bot_config.find_one()
+        config = await client.db.bot_config.find_one()
         if config:
             for key, value in config.items():
                 if key == "_id":
@@ -216,9 +218,10 @@ os.environ["JISHAKU_HIDE"]="True"
 async def main():
     await create_db_connection()
     await load_bot_config()
+    await client.load_cache()
 
     # Restore rate_cache from MongoDB backup
-    backup = client.db.backups.find_one({"_id": "rate_cache"})
+    backup = await client.db.backups.find_one({"_id": "rate_cache"})
     if backup and "data" in backup:
         client.rate_cache = backup["data"]
         logger.info(f"Restored rate_cache ({len(client.rate_cache)} entries) from MongoDB backup.")

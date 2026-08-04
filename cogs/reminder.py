@@ -102,7 +102,7 @@ class Reminder(commands.Cog):
 
         # Load existing reminders from MongoDB
         try:
-            reminders = await asyncio.to_thread(lambda: list(self.client.db.reminders.find()))
+            reminders = [doc async for doc in self.client.db.reminders.find()]
         except Exception as e:
             logger.error("Failed to load reminders from DB", exc_info=e)
             return
@@ -186,7 +186,7 @@ class Reminder(commands.Cog):
         
         # Delete from MongoDB
         try:
-            await asyncio.to_thread(self.client.db.reminders.delete_one, {"_id": rem_id})
+            await self.client.db.reminders.delete_one({"_id": rem_id})
         except Exception as e:
             logger.error(f"Failed to delete triggered reminder {rem_id} from DB", exc_info=e)
 
@@ -269,9 +269,7 @@ class Reminder(commands.Cog):
 
         # Check maximum limit of 5 reminders
         try:
-            count = await asyncio.to_thread(
-                self.client.db.reminders.count_documents, {"user_id": ctx.author.id}
-            )
+            count = await self.client.db.reminders.count_documents({"user_id": ctx.author.id})
         except Exception as e:
             logger.error("DB error counting reminders", exc_info=e)
             await ctx.send(embed=discord.Embed(description=f"{redtick_emoji} Database error. Please try again later.", color=discord.Color.red()))
@@ -285,7 +283,7 @@ class Reminder(commands.Cog):
         while True:
             rem_id = "".join(secrets.choice(string.ascii_lowercase + string.digits) for _ in range(6))
             try:
-                exists = await asyncio.to_thread(self.client.db.reminders.find_one, {"_id": rem_id})
+                exists = await self.client.db.reminders.find_one({"_id": rem_id})
                 if not exists:
                      break
             except Exception as e:
@@ -308,7 +306,7 @@ class Reminder(commands.Cog):
         }
 
         try:
-            await asyncio.to_thread(self.client.db.reminders.insert_one, doc)
+            await self.client.db.reminders.insert_one(doc)
         except Exception as e:
             logger.error("DB error inserting reminder", exc_info=e)
             await ctx.send(embed=discord.Embed(description=f"{redtick_emoji} Database error saving reminder.", color=discord.Color.red()))
@@ -338,9 +336,7 @@ class Reminder(commands.Cog):
         """Lists active reminders for the user."""
         redtick_emoji = self.client.emotes.get('redtick') or "❌"
         try:
-            user_reminders = await asyncio.to_thread(
-                lambda: list(self.client.db.reminders.find({"user_id": ctx.author.id}).sort("expires_at", 1))
-            )
+            user_reminders = [doc async for doc in self.client.db.reminders.find({"user_id": ctx.author.id}).sort("expires_at", 1)]
         except Exception as e:
             logger.error("DB error listing reminders", exc_info=e)
             await ctx.send(embed=discord.Embed(description=f"{redtick_emoji} Database error. Please try again later.", color=discord.Color.red()))
@@ -383,7 +379,7 @@ class Reminder(commands.Cog):
         redtick_emoji = self.client.emotes.get('redtick') or "❌"
 
         try:
-            doc = await asyncio.to_thread(self.client.db.reminders.find_one, {"_id": reminder_id})
+            doc = await self.client.db.reminders.find_one({"_id": reminder_id})
         except Exception as e:
             logger.error("DB error finding reminder for deletion", exc_info=e)
             await ctx.send(embed=discord.Embed(description=f"{redtick_emoji} Database error. Please try again later.", color=discord.Color.red()))
@@ -403,7 +399,7 @@ class Reminder(commands.Cog):
         
         # Delete from DB
         try:
-            await asyncio.to_thread(self.client.db.reminders.delete_one, {"_id": reminder_id})
+            await self.client.db.reminders.delete_one({"_id": reminder_id})
         except Exception as e:
             logger.error("DB error deleting reminder", exc_info=e)
             await ctx.send(embed=discord.Embed(description=f"{redtick_emoji} Database error. Could not delete from DB.", color=discord.Color.red()))
@@ -420,9 +416,7 @@ class Reminder(commands.Cog):
         """Clears all active reminders for the user."""
         redtick_emoji = self.client.emotes.get('redtick') or "❌"
         try:
-            user_reminders = await asyncio.to_thread(
-                lambda: list(self.client.db.reminders.find({"user_id": ctx.author.id}))
-            )
+            user_reminders = [doc async for doc in self.client.db.reminders.find({"user_id": ctx.author.id})]
         except Exception as e:
             logger.error("DB error clearing reminders", exc_info=e)
             await ctx.send(embed=discord.Embed(description=f"{redtick_emoji} Database error. Please try again later.", color=discord.Color.red()))
@@ -451,7 +445,7 @@ class Reminder(commands.Cog):
 
             # Delete from DB
             try:
-                await asyncio.to_thread(self.client.db.reminders.delete_many, {"user_id": ctx.author.id})
+                await self.client.db.reminders.delete_many({"user_id": ctx.author.id})
             except Exception as e:
                 logger.error("DB error bulk deleting reminders", exc_info=e)
                 await msg.edit(embed=discord.Embed(description=f"{redtick_emoji} Database error clearing reminders.", color=discord.Color.red()), view=None)

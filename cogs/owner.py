@@ -29,22 +29,25 @@ def _paginate(docs, page_size=5):
     return [docs[i : i + page_size] for i in range(0, len(docs), page_size)]
 
 
-def _make_hub_embed(db):
+async def _make_hub_embed(db):
     """Build the hub embed listing all collections with their document counts."""
-    collections = sorted(db.list_collection_names())
+    collections = sorted(await db.list_collection_names())
     embed = discord.Embed(title="🗄️ MongoDB Manager", color=0x00C9A7)
     if not collections:
         embed.description = "*No collections found in this database.*"
     else:
-        lines = [f"**`{col}`** — {db[col].count_documents({}):,} doc(s)" for col in collections]
+        lines = []
+        for col in collections:
+            count = await db[col].count_documents({})
+            lines.append(f"**`{col}`** — {count:,} doc(s)")
         embed.description = "\n".join(lines)
     embed.set_footer(text=f"{len(collections)} collection(s)  •  Select one below to manage it")
     return embed, collections
 
 
-def _make_panel_embed(collection, db):
+async def _make_panel_embed(collection, db):
     """Build the collection panel embed."""
-    count = db[collection].count_documents({})
+    count = await db[collection].count_documents({})
     embed = discord.Embed(
         title=f"📁 {collection}",
         description=f"**{count:,}** document(s)\n\nChoose an operation:",
@@ -114,7 +117,7 @@ class FindModal(discord.ui.Modal, title="Find Documents"):
             await self.message.edit(embed=_error_embed(str(e)), view=self.panel_view)
             return
 
-        docs = list(self.db[self.collection].find(query).limit(50))
+        docs = [d async for d in self.db[self.collection].find(query).limit(50)]
         pages = _paginate(docs)
         embed = _make_find_embed(self.collection, pages, 0, raw)
         result_view = FindResultView(
@@ -148,7 +151,7 @@ class InsertModal(discord.ui.Modal, title="Insert Document"):
             await self.message.edit(embed=_error_embed(str(e)), view=self.panel_view)
             return
 
-        result = self.db[self.collection].insert_one(document)
+        result = await self.db[self.collection].insert_one(document)
         embed = discord.Embed(
             title=f"✅ Inserted — `{self.collection}`",
             description=f"Document inserted with ID:\n`{result.inserted_id}`",
@@ -193,7 +196,7 @@ class UpdateModal(discord.ui.Modal, title="Update Documents"):
         if not any(k.startswith("$") for k in update):
             update = {"$set": update}
 
-        result = self.db[self.collection].update_many(query, update)
+        result = await self.db[self.collection].update_many(query, update)
         embed = discord.Embed(
             title=f"✅ Updated — `{self.collection}`",
             description=f"**Matched:** `{result.matched_count}`\n**Modified:** `{result.modified_count}`",
@@ -226,7 +229,7 @@ class DeleteModal(discord.ui.Modal, title="Delete Documents"):
             await self.message.edit(embed=_error_embed(str(e)), view=self.panel_view)
             return
 
-        count = self.db[self.collection].count_documents(query)
+        count = await self.db[self.collection].count_documents(query)
         if count == 0:
             embed = discord.Embed(
                 title="❌ No Match",
@@ -278,7 +281,7 @@ class CountModal(discord.ui.Modal, title="Count Documents"):
             await self.message.edit(embed=_error_embed(str(e)), view=self.panel_view)
             return
 
-        count = self.db[self.collection].count_documents(query)
+        count = await self.db[self.collection].count_documents(query)
         embed = discord.Embed(
             title=f"🔢 Count — `{self.collection}`",
             description=f"**{count:,}** document(s) match.\nFilter: `{raw}`",
@@ -335,7 +338,7 @@ class FindResultView(discord.ui.View):
     @discord.ui.button(label="← Back to Panel", style=discord.ButtonStyle.primary, row=1)
     async def back_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.edit_message(
-            embed=_make_panel_embed(self.collection, self.db),
+            embed=await _make_panel_embed(self.collection, self.db),
             view=self.panel_view,
         )
 
@@ -371,7 +374,7 @@ class DeleteConfirmView(discord.ui.View):
 
     @discord.ui.button(label="Yes, Delete", style=discord.ButtonStyle.danger, emoji="🗑️")
     async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
-        result = self.db[self.collection].delete_many(self.query)
+        result = await self.db[self.collection].delete_many(self.query)
         embed = discord.Embed(
             title=f"✅ Deleted — `{self.collection}`",
             description=f"Deleted **{result.deleted_count}** document(s).",
@@ -382,7 +385,7 @@ class DeleteConfirmView(discord.ui.View):
     @discord.ui.button(label="Cancel", style=discord.ButtonStyle.secondary, emoji="❌")
     async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.edit_message(
-            embed=_make_panel_embed(self.collection, self.db),
+            embed=await _make_panel_embed(self.collection, self.db),
             view=self.panel_view,
         )
 
@@ -390,7 +393,7 @@ class DeleteConfirmView(discord.ui.View):
         if self.message:
             try:
                 await self.message.edit(
-                    embed=_make_panel_embed(self.collection, self.db),
+                    embed=await _make_panel_embed(self.collection, self.db),
                     view=self.panel_view,
                 )
             except Exception:
@@ -414,17 +417,18 @@ class DropConfirmView(discord.ui.View):
 
     @discord.ui.button(label="Drop Collection", style=discord.ButtonStyle.danger, emoji="💣")
     async def confirm(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.db.drop_collection(self.collection)
+        await self.db.drop_collection(self.collection)
         # Return to a refreshed hub after dropping
-        hub_embed, _ = _make_hub_embed(self.db)
+        hub_embed, _ = await _make_hub_embed(self.db)
         hub_view = MongoHubView(self.db, self.author_id)
+        await hub_view.populate()
         hub_view.message = self.message
         await interaction.response.edit_message(embed=hub_embed, view=hub_view)
 
     @discord.ui.button(label="Cancel", style=discord.ButtonStyle.secondary, emoji="❌")
     async def cancel(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.edit_message(
-            embed=_make_panel_embed(self.collection, self.db),
+            embed=await _make_panel_embed(self.collection, self.db),
             view=self.panel_view,
         )
 
@@ -432,7 +436,7 @@ class DropConfirmView(discord.ui.View):
         if self.message:
             try:
                 await self.message.edit(
-                    embed=_make_panel_embed(self.collection, self.db),
+                    embed=await _make_panel_embed(self.collection, self.db),
                     view=self.panel_view,
                 )
             except Exception:
@@ -506,8 +510,9 @@ class CollectionPanelView(discord.ui.View):
 
     @discord.ui.button(label="← Back", style=discord.ButtonStyle.secondary, row=2)
     async def back_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-        hub_embed, _ = _make_hub_embed(self.db)
+        hub_embed, _ = await _make_hub_embed(self.db)
         hub_view = MongoHubView(self.db, self.author_id)
+        await hub_view.populate()
         hub_view.message = self.message
         await interaction.response.edit_message(embed=hub_embed, view=hub_view)
 
@@ -531,13 +536,21 @@ class MongoHubView(discord.ui.View):
         self.db = db
         self.author_id = author_id
         self.message = None
-        # Populate the select with current collections (Discord max: 25 options)
-        collections = sorted(db.list_collection_names())[:25]
+        # Options are populated via async populate() before the view is sent
+        self.collection_select.options = [
+            discord.SelectOption(label="Loading...", value="__loading__")
+        ]
+        self.collection_select.disabled = True
+
+    async def populate(self):
+        """Async method to populate the collection select with current DB collections."""
+        collections = sorted(await self.db.list_collection_names())[:25]
         if collections:
             self.collection_select.options = [
                 discord.SelectOption(label=col, value=col, emoji="📁")
                 for col in collections
             ]
+            self.collection_select.disabled = False
         else:
             self.collection_select.options = [
                 discord.SelectOption(label="(no collections)", value="__none__")
@@ -556,14 +569,15 @@ class MongoHubView(discord.ui.View):
         panel_view = CollectionPanelView(collection, self.db, self.author_id)
         panel_view.message = self.message
         await interaction.response.edit_message(
-            embed=_make_panel_embed(collection, self.db),
+            embed=await _make_panel_embed(collection, self.db),
             view=panel_view,
         )
 
     @discord.ui.button(label="Refresh 🔄", style=discord.ButtonStyle.secondary, row=1)
     async def refresh_btn(self, interaction: discord.Interaction, button: discord.ui.Button):
-        hub_embed, _ = _make_hub_embed(self.db)
+        hub_embed, _ = await _make_hub_embed(self.db)
         new_view = MongoHubView(self.db, self.author_id)
+        await new_view.populate()
         new_view.message = self.message
         await interaction.response.edit_message(embed=hub_embed, view=new_view)
 
@@ -610,8 +624,9 @@ class Owner(commands.Cog):
     @commands.command(name="db", aliases=["mongodb"])
     async def mdb(self, ctx):
         """Open the interactive MongoDB Manager."""
-        hub_embed, _ = _make_hub_embed(self.client.db)
+        hub_embed, _ = await _make_hub_embed(self.client.db)
         view = MongoHubView(self.client.db, ctx.author.id)
+        await view.populate()
         msg = await ctx.send(embed=hub_embed, view=view)
         view.message = msg
 

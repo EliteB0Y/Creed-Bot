@@ -43,9 +43,9 @@ class Basic(commands.Cog):
     async def on_guild_join(self, guild):
         logger.info("Joined guild: %s (%s) | Members: %s", guild.name, guild.id, guild.member_count)
         prefixes = self.client.db.get_collection("prefixes_cb")
-        p = prefixes.find_one({"serverid": guild.id})
+        p = await prefixes.find_one({"serverid": guild.id})
         if not p:
-            prefixes.insert_one({"serverid": guild.id, "prefix": "!"})
+            await prefixes.insert_one({"serverid": guild.id, "prefix": "!"})
 
     # <# Event: On Guild Join - End #>
 
@@ -55,9 +55,9 @@ class Basic(commands.Cog):
     async def on_guild_remove(self, guild):
         logger.info("Left guild: %s (%s)", guild.name, guild.id)
         prefixes = self.client.db.get_collection("prefixes_cb")
-        p = prefixes.find_one({"serverid": guild.id})
+        p = await prefixes.find_one({"serverid": guild.id})
         if p:
-            prefixes.delete_one({"serverid": guild.id})
+            await prefixes.delete_one({"serverid": guild.id})
 
     # <# Event: On Guild Remove - End #>
 
@@ -76,7 +76,7 @@ class Basic(commands.Cog):
 
             if view.value is True:
                 prefixes = self.client.db.get_collection("prefixes_cb")
-                prefixes.update_one({"serverid": ctx.guild.id}, {"$set": {"prefix": new_prefix}}, upsert=True)
+                await prefixes.update_one({"serverid": ctx.guild.id}, {"$set": {"prefix": new_prefix}}, upsert=True)
                 desc = f"{self.client.emotes.get('accepted','')} Command prefix changed to {self.client.emotes.get('arrowright','**')} **{new_prefix}** {self.client.emotes.get('arrowleft','**')}"
                 embed = discord.Embed(title = f"Hello {ctx.author.display_name}", description = desc)
                 await x.edit(embed = embed, view = None)
