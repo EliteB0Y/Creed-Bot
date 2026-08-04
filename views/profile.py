@@ -74,6 +74,24 @@ class ProfileView(discord.ui.LayoutView):
         self.pg = 0                    # current roster page index
         self.message = None
 
+        # ── Nav buttons — created once, reused every _build() ─────────
+        self.btn_first = discord.ui.Button(
+            emoji="⏮️", style=discord.ButtonStyle.secondary, custom_id="profile_first"
+        )
+        self.btn_prev = discord.ui.Button(
+            emoji="◀️", style=discord.ButtonStyle.primary, custom_id="profile_prev"
+        )
+        self.btn_next = discord.ui.Button(
+            emoji="▶️", style=discord.ButtonStyle.primary, custom_id="profile_next"
+        )
+        self.btn_last = discord.ui.Button(
+            emoji="⏭️", style=discord.ButtonStyle.secondary, custom_id="profile_last"
+        )
+        self.btn_first.callback = self._on_first
+        self.btn_prev.callback  = self._on_prev
+        self.btn_next.callback  = self._on_next
+        self.btn_last.callback  = self._on_last
+
         self._build()
 
     # ------------------------------------------------------------------
@@ -85,10 +103,10 @@ class ProfileView(discord.ui.LayoutView):
 
     def _box_rating_text(self) -> str:
         if self.box_rating.get("error"):
-            return "-# **Box Rating:** `N/A`"
+            return "-# **Box Rating: `N/A`**"
         rating = self.box_rating.get("total_rating_formatted", "N/A")
         paste = self.box_rating.get("paste_url", "")
-        return f"-# **Box Rating:** `{rating}`\n-# **[Details Here]({paste})**"
+        return f"-# **Box Rating:`{rating}`**\n-# **[Details Here]({paste})**"
 
     def _roster_text(self) -> str:
         if not self.roster:
@@ -106,11 +124,11 @@ class ProfileView(discord.ui.LayoutView):
         moves = [mon.get(f"move{i}", "") for i in range(1, 5) if mon.get(f"move{i}")]
         moves_str = " / ".join(moves) if moves else "—"
 
-        header = f"**Roster**  •  Slot {slot} of {total}"
+        header = f"-# **Team**  •  Slot {slot} of {total}"
         mon_line = f"### **{name}** {gender}"
         if nickname:
             mon_line += f" *({nickname})*"
-        return f"{header}\n{mon_line}\n**Level:** `{level:,}`  •  **XP:** `{exp:,}`\n**Moves:** {moves_str}"
+        return f"{header}\n{mon_line}\n**Level: `{level:,}`**  •  **XP: `{exp:,}`**\n-# **Moves:** {moves_str}"
 
     def _sprite_url(self) -> str:
         if not self.roster:
@@ -147,7 +165,7 @@ class ProfileView(discord.ui.LayoutView):
             color = int(color.lstrip("#"), 16)
 
         # ── Header ────────────────────────────────────────────────────
-        header_text = f"### [{self.username} - #{self.user_id}]({self._profile_url()})"
+        header_text = f"## [{self.username} - #{self.user_id}]({self._profile_url()})"
 
         # ── Trainer Stats ─────────────────────────────────────────────
         stats_text = (
@@ -160,26 +178,7 @@ class ProfileView(discord.ui.LayoutView):
         # ── Avatar Thumbnail ──────────────────────────────────────────
         avatar_thumb = discord.ui.Thumbnail(media=self._avatar_url())
 
-        # ── Roster nav buttons ─────────────────────────────────────────
-        self.btn_first = discord.ui.Button(
-            emoji="⏮️", style=discord.ButtonStyle.secondary, custom_id="profile_first"
-        )
-        self.btn_prev = discord.ui.Button(
-            emoji="◀️", style=discord.ButtonStyle.primary, custom_id="profile_prev"
-        )
-        self.btn_next = discord.ui.Button(
-            emoji="▶️", style=discord.ButtonStyle.primary, custom_id="profile_next"
-        )
-        self.btn_last = discord.ui.Button(
-            emoji="⏭️", style=discord.ButtonStyle.secondary, custom_id="profile_last"
-        )
         self._update_nav_buttons()
-
-        # Attach callbacks
-        self.btn_first.callback = self._on_first
-        self.btn_prev.callback = self._on_prev
-        self.btn_next.callback = self._on_next
-        self.btn_last.callback = self._on_last
 
         nav_row = discord.ui.ActionRow(
             self.btn_first,
@@ -228,20 +227,13 @@ class ProfileView(discord.ui.LayoutView):
 
     async def on_timeout(self):
         if self.message:
-            # Disable all nav buttons and re-render
-            self.btn_first.disabled = True
-            self.btn_prev.disabled = True
-            self.btn_next.disabled = True
-            self.btn_last.disabled = True
             try:
-                # Rebuild with disabled buttons baked in
                 self._build()
-                for item in self._children:
-                    if isinstance(item, discord.ui.Container):
-                        for child in item._children:
-                            if isinstance(child, discord.ui.ActionRow):
-                                for btn in child._children:
-                                    btn.disabled = True
+                # Disable all nav buttons after rebuilding
+                self.btn_first.disabled = True
+                self.btn_prev.disabled = True
+                self.btn_next.disabled = True
+                self.btn_last.disabled = True
                 await self.message.edit(view=self)
             except discord.HTTPException:
                 pass

@@ -472,15 +472,7 @@ class PokemonCreed(commands.Cog):
 
         # ── 2. Derive accent colour from the first roster mon ─────────
         first_mon_name = roster[0].get("name", "Ghost") if roster else "Ghost"
-        embed_color = 0x2B2D31
-        try:
-            async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(f"{host}/ajax/pokedex.php?pokemon={first_mon_name}") as r:
-                    poke_data = json.loads(await r.text())
-            if poke_data.get("success"):
-                embed_color = poke_data.get("color", embed_color)
-        except Exception:
-            pass
+        embed_color = 0x28D2EF
 
         # ── 3. Fetch box rating ───────────────────────────────────────
         rating = await self.calculate_box_rating(username)
