@@ -16,11 +16,11 @@ def _safe_name(name: str) -> str:
 
 
 def _gender_icon(gender: str) -> str:
-    if gender == "male":
+    if gender == "M":
         return "♂"
-    if gender == "female":
+    if gender == "F":
         return "♀"
-    return "⚬"  # genderless / unknown
+    return "G"  # genderless / unknown
 
 
 class ProfileView(discord.ui.LayoutView):
@@ -85,14 +85,14 @@ class ProfileView(discord.ui.LayoutView):
 
     def _box_rating_text(self) -> str:
         if self.box_rating.get("error"):
-            return "**📦 Box Rating:** `N/A`"
+            return "-# **Box Rating:** `N/A`"
         rating = self.box_rating.get("total_rating_formatted", "N/A")
         paste = self.box_rating.get("paste_url", "")
-        return f"**📦 Box Rating:** `{rating}`  •  [Details]({paste})"
+        return f"-# **Box Rating:** `{rating}`\n-# **[Details Here]({paste})**"
 
     def _roster_text(self) -> str:
         if not self.roster:
-            return "**🎮 Roster:** *No Pokémon on roster.*"
+            return "**Roster:** *No Pokémon on roster.*"
 
         mon = self._current_mon()
         name = mon.get("name", "Unknown")
@@ -106,11 +106,11 @@ class ProfileView(discord.ui.LayoutView):
         moves = [mon.get(f"move{i}", "") for i in range(1, 5) if mon.get(f"move{i}")]
         moves_str = " / ".join(moves) if moves else "—"
 
-        header = f"**🎮 Roster**  •  Slot {slot} of {total}"
-        mon_line = f"**{name}** {gender}"
+        header = f"**Roster**  •  Slot {slot} of {total}"
+        mon_line = f"### **{name}** {gender}"
         if nickname:
-            mon_line += f'  *"{nickname}"*'
-        return f"{header}\n{mon_line}\n**Lv.** `{level:,}`  •  **XP:** `{exp:,}`\n**Moves:** {moves_str}"
+            mon_line += f" *({nickname})*"
+        return f"{header}\n{mon_line}\n**Level:** `{level:,}`  •  **XP:** `{exp:,}`\n**Moves:** {moves_str}"
 
     def _sprite_url(self) -> str:
         if not self.roster:
@@ -147,14 +147,14 @@ class ProfileView(discord.ui.LayoutView):
             color = int(color.lstrip("#"), 16)
 
         # ── Header ────────────────────────────────────────────────────
-        header_text = f"## [{self.username} — #{self.user_id}]({self._profile_url()})"
+        header_text = f"### [{self.username} - #{self.user_id}]({self._profile_url()})"
 
         # ── Trainer Stats ─────────────────────────────────────────────
         stats_text = (
-            f"🕒 **Last Seen:** <t:{self.last_active}:R>\n"
-            f"🏅 **Trainer Level:** `{self.trainer_level}`\n"
-            f"🪙 **Coins:** `{self.coins}`\n"
-            f"💵 **Cash:** `{self.cash}`"
+            f"**Last Seen:** <t:{self.last_active}:R>\n"
+            f"**Trainer Level:** `{self.trainer_level}`\n"
+            f"**Coins:** `{self.coins}`\n"
+            f"**Cash:** `{self.cash}`"
         )
 
         # ── Avatar Thumbnail ──────────────────────────────────────────
