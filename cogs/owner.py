@@ -1,6 +1,8 @@
 import discord
 import json
 import logging
+import re
+import aiohttp
 from discord.ext import commands
 from bson import ObjectId
 
@@ -85,6 +87,61 @@ def _error_embed(detail):
         description=f"```{detail}```",
         color=discord.Color.red(),
     )
+
+
+EMOJI_REGEX = re.compile(r"<(?P<animated>a)?:(?P<name>[a-zA-Z0-9_]+):(?P<id>\d+)>")
+URL_REGEX = re.compile(r"https?://\S+")
+
+
+async def _extract_image_url(ctx, emoji_arg: str = None) -> str:
+    """Resolve an image URL from direct argument, attachments, or referenced message."""
+    # 1. Direct argument
+    if emoji_arg:
+        match = EMOJI_REGEX.search(emoji_arg)
+        if match:
+            ext = "gif" if match.group("animated") else "png"
+            return f"https://cdn.discordapp.com/emojis/{match.group('id')}.{ext}"
+        if emoji_arg.startswith(("http://", "https://")):
+            return emoji_arg
+
+    # 2. Attachments on the command message
+    if ctx.message.attachments:
+        return ctx.message.attachments[0].url
+
+    # 3. Referenced message (reply)
+    ref_msg = None
+    if ctx.message.reference:
+        if ctx.message.reference.resolved and isinstance(ctx.message.reference.resolved, discord.Message):
+            ref_msg = ctx.message.reference.resolved
+        elif ctx.message.reference.message_id:
+            try:
+                ref_msg = await ctx.channel.fetch_message(ctx.message.reference.message_id)
+            except (discord.NotFound, discord.HTTPException):
+                pass
+
+    if ref_msg:
+        if ref_msg.attachments:
+            return ref_msg.attachments[0].url
+        match = EMOJI_REGEX.search(ref_msg.content)
+        if match:
+            ext = "gif" if match.group("animated") else "png"
+            return f"https://cdn.discordapp.com/emojis/{match.group('id')}.{ext}"
+        url_match = URL_REGEX.search(ref_msg.content)
+        if url_match:
+            return url_match.group(0)
+        if ref_msg.stickers and hasattr(ref_msg.stickers[0], "url") and ref_msg.stickers[0].url:
+            return ref_msg.stickers[0].url
+
+    return None
+
+
+async def _fetch_image_bytes(url: str) -> bytes:
+    """Download raw image bytes from a URL."""
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            if resp.status == 200:
+                return await resp.read()
+            raise ValueError(f"HTTP {resp.status} while fetching image.")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -676,6 +733,158 @@ class Owner(commands.Cog):
         # Re-dispatch the message through the bot's on_message pipeline
         self.client.dispatch("message", message)
         await ctx.message.add_reaction(self.client.emotes.get("greentick", "✅"))
+
+    # ==========================================
+    #  Command Group: Application Emoji Management
+    # ==========================================
+
+    @commands.group(name="emoji", aliases=["appemoji"], invoke_without_command=True)
+    async def emoji_group(self, ctx):
+        """Manage Discord Application Emojis for the bot."""
+        await ctx.send_help(ctx.command)
+
+    @emoji_group.command(name="upload", aliases=["add"])
+    async def emoji_upload(self, ctx, name: str, emoji_or_url: str = None):
+        """Upload a new application emoji for the bot.
+
+        Usage:
+          !emoji upload <name> <emoji/URL>
+          !emoji upload <name> (with attached image or replying to a message)
+        """
+        # Validate emoji name (Discord rules: 2-32 alphanumeric or underscores)
+        if not (2 <= len(name) <= 32) or not re.match(r"^[a-zA-Z0-9_]+$", name):
+            return await ctx.send(
+                f"{self.client.emotes.get('redtick', '❌')} "
+                "Emoji name must be 2-32 characters long and contain only letters, numbers, and underscores."
+            )
+
+        image_url = await _extract_image_url(ctx, emoji_or_url)
+        if not image_url:
+            return await ctx.send(
+                f"{self.client.emotes.get('redtick', '❌')} "
+                "Could not find an emoji or image. Provide an emoji/URL, attach an image, or reply to a message containing one."
+            )
+
+        async with ctx.typing():
+            try:
+                image_bytes = await _fetch_image_bytes(image_url)
+            except Exception as e:
+                return await ctx.send(
+                    f"{self.client.emotes.get('redtick', '❌')} Failed to download image: `{e}`"
+                )
+
+            # Check 256 KB limit
+            if len(image_bytes) > 256 * 1024:
+                size_kb = len(image_bytes) / 1024
+                return await ctx.send(
+                    f"{self.client.emotes.get('redtick', '❌')} "
+                    f"Image size (`{size_kb:.1f} KB`) exceeds Discord's 256 KB limit for emojis."
+                )
+
+            try:
+                emoji = await self.client.create_application_emoji(name=name, image=image_bytes)
+            except discord.HTTPException as e:
+                return await ctx.send(
+                    f"{self.client.emotes.get('redtick', '❌')} Failed to create application emoji: `{e.text}`"
+                )
+            except Exception as e:
+                return await ctx.send(
+                    f"{self.client.emotes.get('redtick', '❌')} An unexpected error occurred: `{e}`"
+                )
+
+        embed = discord.Embed(
+            title="✅ Application Emoji Uploaded",
+            color=0x57F287,
+        )
+        embed.add_field(name="Name", value=f"`{emoji.name}`", inline=True)
+        embed.add_field(name="Emoji", value=str(emoji), inline=True)
+        embed.add_field(name="ID", value=f"`{emoji.id}`", inline=True)
+        embed.set_thumbnail(url=emoji.url)
+        await ctx.send(embed=embed)
+
+    @emoji_group.command(name="view", aliases=["show", "info"])
+    async def emoji_view(self, ctx, name: str):
+        """Display details of a bot application emoji by name or ID."""
+        try:
+            emojis = await self.client.fetch_application_emojis()
+        except Exception as e:
+            return await ctx.send(f"{self.client.emotes.get('redtick', '❌')} Failed to fetch application emojis: `{e}`")
+
+        emoji = discord.utils.find(
+            lambda e: e.name.lower() == name.lower() or str(e.id) == name,
+            emojis
+        )
+
+        if not emoji:
+            return await ctx.send(
+                f"{self.client.emotes.get('redtick', '❌')} "
+                f"Application emoji `{name}` not found."
+            )
+
+        embed = discord.Embed(
+            title=f"Application Emoji: {emoji.name}",
+            color=0x5865F2,
+        )
+        embed.add_field(name="Preview", value=str(emoji), inline=True)
+        embed.add_field(name="Formatted", value=f"`{emoji}`", inline=True)
+        embed.add_field(name="ID", value=f"`{emoji.id}`", inline=True)
+        embed.add_field(name="Animated", value=f"`{emoji.animated}`", inline=True)
+        embed.add_field(name="CDN URL", value=f"[Link]({emoji.url})", inline=True)
+        embed.set_thumbnail(url=emoji.url)
+        await ctx.send(embed=embed)
+
+    @emoji_group.command(name="list")
+    async def emoji_list(self, ctx):
+        """List all application emojis owned by the bot."""
+        try:
+            emojis = await self.client.fetch_application_emojis()
+        except Exception as e:
+            return await ctx.send(f"{self.client.emotes.get('redtick', '❌')} Failed to fetch application emojis: `{e}`")
+
+        if not emojis:
+            return await ctx.send("No application emojis found for this bot.")
+
+        lines = [f"{e} `{e.name}` — `{e.id}`" for e in emojis]
+
+        embed = discord.Embed(
+            title=f"Application Emojis ({len(emojis)})",
+            description="\n".join(lines[:30]),
+            color=0x5865F2,
+        )
+        if len(lines) > 30:
+            embed.set_footer(text=f"Showing 30 of {len(emojis)} emojis")
+        await ctx.send(embed=embed)
+
+    @emoji_group.command(name="delete", aliases=["remove", "del"])
+    async def emoji_delete(self, ctx, name: str):
+        """Delete an application emoji by name or ID."""
+        try:
+            emojis = await self.client.fetch_application_emojis()
+        except Exception as e:
+            return await ctx.send(f"{self.client.emotes.get('redtick', '❌')} Failed to fetch application emojis: `{e}`")
+
+        emoji = discord.utils.find(
+            lambda e: e.name.lower() == name.lower() or str(e.id) == name,
+            emojis
+        )
+
+        if not emoji:
+            return await ctx.send(
+                f"{self.client.emotes.get('redtick', '❌')} "
+                f"Application emoji `{name}` not found."
+            )
+
+        try:
+            await emoji.delete()
+        except discord.HTTPException as e:
+            return await ctx.send(
+                f"{self.client.emotes.get('redtick', '❌')} Failed to delete emoji: `{e.text}`"
+            )
+
+        await ctx.send(
+            f"{self.client.emotes.get('greentick', '✅')} "
+            f"Successfully deleted application emoji **{emoji.name}** (`{emoji.id}`)."
+        )
 
 
 async def setup(client):
