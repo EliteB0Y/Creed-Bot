@@ -479,7 +479,6 @@ class PokemonCreed(commands.Cog):
 
         # ── 4. Build and send the component view ──────────────────────
         view = ProfileView(
-            author_id=ctx.author.id,
             username=username,
             user_id=user_id,
             trainer_level=level,

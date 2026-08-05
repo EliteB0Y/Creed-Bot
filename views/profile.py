@@ -15,14 +15,6 @@ def _safe_name(name: str) -> str:
     return name.replace(".", "").replace(" ", "%20")
 
 
-def _gender_icon(gender: str) -> str:
-    if gender == "M":
-        return "♂"
-    if gender == "F":
-        return "♀"
-    return "G"  # genderless / unknown
-
-
 # ──────────────────────────────────────────────────────────────────────────────
 # Roster View  (ephemeral, shown when "Show Team" is clicked)
 # ──────────────────────────────────────────────────────────────────────────────
@@ -34,46 +26,37 @@ class RosterView(discord.ui.LayoutView):
     Layout (per Pokémon, inside one Container)
     -------------------------------------------
     Section
-      TextDisplay  — "{slot}. {Name} {G}\nLevel: `N`"
+      TextDisplay  — "-# Name / Gender / Level"
       accessory: Thumbnail (sprite, right-aligned)
     Separator       ← between entries, not after last
     ...
     """
 
-    def __init__(self, author_id: int, roster: list, embed_color: int, timeout: float = 120.0):
+    def __init__(self, roster: list, embed_color: int, timeout: float = 120.0):
         super().__init__(timeout=timeout)
 
-        self.author_id = author_id
         self.roster = roster
         self.embed_color = embed_color
 
         self._build()
 
-    # ------------------------------------------------------------------
-    # Build  (called once — no interactive elements, no rebuilds needed)
-    # ------------------------------------------------------------------
-
     def _build(self):
-        self.clear_items()
-
         color = self.embed_color
         if isinstance(color, str) and color.startswith("#"):
             color = int(color.lstrip("#"), 16)
 
         if not self.roster:
-            container = discord.ui.Container(
+            self.add_item(discord.ui.Container(
                 discord.ui.TextDisplay("*No Pokémon on roster.*"),
                 accent_color=color,
-            )
-            self.add_item(container)
+            ))
             return
 
         sections: list = []
         for i, mon in enumerate(self.roster):
-            name     = mon.get("name", "Unknown")
-            exp      = int(mon.get("totalexp", 0))
-            level    = _level_from_exp(exp)
-
+            name       = mon.get("name", "Unknown")
+            exp        = int(mon.get("totalexp", 0))
+            level      = _level_from_exp(exp)
             gender_raw = mon.get("gender", "") or "G"
 
             text = (
@@ -82,22 +65,18 @@ class RosterView(discord.ui.LayoutView):
                 f"-# **Level: `{level:,}`**"
             )
 
-            safe        = _safe_name(name)
-            sprite_url  = f"{HOST}/sprites/{safe}.png"
+            sprite_url = f"{HOST}/sprites/{_safe_name(name)}.png"
 
-            sections.append(
-                discord.ui.Section(
-                    discord.ui.TextDisplay(text),
-                    accessory=discord.ui.Thumbnail(media=sprite_url),
-                )
-            )
+            sections.append(discord.ui.Section(
+                discord.ui.TextDisplay(text),
+                accessory=discord.ui.Thumbnail(media=sprite_url),
+            ))
 
             # Separator between entries (not after the last one)
             if i < len(self.roster) - 1:
                 sections.append(discord.ui.Separator(spacing=SeparatorSpacing.small))
 
-        container = discord.ui.Container(*sections, accent_color=color)
-        self.add_item(container)
+        self.add_item(discord.ui.Container(*sections, accent_color=color))
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -118,12 +97,11 @@ class ProfileView(discord.ui.LayoutView):
       Separator
       TextDisplay  — Box Rating (subtext) + Details link
       Separator
-      ActionRow    — [Show Team]
+      ActionRow    — [🔥 Show Team]
     """
 
     def __init__(
         self,
-        author_id: int,
         username: str,
         user_id: str,
         trainer_level: str,
@@ -138,7 +116,6 @@ class ProfileView(discord.ui.LayoutView):
     ):
         super().__init__(timeout=timeout)
 
-        self.author_id = author_id
         self.username = username
         self.user_id = user_id
         self.trainer_level = trainer_level
@@ -153,10 +130,6 @@ class ProfileView(discord.ui.LayoutView):
 
         self._build()
 
-    # ------------------------------------------------------------------
-    # Helpers
-    # ------------------------------------------------------------------
-
     def _profile_url(self) -> str:
         return f"{HOST}/prof.php?user={self.username.replace(' ', '%20')}"
 
@@ -169,10 +142,6 @@ class ProfileView(discord.ui.LayoutView):
         rating = self.box_rating.get("total_rating_formatted", "N/A")
         paste  = self.box_rating.get("paste_url", "")
         return f"-# **Box Rating: `{rating}`**\n-# **[Details Here]({paste})**"
-
-    # ------------------------------------------------------------------
-    # Build
-    # ------------------------------------------------------------------
 
     def _build(self):
         self.clear_items()
@@ -199,7 +168,7 @@ class ProfileView(discord.ui.LayoutView):
         )
         self.btn_show_team.callback = self._on_show_team
 
-        container = discord.ui.Container(
+        self.add_item(discord.ui.Container(
             discord.ui.TextDisplay(header_text),
             discord.ui.Separator(spacing=SeparatorSpacing.small),
             discord.ui.Section(
@@ -211,25 +180,7 @@ class ProfileView(discord.ui.LayoutView):
             discord.ui.Separator(spacing=SeparatorSpacing.small),
             discord.ui.ActionRow(self.btn_show_team),
             accent_color=color,
-        )
-
-        self.add_item(container)
-
-    # ------------------------------------------------------------------
-    # Interaction guard
-    # ------------------------------------------------------------------
-
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.author_id:
-            await interaction.response.send_message(
-                "You cannot control this profile view.", ephemeral=True
-            )
-            return False
-        return True
-
-    # ------------------------------------------------------------------
-    # Timeout
-    # ------------------------------------------------------------------
+        ))
 
     async def on_timeout(self):
         if self.message:
@@ -240,14 +191,8 @@ class ProfileView(discord.ui.LayoutView):
             except discord.HTTPException:
                 pass
 
-    # ------------------------------------------------------------------
-    # Button callbacks
-    # ------------------------------------------------------------------
-
     async def _on_show_team(self, interaction: discord.Interaction):
-        roster_view = RosterView(
-            author_id=self.author_id,
-            roster=self.roster,
-            embed_color=self.embed_color,
+        await interaction.response.send_message(
+            view=RosterView(roster=self.roster, embed_color=self.embed_color),
+            ephemeral=True,
         )
-        await interaction.response.send_message(view=roster_view, ephemeral=True)
