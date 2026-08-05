@@ -29,15 +29,15 @@ def _gender_icon(gender: str) -> str:
 
 class RosterView(discord.ui.LayoutView):
     """
-    Ephemeral paginated roster viewer.
+    Ephemeral roster viewer — shows the full team at once.
 
-    Layout
-    ------
-    Container
-      TextDisplay  — team header + Pokémon name / nickname / level / XP / moves
-      MediaGallery — Pokémon sprite
-      Separator
-      ActionRow    — ◀ ▶
+    Layout (per Pokémon, inside one Container)
+    -------------------------------------------
+    Section
+      TextDisplay  — "{slot}. {Name} {G}\nLevel: `N`"
+      accessory: Thumbnail (sprite, right-aligned)
+    Separator       ← between entries, not after last
+    ...
     """
 
     def __init__(self, author_id: int, roster: list, embed_color: int, timeout: float = 120.0):
@@ -46,56 +46,11 @@ class RosterView(discord.ui.LayoutView):
         self.author_id = author_id
         self.roster = roster
         self.embed_color = embed_color
-        self.pg = 0
 
         self._build()
 
     # ------------------------------------------------------------------
-    # Helpers
-    # ------------------------------------------------------------------
-
-    def _current_mon(self) -> dict:
-        return self.roster[self.pg] if self.roster else {}
-
-    def _sprite_url(self) -> str:
-        if not self.roster:
-            return f"{HOST}/img/icon/Missingno.gif"
-        safe = _safe_name(self._current_mon().get("name", "Missingno"))
-        return f"{HOST}/sprites/{safe}.png"
-
-    def _roster_text(self) -> str:
-        if not self.roster:
-            return "**Team:** *No Pokémon on roster.*"
-
-        mon      = self._current_mon()
-        name     = mon.get("name", "Unknown")
-        nickname = mon.get("nickname", "")
-        gender   = _gender_icon(mon.get("gender", ""))
-        exp      = int(mon.get("totalexp", 0))
-        level    = _level_from_exp(exp)
-        slot     = mon.get("slot", self.pg + 1)
-        total    = len(self.roster)
-
-        moves     = [mon.get(f"move{i}", "") for i in range(1, 5) if mon.get(f"move{i}")]
-        moves_str = " / ".join(moves) if moves else "—"
-
-        header   = f"-# **Team**  •  Slot {slot} of {total}"
-        mon_line = f"### **{name}** {gender}"
-        if nickname:
-            mon_line += f" *({nickname})*"
-        return (
-            f"{header}\n{mon_line}\n"
-            f"**Level: `{level:,}`**  •  **XP: `{exp:,}`**\n"
-            f"-# **Moves:** {moves_str}"
-        )
-
-    def _update_nav_buttons(self):
-        has_many = len(self.roster) > 1
-        self.btn_prev.disabled = not has_many or self.pg == 0
-        self.btn_next.disabled = not has_many or self.pg == len(self.roster) - 1
-
-    # ------------------------------------------------------------------
-    # Build
+    # Build  (called once — no interactive elements, no rebuilds needed)
     # ------------------------------------------------------------------
 
     def _build(self):
@@ -105,55 +60,45 @@ class RosterView(discord.ui.LayoutView):
         if isinstance(color, str) and color.startswith("#"):
             color = int(color.lstrip("#"), 16)
 
-        self.btn_prev = discord.ui.Button(
-            emoji="◀️", style=discord.ButtonStyle.primary, custom_id="roster_prev"
-        )
-        self.btn_next = discord.ui.Button(
-            emoji="▶️", style=discord.ButtonStyle.primary, custom_id="roster_next"
-        )
-        self._update_nav_buttons()
-        self.btn_prev.callback = self._on_prev
-        self.btn_next.callback = self._on_next
-
-        nav_row = discord.ui.ActionRow(self.btn_prev, self.btn_next)
-
-        container = discord.ui.Container(
-            discord.ui.TextDisplay(self._roster_text()),
-            discord.ui.MediaGallery(
-                discord.MediaGalleryItem(media=self._sprite_url()),
-            ),
-            discord.ui.Separator(spacing=SeparatorSpacing.small),
-            nav_row,
-            accent_color=color,
-        )
-
-        self.add_item(container)
-
-    # ------------------------------------------------------------------
-    # Interaction guard
-    # ------------------------------------------------------------------
-
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.author_id:
-            await interaction.response.send_message(
-                "This isn't your team view.", ephemeral=True
+        if not self.roster:
+            container = discord.ui.Container(
+                discord.ui.TextDisplay("*No Pokémon on roster.*"),
+                accent_color=color,
             )
-            return False
-        return True
+            self.add_item(container)
+            return
 
-    # ------------------------------------------------------------------
-    # Button callbacks
-    # ------------------------------------------------------------------
+        sections: list = []
+        for i, mon in enumerate(self.roster):
+            name     = mon.get("name", "Unknown")
+            nickname = mon.get("nickname", "")
+            gender   = _gender_icon(mon.get("gender", ""))
+            exp      = int(mon.get("totalexp", 0))
+            level    = _level_from_exp(exp)
+            slot     = mon.get("slot", i + 1)
 
-    async def _on_prev(self, interaction: discord.Interaction):
-        self.pg = max(0, self.pg - 1)
-        self._build()
-        await interaction.response.edit_message(view=self)
+            name_line = f"**{name}** {gender}"
+            if nickname:
+                name_line += f" *({nickname})*"
 
-    async def _on_next(self, interaction: discord.Interaction):
-        self.pg = min(len(self.roster) - 1, self.pg + 1)
-        self._build()
-        await interaction.response.edit_message(view=self)
+            text = f"**{slot}.** {name_line}\nLevel: `{level:,}`"
+
+            safe        = _safe_name(name)
+            sprite_url  = f"{HOST}/sprites/{safe}.png"
+
+            sections.append(
+                discord.ui.Section(
+                    discord.ui.TextDisplay(text),
+                    accessory=discord.ui.Thumbnail(media=sprite_url),
+                )
+            )
+
+            # Separator between entries (not after the last one)
+            if i < len(self.roster) - 1:
+                sections.append(discord.ui.Separator(spacing=SeparatorSpacing.small))
+
+        container = discord.ui.Container(*sections, accent_color=color)
+        self.add_item(container)
 
 
 # ──────────────────────────────────────────────────────────────────────────────
