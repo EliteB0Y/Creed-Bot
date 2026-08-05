@@ -71,17 +71,16 @@ class RosterView(discord.ui.LayoutView):
         sections: list = []
         for i, mon in enumerate(self.roster):
             name     = mon.get("name", "Unknown")
-            nickname = mon.get("nickname", "")
-            gender   = _gender_icon(mon.get("gender", ""))
             exp      = int(mon.get("totalexp", 0))
             level    = _level_from_exp(exp)
-            slot     = mon.get("slot", i + 1)
 
-            name_line = f"**{name}** {gender}"
-            if nickname:
-                name_line += f" *({nickname})*"
+            gender_raw = mon.get("gender", "") or "G"
 
-            text = f"**{slot}.** {name_line}\nLevel: `{level:,}`"
+            text = (
+                f"-# **{name}**\n"
+                f"-# **Gender: `{gender_raw}`**\n"
+                f"-# **Level: `{level:,}`**"
+            )
 
             safe        = _safe_name(name)
             sprite_url  = f"{HOST}/sprites/{safe}.png"
