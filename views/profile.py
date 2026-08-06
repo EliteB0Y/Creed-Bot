@@ -54,15 +54,16 @@ class RosterView(discord.ui.LayoutView):
 
         sections: list = []
         for i, mon in enumerate(self.roster):
+            mon_id     = mon.get("id", "0")
             name       = mon.get("name", "Unknown")
             exp        = int(mon.get("totalexp", 0))
             level      = _level_from_exp(exp)
             gender_raw = mon.get("gender", "") or "G"
 
             text = (
-                f"-# **{name}**\n"
-                f"-# **Gender: `{gender_raw}`**\n"
-                f"-# **Level: `{level:,}`**"
+                f"### **[{name}]({HOST}/pokemon.php?id={mon_id})**\n"
+                f"-# **Gender: {gender_raw}**\n"
+                f"-# **Level: {level:,}**"
             )
 
             sprite_url = f"{HOST}/sprites/{_safe_name(name)}.png"
