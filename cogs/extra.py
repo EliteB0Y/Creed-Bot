@@ -2,7 +2,7 @@ import discord, os, mechanicalsoup, asyncio, json, aiohttp, requests, re
 import logging
 from discord.ext import commands, tasks
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger("CreedBot")
 
@@ -98,9 +98,32 @@ class Extra(commands.Cog):
         hd_channel = self.get_hd_channel
 
         try:
-            t = await self.scrape_hd()
-            sec = (t['h'] * 60 * 60) + (t['m'] * 60) + t['s'] - 100
-            logger.debug("Hitdown: next alert in %ss.", sec)
+            current_ts = int(datetime.now(timezone.utc).timestamp())
+            hd_doc = await self.client.db.extra.find_one({"_id": "hitdown"})
+            hitdown_ts = hd_doc.get("timestamp") if hd_doc else None
+
+            if hitdown_ts and isinstance(hitdown_ts, (int, float)) and hitdown_ts > current_ts:
+                logger.info("Hitdown: using persistent timestamp from MongoDB (%s).", hitdown_ts)
+                target_ts = int(hitdown_ts)
+            else:
+                logger.info("Hitdown: timestamp in past or missing. Scraping website...")
+                t = await self.scrape_hd()
+                if not t:
+                    logger.warning("Hitdown scrape failed. Retrying in 120s.")
+                    await asyncio.sleep(120)
+                    return
+
+                delta_sec = (t['h'] * 3600) + (t['m'] * 60) + t['s']
+                target_ts = current_ts + delta_sec
+                await self.client.db.extra.update_one(
+                    {"_id": "hitdown"},
+                    {"$set": {"timestamp": target_ts}},
+                    upsert=True
+                )
+                logger.info("Hitdown: scraped and updated MongoDB with new timestamp (%s).", target_ts)
+
+            sec = max(0, target_ts - current_ts - 100)
+            logger.info("Hitdown: next alert scheduled in %ss.", sec)
             await asyncio.sleep(sec)
             await hd_channel.send('@everyone, It\'s Hitdown time!')
             await asyncio.sleep(300)
