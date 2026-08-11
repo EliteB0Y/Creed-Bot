@@ -15,6 +15,28 @@ from views.games import (
 
 logger = logging.getLogger("CreedBot")
 
+
+def parse_lobby_time(token: str):
+    """
+    Parse a lobby time token like '30s', '5m', '1m30s', '90s', '2m15s'.
+    Returns the number of seconds as an int, or None if the token is not a
+    recognisable time string (so callers can treat it as something else).
+    Raises ValueError with a human-readable message when the token looks like
+    a time string but is out of the allowed 30 s – 10 min range.
+    """
+    token = token.strip().lower()
+    # Match optional minutes and optional seconds  e.g. 5m, 30s, 1m30s
+    m = re.fullmatch(r'(?:(\d+)m)?(?:(\d+)s)?', token)
+    if not m or (m.group(1) is None and m.group(2) is None):
+        # Doesn't look like a time string at all
+        return None
+    minutes = int(m.group(1)) if m.group(1) else 0
+    seconds = int(m.group(2)) if m.group(2) else 0
+    total = minutes * 60 + seconds
+    if total < 30 or total > 600:
+        raise ValueError(f"Lobby time must be between **30s** and **10m** (got `{token}`).")
+    return total
+
 class Games(commands.Cog):
 
     def __init__(self, client):
@@ -100,9 +122,10 @@ class Games(commands.Cog):
                     "• `!game stop [channel]` (or `!stopgame`) — Stop active minigame (in current or specified channel)\n"
                     "• `!game status` — Check active minigames across all channels/servers\n\n"
                     "**Available Games:**\n"
-                    "• `!wtp` / `!wtp start [count=10]` — Who's That Pokémon\n"
-                    "• `!pkquiz` / `!pkquiz start [count=10]` — Pokédex Entry Quiz\n"
-                    "• `!rps` / `!rps start` — Rock-Paper-Scissors Tournament"
+                    "• `!wtp` / `!wtp start [lobby=30s] [count=10]` — Who's That Pokémon\n"
+                    "• `!pkquiz` / `!pkquiz start [lobby=30s] [count=10]` — Pokédex Entry Quiz\n"
+                    "• `!rps` / `!rps start [lobby=30s]` — Rock-Paper-Scissors Tournament\n\n"
+                    "*Lobby time: `30s` – `10m` (e.g. `30s`, `2m`, `1m30s`)*"
                 ),
                 color=discord.Color.gold()
             )
@@ -186,7 +209,7 @@ class Games(commands.Cog):
             embed.set_author(name="Minigame: Who's that Pokémon?", icon_url="https://i.imgur.com/MItw5zU.png")
             desc = "```This is a multiplayer minigame where you guess the Pokémon name!\nIncludes Pokémon from 8 generations (896 Pokémons).```"
             rules = (
-                "```1. Click 'Join Game' during the 30-second lobby to join.\n"
+                "```1. Click 'Join Game' during the lobby to join (default 30s, up to 10m).\n"
                 "2. You have 15 seconds to guess the Pokémon name each round.\n"
                 "3. The first participant to type the correct name wins the round point.\n"
                 "4. Only English names are allowed (Case Insensitive).\n"
@@ -196,7 +219,7 @@ class Games(commands.Cog):
             embed.add_field(name="Rules:", value=rules)
             embed.add_field(name="Good Luck!", value="\u200b", inline=False)
             embed.set_image(url="https://i.imgur.com/yAz3xCI.jpg")
-            embed.set_footer(text= "To Start the Game | wtp start [count=10]", icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text="To Start the Game | !wtp start [lobby=30s] [count=10]", icon_url=ctx.author.display_avatar.url)
             await ctx.send(embed=embed)
             return
 
@@ -208,20 +231,42 @@ class Games(commands.Cog):
 
     @wtp.command(name = 'start')
     @commands.guild_only()
-    async def wtp_start(self, ctx, *, args: str = "10"):
-        """Starts Who's That Pokémon minigame. Usage: !wtp start [count=10]"""
+    async def wtp_start(self, ctx, *, args: str = "30s 10"):
+        """Starts Who's That Pokémon minigame. Usage: !wtp start [lobby=30s] [count=10]"""
         if ctx.channel.id in self.client.active_games:
             game_name = self.client.active_games[ctx.channel.id].get("name", "minigame")
             await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `A {game_name} is already running in this channel!`")
             return
 
-        # Parse count argument (e.g. 10 or count=10)
+        # Parse optional lobby time + count from args
+        # Accepted formats (order: [lobby] [count]):
+        #   !wtp start          -> lobby=30s count=10
+        #   !wtp start 5m       -> lobby=5m  count=10
+        #   !wtp start 5m 15    -> lobby=5m  count=15
+        #   !wtp start 15       -> lobby=30s count=15  (bare integer = count)
+        lobby_seconds = 30
         count = 10
-        cleaned_args = args.replace("count=", "").strip()
+        tokens = args.replace("count=", "").split()
         try:
-            count = int(cleaned_args)
-        except ValueError:
-            count = 10
+            if tokens:
+                lobby_parsed = parse_lobby_time(tokens[0])
+                if lobby_parsed is not None:
+                    # First token is a time string
+                    lobby_seconds = lobby_parsed
+                    if len(tokens) >= 2:
+                        try:
+                            count = int(tokens[1])
+                        except ValueError:
+                            count = 10
+                else:
+                    # First token is a bare integer (count), no lobby override
+                    try:
+                        count = int(tokens[0])
+                    except ValueError:
+                        count = 10
+        except ValueError as e:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} {e}")
+            return
 
         if count < 1 or count > 50:
             await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Number of pokemons must be between 1 and 50.`")
@@ -236,9 +281,9 @@ class Games(commands.Cog):
 
         lobby_ended = False
         try:
-            # 1. Open 30-second lobby window
-            lobby_end_time = int(datetime.now(timezone.utc).timestamp()) + 30
-            join_view = WTPJoinView(ctx.author, self.client.emotes, timeout=35.0)
+            # 1. Open lobby window (custom duration: 30s – 10m)
+            lobby_end_time = int(datetime.now(timezone.utc).timestamp()) + lobby_seconds
+            join_view = WTPJoinView(ctx.author, self.client.emotes, timeout=float(lobby_seconds + 5))
             embed = discord.Embed(
                 title="🎮 Who's That Pokémon — Lobby Open!",
                 description=(
@@ -252,8 +297,8 @@ class Games(commands.Cog):
 
             lobby_msg = await ctx.send(embed=embed, view=join_view)
 
-            # Check for early cancellation during 30s lobby
-            for _ in range(30):
+            # Check for early cancellation during lobby
+            for _ in range(lobby_seconds):
                 if ctx.channel.id not in self.client.active_games:
                     join_view.stop()
                     for child in join_view.children:
@@ -649,8 +694,20 @@ class Games(commands.Cog):
 
     @rps.command(name='start')
     @commands.guild_only()
-    async def rps_start(self, ctx):
-        """Starts a multiplayer Rock-Paper-Scissors tournament."""
+    async def rps_start(self, ctx, *, args: str = "30s"):
+        """Starts a multiplayer Rock-Paper-Scissors tournament. Usage: !rps start [lobby=30s]"""
+        # Parse optional lobby time
+        lobby_seconds = 30
+        tokens = args.split()
+        if tokens:
+            try:
+                lobby_parsed = parse_lobby_time(tokens[0])
+                if lobby_parsed is not None:
+                    lobby_seconds = lobby_parsed
+            except ValueError as e:
+                await ctx.send(f"{self.client.emotes.get('redtick', '❌')} {e}")
+                return
+
         if ctx.channel.id in self.client.active_games:
             game_name = self.client.active_games[ctx.channel.id].get("name", "minigame")
             await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `A {game_name} is already running in this channel!`")
@@ -665,9 +722,9 @@ class Games(commands.Cog):
 
         lobby_ended = False
         try:
-            # 1. 30-second lobby window
-            lobby_end_time = int(datetime.now(timezone.utc).timestamp()) + 30
-            join_view = RPSJoinView(ctx.author, self.client.emotes, timeout=35.0)
+            # 1. Lobby window (custom duration: 30s – 10m)
+            lobby_end_time = int(datetime.now(timezone.utc).timestamp()) + lobby_seconds
+            join_view = RPSJoinView(ctx.author, self.client.emotes, timeout=float(lobby_seconds + 5))
             embed = discord.Embed(
                 title="🎮 RPS Tournament — Lobby Open!",
                 description=(
@@ -681,8 +738,8 @@ class Games(commands.Cog):
 
             lobby_msg = await ctx.send(embed=embed, view=join_view)
 
-            # Check for cancellation during 30s lobby
-            for _ in range(30):
+            # Check for cancellation during lobby
+            for _ in range(lobby_seconds):
                 if ctx.channel.id not in self.client.active_games:
                     join_view.stop()
                     for child in join_view.children:
@@ -867,7 +924,7 @@ class Games(commands.Cog):
             embed.set_author(name="Minigame: Pokédex Quiz", icon_url="https://i.imgur.com/MItw5zU.png")
             desc = "```This is a multiplayer quiz where you guess the Pokémon from Pokédex entry clues!```"
             rules = (
-                "```1. Click 'Join Quiz' during the 30-second lobby to join.\n"
+                "```1. Click 'Join Quiz' during the lobby to join (default 30s, up to 10m).\n"
                 "2. Read the Pokédex entry clues and type the Pokémon name.\n"
                 "3. The first participant to guess correctly wins 1 point.\n"
                 "4. Only English names are allowed (Case Insensitive).\n"
@@ -877,7 +934,7 @@ class Games(commands.Cog):
             embed.add_field(name="Rules:", value=rules)
             embed.add_field(name="Good Luck!", value="\u200b", inline=False)
             embed.set_image(url="https://i.imgur.com/yAz3xCI.jpg")
-            embed.set_footer(text="To Start the Quiz | !pkquiz start [count=10]", icon_url=ctx.author.display_avatar.url)
+            embed.set_footer(text="To Start the Quiz | !pkquiz start [lobby=30s] [count=10]", icon_url=ctx.author.display_avatar.url)
             await ctx.send(embed=embed)
             return
 
@@ -889,19 +946,42 @@ class Games(commands.Cog):
 
     @pkquiz.command(name='start')
     @commands.guild_only()
-    async def pkquiz_start(self, ctx, *, args: str = "10"):
-        """Starts Pokédex Quiz minigame. Usage: !pkquiz start [count=10]"""
+    async def pkquiz_start(self, ctx, *, args: str = "30s 10"):
+        """Starts Pokédex Quiz minigame. Usage: !pkquiz start [lobby=30s] [count=10]"""
         if ctx.channel.id in self.client.active_games:
             game_name = self.client.active_games[ctx.channel.id].get("name", "minigame")
             await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `A {game_name} is already running in this channel!`")
             return
 
+        # Parse optional lobby time + count from args
+        # Accepted formats (order: [lobby] [count]):
+        #   !pkquiz start           -> lobby=30s count=10
+        #   !pkquiz start 5m        -> lobby=5m  count=10
+        #   !pkquiz start 3m 10     -> lobby=3m  count=10
+        #   !pkquiz start 10        -> lobby=30s count=10  (bare integer = count)
+        lobby_seconds = 30
         count = 10
-        cleaned_args = args.replace("count=", "").strip()
+        tokens = args.replace("count=", "").split()
         try:
-            count = int(cleaned_args)
-        except ValueError:
-            count = 10
+            if tokens:
+                lobby_parsed = parse_lobby_time(tokens[0])
+                if lobby_parsed is not None:
+                    # First token is a time string
+                    lobby_seconds = lobby_parsed
+                    if len(tokens) >= 2:
+                        try:
+                            count = int(tokens[1])
+                        except ValueError:
+                            count = 10
+                else:
+                    # First token is a bare integer (count), no lobby override
+                    try:
+                        count = int(tokens[0])
+                    except ValueError:
+                        count = 10
+        except ValueError as e:
+            await ctx.send(f"{self.client.emotes.get('redtick', '❌')} {e}")
+            return
 
         if count < 1 or count > 50:
             await ctx.send(f"{self.client.emotes.get('redtick', '❌')} `Number of questions must be between 1 and 50.`")
@@ -916,9 +996,9 @@ class Games(commands.Cog):
 
         lobby_ended = False
         try:
-            # 1. Open 30-second lobby window
-            lobby_end_time = int(datetime.now(timezone.utc).timestamp()) + 30
-            join_view = PKQuizJoinView(ctx.author, self.client.emotes, timeout=35.0)
+            # 1. Open lobby window (custom duration: 30s – 10m)
+            lobby_end_time = int(datetime.now(timezone.utc).timestamp()) + lobby_seconds
+            join_view = PKQuizJoinView(ctx.author, self.client.emotes, timeout=float(lobby_seconds + 5))
             embed = discord.Embed(
                 title="📖 Pokédex Quiz — Lobby Open!",
                 description=(
@@ -932,8 +1012,8 @@ class Games(commands.Cog):
 
             lobby_msg = await ctx.send(embed=embed, view=join_view)
 
-            # Check for early cancellation during 30s lobby
-            for _ in range(30):
+            # Check for early cancellation during lobby
+            for _ in range(lobby_seconds):
                 if ctx.channel.id not in self.client.active_games:
                     join_view.stop()
                     for child in join_view.children:
