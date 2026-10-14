@@ -73,6 +73,7 @@ jobs:
             TOKEN=${{ secrets.TOKEN }}
             MONGODB=${{ secrets.MONGODB }}
             CREED_LOGIN=${{ secrets.CREED_LOGIN }}
+            POGO_TOKEN=${{ secrets.POGO_TOKEN }}
             ENVEOF
 
             # Ensure docker-compose.yml exists
