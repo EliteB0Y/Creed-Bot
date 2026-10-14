@@ -71,7 +71,7 @@ class MyBot(commands.Bot):
         self.enabledCogs = [                # cogs to load; override this list from MongoDB
             'cogs.pokemoncreed', 'cogs.basic', 'cogs.games',
             'cogs.extra', 'cogs.error', 'cogs.owner', 'cogs.help', 'jishaku',
-            'cogs.reminder'
+            'cogs.reminder', 'cogs.pogo'
         ]
         self.boxrateconfig = {"base": 1, "unbase": 0.8, "other": 3}
         self.collection_allowed_guilds = [] # guild IDs allowed to use !collection
