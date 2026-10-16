@@ -10,7 +10,7 @@ import discord
 import aiohttp
 from discord import app_commands, ui
 from discord.enums import SeparatorSpacing
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 logger = logging.getLogger("CreedBot")
 
@@ -160,7 +160,11 @@ POKESEARCH_HELP_MESSAGE = (
     "• `/pokesearch query:pvp great 10 swampert, altaria`\n"
     "• `/pokesearch query:0/15/15 53.077,-2.228 50km`\n"
     "• `/pokesearch query:hundo cp:1000-2500 sort:cp`\n"
-    "• `/pokesearch query:shiny snover, beldum boosted`"
+    "• `/pokesearch query:shiny snover, beldum boosted`\n\n"
+    "🎯 **Background Spawn Sniper**\n"
+    "• `/sniper start <query>` — Monitors query every 5 mins and pings you with matches\n"
+    "• `/sniper stop` — Stops your active sniper\n"
+    "• `/sniper status` — Views your current sniper details"
 )
 
 
@@ -522,10 +526,16 @@ class AuthModal(ui.Modal, title="PogoCoordinates Auth"):
 # ---------------------------------------------------------------------------
 
 class Pogo(commands.Cog):
-    """Pokémon GO coordinate search and authentication via /auth and /pokesearch."""
+    """Pokémon GO coordinate search, authentication, and spawn sniping."""
 
     def __init__(self, client: commands.Bot):
         self.client = client
+
+    async def cog_load(self):
+        self.sniper_loop.start()
+
+    def cog_unload(self):
+        self.sniper_loop.cancel()
 
     @app_commands.command(
         name="auth",
@@ -639,6 +649,237 @@ class Pogo(commands.Cog):
         for chunk in chunks[:5]:
             view = PogoLayoutView(chunk, bot=self.client, token=user_token)
             await interaction.followup.send(view=view, ephemeral=True)
+
+    # ------------------------------------------------------------------
+    # Sniper Commands
+    # ------------------------------------------------------------------
+
+    sniper = app_commands.Group(
+        name="sniper",
+        description="Monitor queries every 5 minutes and get alerted on matches",
+    )
+
+    @sniper.command(
+        name="start",
+        description="Start a background sniper that pings you when matches are found.",
+    )
+    @app_commands.describe(
+        query="Filter query to monitor (e.g. shundo froakie, pvp great 10 swampert)"
+    )
+    async def sniper_start(self, interaction: discord.Interaction, query: str):
+        """Register or update an active spawn sniper for the invoking user."""
+        if query.strip().lower() in ("help", "h", "--help", "-h"):
+            await interaction.response.send_message(POKESEARCH_HELP_MESSAGE, ephemeral=True)
+            return
+
+        # 1. Require authentication
+        col_users = self.client.db.get_collection("pogo_users")
+        user_doc = await col_users.find_one({"_id": interaction.user.id})
+        user_token = user_doc.get("token") if user_doc else None
+
+        if not user_token:
+            await interaction.response.send_message(
+                "⚠️ **Authentication Required**\n"
+                "You haven't set up your auth token yet.\n"
+                "Please run `/auth` to configure your token before starting a sniper.",
+                ephemeral=True,
+            )
+            return
+
+        # 2. Upsert sniper in database
+        col_snipers = self.client.db.get_collection("pogo_snipers")
+        now = datetime.now(timezone.utc)
+        await col_snipers.update_one(
+            {"_id": interaction.user.id},
+            {
+                "$set": {
+                    "user_id": interaction.user.id,
+                    "channel_id": interaction.channel_id,
+                    "guild_id": interaction.guild_id,
+                    "query": query.strip(),
+                    "seen_spawn_ids": [],
+                    "created_at": now,
+                    "last_checked_at": now,
+                }
+            },
+            upsert=True,
+        )
+
+        await interaction.response.send_message(
+            f"🎯 **Sniper Activated!**\n"
+            f"• **Query:** `{query.strip()}`\n"
+            f"• **Channel:** <#{interaction.channel_id}>\n"
+            f"• **Interval:** Every 5 minutes\n\n"
+            f"I'll ping you here whenever a new matching spawn is found! Run `/sniper stop` anytime to cancel."
+        )
+
+    @sniper.command(
+        name="stop",
+        description="Stop your active spawn sniper.",
+    )
+    async def sniper_stop(self, interaction: discord.Interaction):
+        """Cancel the user's active spawn sniper."""
+        col_snipers = self.client.db.get_collection("pogo_snipers")
+        deleted = await col_snipers.find_one_and_delete({"_id": interaction.user.id})
+
+        if deleted:
+            await interaction.response.send_message(
+                f"🛑 **Sniper Stopped**\nYour sniper for `{deleted.get('query')}` has been deactivated.",
+                ephemeral=True,
+            )
+        else:
+            await interaction.response.send_message(
+                "ℹ️ You do not have an active sniper running.",
+                ephemeral=True,
+            )
+
+    @sniper.command(
+        name="status",
+        description="View your active spawn sniper configuration.",
+    )
+    async def sniper_status(self, interaction: discord.Interaction):
+        """Display details of the user's current sniper."""
+        col_snipers = self.client.db.get_collection("pogo_snipers")
+        doc = await col_snipers.find_one({"_id": interaction.user.id})
+
+        if doc:
+            created = doc.get("created_at")
+            created_ts = int(created.timestamp()) if isinstance(created, datetime) else None
+            created_str = f"<t:{created_ts}:R>" if created_ts else "Unknown"
+            await interaction.response.send_message(
+                f"🎯 **Active Sniper Status**\n"
+                f"• **Query:** `{doc.get('query')}`\n"
+                f"• **Channel:** <#{doc.get('channel_id')}>\n"
+                f"• **Started:** {created_str}\n"
+                f"• **Interval:** Every 5 minutes\n\n"
+                f"Use `/sniper stop` to deactivate.",
+                ephemeral=True,
+            )
+        else:
+            await interaction.response.send_message(
+                "ℹ️ You do not have an active sniper running. Start one using `/sniper start <query>`.",
+                ephemeral=True,
+            )
+
+    # ------------------------------------------------------------------
+    # Background Sniper Loop (runs every 5 minutes)
+    # ------------------------------------------------------------------
+
+    @tasks.loop(minutes=5)
+    async def sniper_loop(self):
+        """Checks all active snipers every 5 minutes and pings users with matches."""
+        try:
+            col_snipers = self.client.db.get_collection("pogo_snipers")
+            col_users = self.client.db.get_collection("pogo_users")
+
+            snipers = [s async for s in col_snipers.find()]
+            if not snipers:
+                return
+
+            for sniper in snipers:
+                user_id = sniper["user_id"]
+                channel_id = sniper.get("channel_id")
+                query = sniper.get("query")
+                if not channel_id or not query:
+                    continue
+
+                # 1. Fetch user token
+                user_doc = await col_users.find_one({"_id": user_id})
+                user_token = user_doc.get("token") if user_doc else None
+                if not user_token:
+                    continue
+
+                # 2. Query search endpoint
+                payload = parse_query(query)
+                headers = {**_COMMON_HEADERS, "authorization": user_token}
+                timeout = aiohttp.ClientTimeout(total=15)
+                results: list[dict] = []
+                try:
+                    async with aiohttp.ClientSession(timeout=timeout) as session:
+                        async with session.post(
+                            Endpoints.Pokemon.SEARCH, json=payload, headers=headers
+                        ) as resp:
+                            if resp.status == 200:
+                                data = await resp.json()
+                                results = data.get("results", [])
+                            elif resp.status == 401:
+                                logger.warning("[Sniper] User %s auth token expired during sniper check", user_id)
+                                channel = self.client.get_channel(channel_id)
+                                if channel:
+                                    await channel.send(
+                                        f"⚠️ <@{user_id}> **Sniper Paused:** Your auth token is invalid or expired. "
+                                        f"Please update it using `/auth`."
+                                    )
+                                continue
+                            else:
+                                continue
+                except Exception as e:
+                    logger.debug("[Sniper] Failed search query for user %s: %s", user_id, e)
+                    continue
+
+                if not results:
+                    continue
+
+                # 3. Filter out previously alerted spawns
+                seen_spawn_ids = set(sniper.get("seen_spawn_ids") or [])
+                new_results = []
+                new_seen_ids = []
+                for r in results:
+                    spawn_key = (
+                        r.get("reveal_code")
+                        or f"{r.get('pokemon_id')}_{r.get('cp')}_{r.get('despawn_at')}"
+                    )
+                    if spawn_key not in seen_spawn_ids:
+                        new_results.append(r)
+                        new_seen_ids.append(spawn_key)
+
+                if not new_results:
+                    continue
+
+                # 4. Send ping and result containers in target channel
+                channel = self.client.get_channel(channel_id)
+                if not channel:
+                    try:
+                        channel = await self.client.fetch_channel(channel_id)
+                    except Exception:
+                        channel = None
+
+                if channel:
+                    CHUNK_SIZE = 5
+                    chunks = [
+                        new_results[i : i + CHUNK_SIZE]
+                        for i in range(0, len(new_results), CHUNK_SIZE)
+                    ]
+                    for idx, chunk in enumerate(chunks[:3]):  # Up to 3 containers (15 spawns max)
+                        header = (
+                            f"🎯 <@{user_id}> **Sniper Match Found!** for `{query}`:"
+                            if idx == 0
+                            else None
+                        )
+                        view = PogoLayoutView(chunk, bot=self.client, token=user_token)
+                        if header:
+                            await channel.send(content=header, view=view)
+                        else:
+                            await channel.send(view=view)
+
+                # 5. Update seen_spawn_ids in database (capped to last 100 to avoid unbounded growth)
+                updated_seen = list(seen_spawn_ids.union(new_seen_ids))[-100:]
+                await col_snipers.update_one(
+                    {"_id": user_id},
+                    {
+                        "$set": {
+                            "seen_spawn_ids": updated_seen,
+                            "last_checked_at": datetime.now(timezone.utc),
+                        }
+                    },
+                )
+
+        except Exception as e:
+            logger.error("[Sniper] Error in sniper background loop:", exc_info=e)
+
+    @sniper_loop.before_loop
+    async def before_sniper_loop(self):
+        await self.client.wait_until_ready()
 
 
 async def setup(client: commands.Bot):
