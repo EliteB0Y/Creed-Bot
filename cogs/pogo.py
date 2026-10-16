@@ -4,7 +4,7 @@ import json
 import asyncio
 import logging
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 
 import discord
 import aiohttp
@@ -236,16 +236,29 @@ def parse_query(query: str) -> dict:
             payload["iv_percent_min"] = None
             payload["iv_percent_max"] = 0
 
-    # PVP league
-    if re.search(r"\bpvp\s+ultra\b|\bultra\s+league\b", lower):
+    # PVP mode, league, and optional top rank (e.g. "pvp great 10", "pvp ultra 5", "great league 10")
+    rank_kw = re.search(r"\b(?:rank|top):(\d+)\b", lower)
+    if rank_kw:
         payload["pvp_mode"] = True
-        payload["pvp_league"] = "ultra"
-    elif re.search(r"\bpvp\s+great\b|\bgreat\s+league\b", lower):
+        payload["pvp_top_rank"] = int(rank_kw.group(1))
+
+    pvp_match = re.search(
+        r"\bpvp\s+(great|ultra|master)(?:\s+(\d+))?\b|"
+        r"\b(great|ultra|master)\s+league(?:\s+(\d+))?\b",
+        lower,
+    )
+    if pvp_match:
         payload["pvp_mode"] = True
-        payload["pvp_league"] = "great"
-    elif re.search(r"\bpvp\s+master\b|\bmaster\s+league\b", lower):
+        league = (pvp_match.group(1) or pvp_match.group(3)).lower()
+        payload["pvp_league"] = league
+        rank = pvp_match.group(2) or pvp_match.group(4)
+        if rank:
+            payload["pvp_top_rank"] = int(rank)
+    elif re.search(r"\bpvp(?:\s+(\d+))?\b", lower):
         payload["pvp_mode"] = True
-        payload["pvp_league"] = "master"
+        m = re.search(r"\bpvp\s+(\d+)\b", lower)
+        if m:
+            payload["pvp_top_rank"] = int(m.group(1))
 
     # Boosted
     if re.search(r"\bboosted\b", lower):
@@ -307,14 +320,15 @@ class RevealButton(ui.Button):
                         data = await resp.json()
                         coords = data.get("coords", "")
                         if coords:
-                            await interaction.followup.send(coords, ephemeral=True)
+                            await interaction.followup.send(f"`{coords}`", ephemeral=True)
                         else:
                             await interaction.followup.send(
                                 "⚠️ Coordinates not found.", ephemeral=True
                             )
                     elif resp.status == 401:
                         await interaction.followup.send(
-                            "⚠️ Unauthorized — the API token may be invalid or expired.",
+                            "⚠️ **Unauthorized** — Your saved auth token is invalid or expired.\n"
+                            "Please update it using `/auth`.",
                             ephemeral=True,
                         )
                     else:
@@ -333,7 +347,7 @@ class RevealButton(ui.Button):
 
 
 class PogoLayoutView(ui.LayoutView):
-    """Components v2 LayoutView containing a container with up to 3 Pokémon sections."""
+    """Components v2 LayoutView containing a container with up to 5 Pokémon sections."""
 
     def __init__(
         self,
@@ -380,9 +394,9 @@ class PogoLayoutView(ui.LayoutView):
         line1 = " ".join(header_parts)
 
         # Line 2: {IV emoji} iv% (raw ivs here) - {level emoji} level_here - {cp emoji} CP_here
-        iv_emoji = resolve_emoji(bot, "iv", "🧬")
+        iv_emoji = resolve_emoji(bot, "iv", "IV")
         cp_emoji = resolve_emoji(bot, "cp", "CP")
-        lvl_emoji = resolve_emoji(bot, "level", "L")
+        lvl_emoji = resolve_emoji(bot, "level", "LVL")
         raw_iv = result.get("raw_iv") or "?/?/?"
         lvl = result.get("level", "?")
         cp = result.get("cp", "?")
@@ -415,20 +429,67 @@ class PogoLayoutView(ui.LayoutView):
 
 
 # ---------------------------------------------------------------------------
+# Auth Modal
+# ---------------------------------------------------------------------------
+
+class AuthModal(ui.Modal, title="PogoCoordinates Auth"):
+    token_input = ui.TextInput(
+        label="Bearer Auth Token",
+        style=discord.TextStyle.paragraph,
+        placeholder="Paste your token here (Bearer eyJ...)",
+        required=True,
+        max_length=2000,
+    )
+
+    def __init__(self, db):
+        super().__init__()
+        self.db = db
+
+    async def on_submit(self, interaction: discord.Interaction):
+        raw_token = self.token_input.value.strip()
+        if not raw_token:
+            await interaction.response.send_message(
+                "⚠️ Token cannot be empty.", ephemeral=True
+            )
+            return
+
+        token = raw_token if raw_token.lower().startswith("bearer ") else f"Bearer {raw_token}"
+
+        col = self.db.get_collection("pogo_users")
+        await col.update_one(
+            {"_id": interaction.user.id},
+            {
+                "$set": {
+                    "token": token,
+                    "updated_at": datetime.now(timezone.utc),
+                }
+            },
+            upsert=True,
+        )
+
+        await interaction.response.send_message(
+            "✅ **Auth token saved successfully!**\nYou can now use `/pokesearch`.",
+            ephemeral=True,
+        )
+
+
+# ---------------------------------------------------------------------------
 # Cog
 # ---------------------------------------------------------------------------
 
 class Pogo(commands.Cog):
-    """Pokémon GO coordinate search via /pokesearch."""
+    """Pokémon GO coordinate search and authentication via /auth and /pokesearch."""
 
     def __init__(self, client: commands.Bot):
         self.client = client
-        self.token: str = os.environ.get("POGO_TOKEN", "")
-        if not self.token:
-            logger.warning(
-                "[Pogo] POGO_TOKEN is not set in environment. "
-                "/pokesearch will fail until it is configured."
-            )
+
+    @app_commands.command(
+        name="auth",
+        description="Set up or update your personal PogoCoordinates auth token.",
+    )
+    async def auth(self, interaction: discord.Interaction):
+        """Open a modal for the user to configure their auth token."""
+        await interaction.response.send_modal(AuthModal(self.client.db))
 
     @app_commands.command(
         name="pokesearch",
@@ -444,17 +505,24 @@ class Pogo(commands.Cog):
         )
     )
     async def pokesearch(self, interaction: discord.Interaction, query: str):
-        if not self.token:
+        # 1. Fetch user auth token from database
+        col = self.client.db.get_collection("pogo_users")
+        user_doc = await col.find_one({"_id": interaction.user.id})
+        user_token = user_doc.get("token") if user_doc else None
+
+        if not user_token:
             await interaction.response.send_message(
-                "⚠️ The API token is not configured. Please contact the bot owner.",
+                "⚠️ **Authentication Required**\n"
+                "You haven't set up your auth token yet.\n"
+                "Please run `/auth` to configure your token before searching.",
                 ephemeral=True,
             )
             return
 
-        await interaction.response.defer()
+        await interaction.response.defer(ephemeral=True)
 
         payload = parse_query(query)
-        headers = {**_COMMON_HEADERS, "authorization": self.token}
+        headers = {**_COMMON_HEADERS, "authorization": user_token}
         timeout = aiohttp.ClientTimeout(total=15)
 
         logger.info(
@@ -472,7 +540,8 @@ class Pogo(commands.Cog):
                 ) as resp:
                     if resp.status == 401:
                         await interaction.followup.send(
-                            "⚠️ Unauthorized — the API token may be invalid or expired.",
+                            "⚠️ **Unauthorized** — Your saved auth token is invalid or expired.\n"
+                            "Please update it using `/auth`.",
                             ephemeral=True,
                         )
                         return
@@ -507,19 +576,20 @@ class Pogo(commands.Cog):
             await interaction.followup.send(
                 f"🔍 **No Results Found**\n"
                 f"No Pokémon matched your search: `{query}`\n"
-                f"Try broadening your filters."
+                f"Try broadening your filters.",
+                ephemeral=True,
             )
             return
 
-        CHUNK_SIZE = 3
+        CHUNK_SIZE = 5
         chunks = [
             results[i : i + CHUNK_SIZE] for i in range(0, len(results), CHUNK_SIZE)
         ]
 
-        # Send up to 5 messages (15 results max) to respect Discord rate limits
+        # Send up to 5 messages (25 results max) to respect Discord rate limits
         for chunk in chunks[:5]:
-            view = PogoLayoutView(chunk, bot=self.client, token=self.token)
-            await interaction.followup.send(view=view)
+            view = PogoLayoutView(chunk, bot=self.client, token=user_token)
+            await interaction.followup.send(view=view, ephemeral=True)
 
 
 async def setup(client: commands.Bot):
