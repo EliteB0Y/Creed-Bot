@@ -8,7 +8,8 @@ from datetime import datetime
 
 import discord
 import aiohttp
-from discord import app_commands
+from discord import app_commands, ui
+from discord.enums import SeparatorSpacing
 from discord.ext import commands
 
 logger = logging.getLogger("CreedBot")
@@ -206,18 +207,34 @@ def parse_query(query: str) -> dict:
     # --- Keyword flags (evaluated on remaining tokens) ---
     lower = tokens.lower()
 
-    # Shiny hundo shorthand (compound first)
-    if re.search(r"\bshiny\s+hundo\b|\bhundo\s+shiny\b", lower):
+    # Shundo: shiny + min_iv = 100
+    if re.search(r"\bshundo\b|\bshiny\s+hundo\b|\bhundo\s+shiny\b", lower):
         payload["shiny_only"] = True
         if payload["iv_mode"] != "raw":
             payload["iv_mode"] = "percent"
             payload["iv_percent_min"] = 100
+            payload["iv_percent_max"] = None
+
+    # Snundo: shiny + max_iv = 0
+    elif re.search(r"\bsnundo\b|\bshiny\s+nundo\b|\bnundo\s+shiny\b", lower):
+        payload["shiny_only"] = True
+        if payload["iv_mode"] != "raw":
+            payload["iv_mode"] = "percent"
+            payload["iv_percent_min"] = None
+            payload["iv_percent_max"] = 0
+
     else:
         if re.search(r"\bshiny\b", lower):
             payload["shiny_only"] = True
+
         if re.search(r"\bhundo\b|\b100iv\b", lower) and payload["iv_mode"] != "raw":
             payload["iv_mode"] = "percent"
             payload["iv_percent_min"] = 100
+            payload["iv_percent_max"] = None
+        elif re.search(r"\bnundo\b|\b0iv\b", lower) and payload["iv_mode"] != "raw":
+            payload["iv_mode"] = "percent"
+            payload["iv_percent_min"] = None
+            payload["iv_percent_max"] = 0
 
     # PVP league
     if re.search(r"\bpvp\s+ultra\b|\bultra\s+league\b", lower):
@@ -247,162 +264,60 @@ def parse_query(query: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Discord UI — Paginated View
+# Discord UI — Components v2 (Container & Sections)
 # ---------------------------------------------------------------------------
 
-class PogoView(discord.ui.View):
-    """Paginated embed view with Prev / Reveal / Next buttons."""
+def resolve_emoji(bot: commands.Bot, name: str, fallback: str) -> str:
+    """Find custom emoji in client.emojis or client.emotes by name, or fall back to default."""
+    if hasattr(bot, "emojis"):
+        emoji = discord.utils.get(bot.emojis, name=name)
+        if emoji:
+            return str(emoji)
+    if hasattr(bot, "emotes") and isinstance(bot.emotes, dict):
+        if name in bot.emotes:
+            return str(bot.emotes[name])
+    return fallback
 
-    def __init__(self, results: list[dict], author_id: int, token: str):
-        super().__init__(timeout=120.0)
-        self.results = results
-        self.author_id = author_id
+
+class RevealButton(ui.Button):
+    """Accessory magnifying glass button that reveals spawn coordinates ephemerally."""
+
+    def __init__(self, reveal_code: str | None, token: str):
+        super().__init__(emoji="🔍", style=discord.ButtonStyle.secondary)
+        self.reveal_code = reveal_code
         self.token = token
-        self.page = 0
-        self.message: discord.Message | None = None
-        self._update_buttons()
 
-    # ------------------------------------------------------------------
-    # Helpers
-    # ------------------------------------------------------------------
-
-    def _update_buttons(self) -> None:
-        self.prev_button.disabled = self.page == 0
-        self.next_button.disabled = self.page >= len(self.results) - 1
-
-    async def interaction_check(self, interaction: discord.Interaction) -> bool:
-        if interaction.user.id != self.author_id:
+    async def callback(self, interaction: discord.Interaction):
+        if not self.reveal_code:
             await interaction.response.send_message(
-                "These results belong to someone else.", ephemeral=True
-            )
-            return False
-        return True
-
-    async def on_timeout(self) -> None:
-        for child in self.children:
-            child.disabled = True  # type: ignore[attr-defined]
-        if self.message:
-            try:
-                await self.message.edit(view=self)
-            except discord.HTTPException:
-                pass
-
-    # ------------------------------------------------------------------
-    # Embed builder
-    # ------------------------------------------------------------------
-
-    @staticmethod
-    def build_content(
-        result: dict, page: int, total: int, footer_text: str = ""
-    ) -> str:
-        name = result.get("pokemon_name", "Unknown")
-        shiny = result.get("shiny", False)
-        iv_pct = result.get("iv_percent", 0.0) or 0.0
-        is_hundo = iv_pct == 100.0
-
-        # Title badges
-        badges = ""
-        if shiny:
-            badges += " ✨"
-        if is_hundo:
-            badges += " 💯"
-
-        # Despawn timestamp
-        despawn_str = result.get("despawn_at", "")
-        despawn_display = "Unknown"
-        despawn_verified = result.get("despawn_verified", False)
-        if despawn_str:
-            try:
-                despawn_str_clean = despawn_str.replace("Z", "+00:00")
-                dt = datetime.fromisoformat(despawn_str_clean)
-                ts = int(dt.timestamp())
-                despawn_display = f"<t:{ts}:R>"
-            except ValueError:
-                despawn_display = despawn_str
-
-        verified_icon = "✅" if despawn_verified else "❓"
-
-        # Weather
-        weather_id = result.get("weather_id", 0) or 0
-        weather_emoji = WEATHER_EMOJIS.get(weather_id, "🌡️")
-        boosted = result.get("weather_boosted", False)
-        weather_text = f"{weather_emoji} {'Yes' if boosted else 'No'}"
-
-        # Gender
-        gender = result.get("gender") or "Unknown"
-        gender_icon = {"Male": "♂️", "Female": "♀️"}.get(gender, "⚲")
-
-        footer = footer_text or f"Result {page + 1} of {total}"
-
-        lines = [
-            f"**{name}**{badges}",
-            "",
-            f"📊 **CP:** {result.get('cp', '?')}  •  **Level:** {result.get('level', '?')}",
-            f"🧬 **IVs:** `{result.get('raw_iv', '?/?/?')}` ({iv_pct:.1f}%)",
-            f"⚡ **Moves:** {result.get('fast_move', '?')}  →  {result.get('charge_move', '?')}",
-            f"{gender_icon} **Gender:** {gender}  •  **Size:** {result.get('size', '?')}",
-            f"🌍 **Location:** {result.get('location', 'Unknown')}",
-            f"🌤️ **Weather Boosted:** {weather_text}",
-            f"⏰ **Despawn:** {despawn_display} {verified_icon}",
-            "",
-            f"-# {footer}",
-        ]
-        return "\n".join(lines)
-
-    # ------------------------------------------------------------------
-    # Buttons
-    # ------------------------------------------------------------------
-
-    @discord.ui.button(label="◀", style=discord.ButtonStyle.secondary, custom_id="pogo_prev")
-    async def prev_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.page = max(0, self.page - 1)
-        self._update_buttons()
-        content = self.build_content(self.results[self.page], self.page, len(self.results))
-        await interaction.response.edit_message(content=content, view=self)
-
-    @discord.ui.button(label="📍 Reveal", style=discord.ButtonStyle.primary, custom_id="pogo_reveal")
-    async def reveal_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        await interaction.response.defer(ephemeral=True)
-
-        result = self.results[self.page]
-        reveal_code = result.get("reveal_code")
-        if not reveal_code:
-            await interaction.followup.send(
-                "No reveal code available for this spawn.", ephemeral=True
+                "No coordinates available for this spawn.", ephemeral=True
             )
             return
+
+        await interaction.response.defer(ephemeral=True)
 
         headers = {**_COMMON_HEADERS, "authorization": self.token}
         timeout = aiohttp.ClientTimeout(total=15)
         try:
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(
-                    f"{Endpoints.Pokemon.REVEAL}/{reveal_code}", headers=headers
+                    f"{Endpoints.Pokemon.REVEAL}/{self.reveal_code}", headers=headers
                 ) as resp:
                     if resp.status == 200:
                         data = await resp.json()
                         coords = data.get("coords", "")
-                        lat = data.get("lat")
-                        lng = data.get("lng")
-                        maps_url = (
-                            f"https://maps.google.com/?q={lat},{lng}"
-                            if lat is not None and lng is not None
-                            else None
-                        )
-                        msg = f"📍 **Coordinates:** `{coords}`"
-                        if maps_url:
-                            msg += f"\n🗺️ [Open in Google Maps]({maps_url})"
-                        await interaction.followup.send(msg, ephemeral=True)
+                        if coords:
+                            await interaction.followup.send(coords, ephemeral=True)
+                        else:
+                            await interaction.followup.send(
+                                "⚠️ Coordinates not found.", ephemeral=True
+                            )
                     elif resp.status == 401:
                         await interaction.followup.send(
                             "⚠️ Unauthorized — the API token may be invalid or expired.",
                             ephemeral=True,
                         )
                     else:
-                        body = await resp.text()
-                        logger.warning(
-                            "Reveal API returned HTTP %s: %s", resp.status, body[:200]
-                        )
                         await interaction.followup.send(
                             f"⚠️ Reveal failed (HTTP {resp.status}).", ephemeral=True
                         )
@@ -416,12 +331,87 @@ class PogoView(discord.ui.View):
                 "❌ An unexpected error occurred during reveal.", ephemeral=True
             )
 
-    @discord.ui.button(label="▶", style=discord.ButtonStyle.secondary, custom_id="pogo_next")
-    async def next_button(self, interaction: discord.Interaction, button: discord.ui.Button):
-        self.page = min(len(self.results) - 1, self.page + 1)
-        self._update_buttons()
-        content = self.build_content(self.results[self.page], self.page, len(self.results))
-        await interaction.response.edit_message(content=content, view=self)
+
+class PogoLayoutView(ui.LayoutView):
+    """Components v2 LayoutView containing a container with up to 3 Pokémon sections."""
+
+    def __init__(
+        self,
+        chunk: list[dict],
+        bot: commands.Bot,
+        token: str,
+        timeout: float = 600.0,
+    ):
+        super().__init__(timeout=timeout)
+        self.chunk = chunk
+        self.bot = bot
+        self.token = token
+
+        container_children = []
+        for i, item in enumerate(chunk):
+            if i > 0:
+                container_children.append(
+                    ui.Separator(spacing=SeparatorSpacing.large)
+                )
+            btn = RevealButton(reveal_code=item.get("reveal_code"), token=token)
+            sec_text = self.build_section_text(item, bot)
+            section = ui.Section(
+                ui.TextDisplay(sec_text),
+                accessory=btn,
+            )
+            container_children.append(section)
+
+        self.add_item(ui.Container(*container_children))
+
+    @staticmethod
+    def build_section_text(result: dict, bot: commands.Bot) -> str:
+        name = result.get("pokemon_name", "Unknown")
+        shiny = result.get("shiny", False)
+        iv_pct = result.get("iv_percent", 0.0) or 0.0
+        is_hundo = iv_pct == 100.0
+
+        # Line 1: ### {optional shiny emoji} {optional hundred emoji} Pokemon_Name_Here
+        header_parts = ["###"]
+        if shiny:
+            header_parts.append("✨")
+        if is_hundo:
+            header_parts.append("💯")
+        header_parts.append(name)
+        line1 = " ".join(header_parts)
+
+        # Line 2: {IV emoji} iv% (raw ivs here) - {level emoji} level_here - {cp emoji} CP_here
+        iv_emoji = resolve_emoji(bot, "iv", "🧬")
+        cp_emoji = resolve_emoji(bot, "cp", "CP")
+        lvl_emoji = resolve_emoji(bot, "level", "L")
+        raw_iv = result.get("raw_iv") or "?/?/?"
+        lvl = result.get("level", "?")
+        cp = result.get("cp", "?")
+        line2 = f"{iv_emoji} {iv_pct:.1f}% ({raw_iv}) - {lvl_emoji} {lvl} - {cp_emoji} {cp}"
+
+        # Line 3: {moveset emoji} move1 / move2
+        fast_move = result.get("fast_move", "?")
+        charge_move = result.get("charge_move", "?")
+        line3 = f"💥 {fast_move} / {charge_move}"
+
+        # Line 4: {timer emoji} despawn time here
+        timer_emoji = resolve_emoji(bot, "slowmode", "⏰")
+        despawn_str = result.get("despawn_at", "")
+        despawn_display = "Unknown"
+        if despawn_str:
+            try:
+                despawn_clean = despawn_str.replace("Z", "+00:00")
+                dt = datetime.fromisoformat(despawn_clean)
+                ts = int(dt.timestamp())
+                despawn_display = f"<t:{ts}:R>"
+            except ValueError:
+                despawn_display = despawn_str
+        line4 = f"{timer_emoji} {despawn_display}"
+
+        # Line 5: Location details
+        location = result.get("location", "Unknown")
+        line5 = f"🌍 {location}"
+
+        return f"{line1}\n{line2}\n{line3}\n{line4}\n{line5}"
 
 
 # ---------------------------------------------------------------------------
@@ -444,14 +434,13 @@ class Pogo(commands.Cog):
         name="pokesearch",
         description=(
             "Search for Pokémon GO spawns. "
-            "E.g: shiny hundo | pikachu | 0/15/15 53.07,-2.22 10km | pvp great"
+            "E.g: shundo | snundo | hundo charizard | 0/15/15 53.07,-2.22 10km"
         ),
     )
     @app_commands.describe(
         query=(
-            "Filters: shiny, hundo, pvp great/ultra/master, boosted, "
-            "iv:90, 0/15/15, 53.07,-2.22, 10km, cp:500-1500, level:20-35, "
-            "sort:dsp/level/iv/cp/distance, pokemon:<name>"
+            "Filters: shundo, snundo, hundo, nundo, shiny, pvp great/ultra/master, "
+            "iv:90, 0/15/15, 53.07,-2.22, 10km, cp:500-1500, level:20-35, pokemon:<name>"
         )
     )
     async def pokesearch(self, interaction: discord.Interaction, query: str):
@@ -522,14 +511,15 @@ class Pogo(commands.Cog):
             )
             return
 
-        view = PogoView(results, interaction.user.id, self.token)
-        footer = (
-            f"Result 1 of {len(results)}  •  "
-            f"Searched by {interaction.user.display_name}"
-        )
-        content = PogoView.build_content(results[0], 0, len(results), footer_text=footer)
-        msg = await interaction.followup.send(content=content, view=view)
-        view.message = msg
+        CHUNK_SIZE = 3
+        chunks = [
+            results[i : i + CHUNK_SIZE] for i in range(0, len(results), CHUNK_SIZE)
+        ]
+
+        # Send up to 5 messages (15 results max) to respect Discord rate limits
+        for chunk in chunks[:5]:
+            view = PogoLayoutView(chunk, bot=self.client, token=self.token)
+            await interaction.followup.send(view=view)
 
 
 async def setup(client: commands.Bot):
