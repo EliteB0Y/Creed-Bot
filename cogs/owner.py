@@ -675,6 +675,16 @@ class Owner(commands.Cog):
         await ctx.message.add_reaction(self.client.emotes.get("greentick", "✅"))
 
     # ==========================================
+    #  Command: Reload Cache
+    # ==========================================
+
+    @commands.command(name="reloadcache", aliases=["rcache"])
+    async def reload_cache(self, ctx):
+        """Reload emoji and blocklist caches."""
+        await self.client.load_cache()
+        await ctx.message.add_reaction(self.client.emotes.get("greentick", "✅"))
+
+    # ==========================================
     #  Command: MongoDB Manager
     # ==========================================
 
@@ -792,6 +802,10 @@ class Owner(commands.Cog):
                     f"{self.client.emotes.get('redtick', '❌')} An unexpected error occurred: `{e}`"
                 )
 
+        # Update in-memory emotes cache with the new application emoji
+        if hasattr(self.client, '_cache_emoji') and self.client._cache_emoji is not None:
+            self.client._cache_emoji[emoji.name] = str(emoji)
+
         embed = discord.Embed(
             title="✅ Application Emoji Uploaded",
             color=0x57F287,
@@ -881,9 +895,22 @@ class Owner(commands.Cog):
                 f"{self.client.emotes.get('redtick', '❌')} Failed to delete emoji: `{e.text}`"
             )
 
+        # Remove deleted emoji from in-memory emotes cache
+        if hasattr(self.client, '_cache_emoji') and self.client._cache_emoji is not None:
+            self.client._cache_emoji.pop(emoji.name, None)
+
         await ctx.send(
             f"{self.client.emotes.get('greentick', '✅')} "
             f"Successfully deleted application emoji **{emoji.name}** (`{emoji.id}`)."
+        )
+
+    @emoji_group.command(name="sync", aliases=["reload"])
+    async def emoji_sync(self, ctx):
+        """Reload application emojis into the bot's emotes cache."""
+        count = await self.client.load_application_emojis()
+        await ctx.send(
+            f"{self.client.emotes.get('greentick', '✅')} "
+            f"Loaded `{count}` application emoji(s) into emotes cache (total cached: `{len(self.client.emotes)}`)."
         )
 
 

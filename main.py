@@ -86,17 +86,42 @@ class MyBot(commands.Bot):
         """Returns the in-memory blocklist cache (populated at startup via load_cache)."""
         return self._cache_block or []
 
+    async def load_application_emojis(self) -> int:
+        """Fetch Discord application emojis and merge into the in-memory emoji cache."""
+        if not self.application_id:
+            return 0
+        try:
+            app_emojis = await self.fetch_application_emojis()
+            if self._cache_emoji is None:
+                self._cache_emoji = {}
+            for emoji in app_emojis:
+                self._cache_emoji[emoji.name] = str(emoji)
+            logger.info("Loaded %d application emoji(s) into emotes cache.", len(app_emojis))
+            return len(app_emojis)
+        except Exception as e:
+            logger.warning("Failed to fetch application emojis: %s", e)
+            return 0
+
     async def load_cache(self):
-        """Populate emoji and blocklist caches from MongoDB (motor async iterators)."""
+        """Populate emoji and blocklist caches from MongoDB and Discord Application Emojis."""
         self._cache_emoji = {r['name']: r['emoji'] async for r in self.db.emojis.find()}
         self._cache_block = [r['userid'] async for r in self.db.blocklist.find()]
-        logger.info("Cache loaded: %d emote(s), %d blocked user(s).", len(self._cache_emoji), len(self._cache_block))
+        app_count = await self.load_application_emojis()
+        logger.info(
+            "Cache loaded: %d emote(s) (%d app emojis), %d blocked user(s).",
+            len(self._cache_emoji),
+            app_count,
+            len(self._cache_block),
+        )
 
     async def update_cache(self):
-        """Refresh the in-memory emoji and blocklist caches from MongoDB."""
-        self._cache_emoji = {r['name']: r['emoji'] async for r in self.db.emojis.find()}
-        self._cache_block  = [r['userid'] async for r in self.db.blocklist.find()]
+        """Refresh the in-memory emoji and blocklist caches from MongoDB and application emojis."""
+        await self.load_cache()
         return "`Updated the cache`"
+
+    async def setup_hook(self):
+        """Asynchronous setup hook called after login. Loads application emojis into cache."""
+        await self.load_application_emojis()
 
     async def close(self):
         """Graceful shutdown: backup rate_cache to MongoDB before closing."""
@@ -171,9 +196,10 @@ async def _ping(interaction: discord.Interaction):
 
 @client.event
 async def on_ready():
+    await client.load_application_emojis()
     await client.change_presence(status = discord.Status.idle, activity = discord.Game('Pokemon Creed!'))
     #await client.change_presence(status = discord.Status.dnd, activity = discord.Game('with EliteBOY'))
-    logger.info('The Bot is online. Guilds: %s | Users: %s', len(client.guilds), len(client.users))
+    logger.info('The Bot is online. Guilds: %s | Users: %s | Emotes: %s', len(client.guilds), len(client.users), len(client.emotes))
 
 @client.event
 async def on_command(ctx):
