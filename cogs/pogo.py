@@ -127,6 +127,44 @@ WEATHER_EMOJIS: dict[int, str] = {
 
 
 # ---------------------------------------------------------------------------
+# Help Guide Message
+# ---------------------------------------------------------------------------
+
+POKESEARCH_HELP_MESSAGE = (
+    "### 📖 `/pokesearch` Search Filters Guide\n"
+    "Combine any filters below into a single query! Examples at the bottom.\n\n"
+    "✨ **IV & Shiny Filters**\n"
+    "• `shundo` / `snundo` — Shiny 100% IV or Shiny 0% IV\n"
+    "• `hundo` / `nundo` — 100% IV or 0% IV\n"
+    "• `shiny` — Shiny eligible spawns only\n"
+    "• `iv:90` or `iv:90-100` — Specific IV percentage range\n"
+    "• `15/15/15` or `0/15/15` or `*/15/15` — Exact Atk/Def/Sta raw IVs (`*` is wildcard)\n\n"
+    "🐾 **Pokémon Names (Single or Comma-Separated)**\n"
+    "• `charizard` or `pokemon:charizard`\n"
+    "• `pikachu, charizard, blastoise` — Multiple Pokémon (must be separated by commas)\n\n"
+    "⚔️ **PVP Leagues & Ranks**\n"
+    "• `pvp great` / `pvp ultra` / `pvp master` — Filter by league\n"
+    "• `pvp great 10` or `great league 10` — Great League rank 10 or better\n"
+    "• `rank:5` or `top:5` — Explicit rank cutoff\n\n"
+    "📊 **CP & Level Filters**\n"
+    "• `cp:500` or `cp:500-1500` — Minimum or range of CP\n"
+    "• `level:20` or `level:20-35` — Minimum or range of Pokémon level\n\n"
+    "📍 **Location & Distance**\n"
+    "• `lat,lng` (e.g. `53.077283,-2.228182`)\n"
+    "• `10km` or `500km` — Distance radius from coordinates\n\n"
+    "🌪️ **Weather & Sorting**\n"
+    "• `boosted` — Weather boosted spawns only\n"
+    "• `sort:dsp` (despawn time), `sort:iv`, `sort:level`, `sort:cp`, `sort:distance`\n\n"
+    "💡 **Example Searches**\n"
+    "• `/pokesearch query:shundo charizard, blastoise`\n"
+    "• `/pokesearch query:pvp great 10 swampert, altaria`\n"
+    "• `/pokesearch query:0/15/15 53.077,-2.228 50km`\n"
+    "• `/pokesearch query:hundo cp:1000-2500 sort:cp`\n"
+    "• `/pokesearch query:shiny snover, beldum boosted`"
+)
+
+
+# ---------------------------------------------------------------------------
 # Query Parser
 # ---------------------------------------------------------------------------
 
@@ -195,13 +233,14 @@ def parse_query(query: str) -> dict:
             payload["level_max"] = int(level_match.group(2))
         tokens = tokens[:level_match.start()] + tokens[level_match.end():]
 
-    # --- Explicit pokemon: keyword ---
-    pokemon_kw_match = re.search(r"\bpokemon:([\w\-. ]+)", tokens, re.IGNORECASE)
+    # --- Explicit pokemon: keyword (supports comma-separated names) ---
+    pokemon_kw_match = re.search(r"\bpokemon:([\w\-. ,]+)", tokens, re.IGNORECASE)
     if pokemon_kw_match:
-        name = pokemon_kw_match.group(1).strip().lower()
-        pid = POKEMON_NAME_TO_ID.get(name)
-        if pid:
-            payload["pokemon_ids"] = [pid]
+        for raw in pokemon_kw_match.group(1).split(","):
+            name = raw.strip().lower()
+            pid = POKEMON_NAME_TO_ID.get(name)
+            if pid and pid not in payload["pokemon_ids"]:
+                payload["pokemon_ids"].append(pid)
         tokens = tokens[:pokemon_kw_match.start()] + tokens[pokemon_kw_match.end():]
 
     # --- Keyword flags (evaluated on remaining tokens) ---
@@ -264,14 +303,19 @@ def parse_query(query: str) -> dict:
     if re.search(r"\bboosted\b", lower):
         payload["boosted"] = True
 
-    # --- Bare Pokémon name fallback (if not already set) ---
+    # --- Bare Pokémon names (must be comma-separated if multiple) ---
     if not payload["pokemon_ids"]:
-        # Sort by length descending so "dragonite" matches before "dragon"
-        for name in sorted(POKEMON_NAME_TO_ID.keys(), key=len, reverse=True):
-            pattern = r"\b" + re.escape(name) + r"\b"
-            if re.search(pattern, lower):
-                payload["pokemon_ids"] = [POKEMON_NAME_TO_ID[name]]
-                break
+        segments = [s.strip() for s in tokens.split(",") if s.strip()]
+        for seg in segments:
+            seg_lower = seg.lower()
+            # Sort by length descending so "dragonite" matches before "dragon"
+            for name in sorted(POKEMON_NAME_TO_ID.keys(), key=len, reverse=True):
+                pattern = r"\b" + re.escape(name) + r"\b"
+                if re.search(pattern, seg_lower):
+                    pid = POKEMON_NAME_TO_ID[name]
+                    if pid not in payload["pokemon_ids"]:
+                        payload["pokemon_ids"].append(pid)
+                    break
 
     return payload
 
@@ -500,11 +544,16 @@ class Pogo(commands.Cog):
     )
     @app_commands.describe(
         query=(
-            "Filters: shundo, snundo, hundo, nundo, shiny, pvp great/ultra/master, "
+            "Filters: help (view guide), shundo, snundo, hundo, nundo, pvp great/ultra/master, "
             "iv:90, 0/15/15, 53.07,-2.22, 10km, cp:500-1500, level:20-35, pokemon:<name>"
         )
     )
     async def pokesearch(self, interaction: discord.Interaction, query: str):
+        # 0. Help shortcut
+        if query.strip().lower() in ("help", "h", "--help", "-h"):
+            await interaction.response.send_message(POKESEARCH_HELP_MESSAGE, ephemeral=True)
+            return
+
         # 1. Fetch user auth token from database
         col = self.client.db.get_collection("pogo_users")
         user_doc = await col.find_one({"_id": interaction.user.id})
