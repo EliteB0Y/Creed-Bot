@@ -850,17 +850,13 @@ class Pogo(commands.Cog):
                         new_results[i : i + CHUNK_SIZE]
                         for i in range(0, len(new_results), CHUNK_SIZE)
                     ]
-                    for idx, chunk in enumerate(chunks[:3]):  # Up to 3 containers (15 spawns max)
-                        header = (
-                            f"🎯 <@{user_id}> **Sniper Match Found!** for `{query}`:"
-                            if idx == 0
-                            else None
-                        )
+                    # Send user ping notification first (content is forbidden on Components v2 messages)
+                    header = f"🎯 <@{user_id}> **Sniper Match Found!** for `{query}`:"
+                    await channel.send(header)
+
+                    for chunk in chunks[:3]:  # Up to 3 containers (15 spawns max)
                         view = PogoLayoutView(chunk, bot=self.client, token=user_token)
-                        if header:
-                            await channel.send(content=header, view=view)
-                        else:
-                            await channel.send(view=view)
+                        await channel.send(view=view)
 
                 # 5. Update seen_spawn_ids in database (capped to last 100 to avoid unbounded growth)
                 updated_seen = list(seen_spawn_ids.union(new_seen_ids))[-100:]
