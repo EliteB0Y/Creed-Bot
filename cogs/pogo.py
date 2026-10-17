@@ -858,7 +858,8 @@ class Pogo(commands.Cog):
                             for r in new_results
                         )
                     )
-                    header = f"<@{user_id}> found: {', '.join(found_names)}"
+                    bold_names = [f"**{name}**" for name in found_names]
+                    header = f"🎯 <@{user_id}> **Found:** {', '.join(bold_names)}"
                     await channel.send(header)
 
                     for chunk in chunks[:3]:  # Up to 3 containers (15 spawns max)
