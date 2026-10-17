@@ -826,8 +826,9 @@ class Pogo(commands.Cog):
                 new_seen_ids = []
                 for r in results:
                     spawn_key = (
-                        r.get("reveal_code")
-                        or f"{r.get('pokemon_id')}_{r.get('cp')}_{r.get('despawn_at')}"
+                        str(r.get("encounter_id"))
+                        if r.get("encounter_id")
+                        else f"{r.get('pokemon_id')}_{r.get('cp')}_{r.get('despawn_at')}"
                     )
                     if spawn_key not in seen_spawn_ids:
                         new_results.append(r)
