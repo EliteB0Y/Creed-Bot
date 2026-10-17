@@ -851,8 +851,14 @@ class Pogo(commands.Cog):
                         new_results[i : i + CHUNK_SIZE]
                         for i in range(0, len(new_results), CHUNK_SIZE)
                     ]
-                    # Send user ping notification first (content is forbidden on Components v2 messages)
-                    header = f"🎯 <@{user_id}> **Sniper Match Found!** for `{query}`:"
+                    # Send user ping notification with found spawn names
+                    found_names = list(
+                        dict.fromkeys(
+                            r.get("pokemon_name") or f"Pokémon #{r.get('pokemon_id', '?')}"
+                            for r in new_results
+                        )
+                    )
+                    header = f"<@{user_id}> found: {', '.join(found_names)}"
                     await channel.send(header)
 
                     for chunk in chunks[:3]:  # Up to 3 containers (15 spawns max)
