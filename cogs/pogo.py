@@ -154,13 +154,14 @@ POKESEARCH_HELP_MESSAGE = (
     "• `10km` or `500km` — Distance radius from coordinates\n\n"
     "🌪️ **Weather & Sorting**\n"
     "• `boosted` — Weather boosted spawns only\n"
+    "• `bg` or `background` — Special background spawns only\n"
     "• `sort:dsp` (despawn time), `sort:iv`, `sort:level`, `sort:cp`, `sort:distance`\n\n"
     "💡 **Example Searches**\n"
     "• `/pokesearch query:shundo charizard, blastoise`\n"
     "• `/pokesearch query:pvp great 10 swampert, altaria`\n"
-    "• `/pokesearch query:0/15/15 53.077,-2.228 50km`\n"
+    "• `/pokesearch query:0/*/* 53.077,-2.228 50km`\n"
     "• `/pokesearch query:hundo cp:1000-2500 sort:cp`\n"
-    "• `/pokesearch query:shiny snover, beldum boosted`\n\n"
+    "• `/pokesearch query:shiny snover, beldum boosted bg`\n\n"
     "🎯 **Background Spawn Sniper**\n"
     "• `/sniper start <query>` — Monitors query every 5 mins and pings you with matches\n"
     "• `/sniper stop` — Stops your active sniper\n"
@@ -201,8 +202,10 @@ def parse_query(query: str) -> dict:
         payload["radius_km"] = float(radius_match.group(1))
         tokens = tokens[:radius_match.start()] + tokens[radius_match.end():]
 
-    # --- Raw IV: A/D/S (e.g. 0/15/15, */15/15, 15/*/15) ---
-    raw_iv_match = re.search(r"\b(\d+|\*|-1)/(\d+|\*|-1)/(\d+|\*|-1)\b", tokens)
+    # --- Raw IV: A/D/S (e.g. 0/15/15, */15/15, 15/*/15, 0/*/*) ---
+    raw_iv_match = re.search(
+        r"(?:^|(?<=\s))(\d+|\*|-1)/(\d+|\*|-1)/(\d+|\*|-1)(?=$|\s|[,\.;])", tokens
+    )
     if raw_iv_match:
         payload["iv_mode"] = "raw"
         payload["iv_percent_min"] = None
@@ -307,6 +310,12 @@ def parse_query(query: str) -> dict:
     if re.search(r"\bboosted\b", lower):
         payload["boosted"] = True
 
+    # Background only
+    bg_match = re.search(r"\b(?:bg|background)\b", tokens, re.IGNORECASE)
+    if bg_match:
+        payload["background_only"] = True
+        tokens = tokens[:bg_match.start()] + tokens[bg_match.end():]
+
     # --- Bare Pokémon names (must be comma-separated if multiple) ---
     if not payload["pokemon_ids"]:
         segments = [s.strip() for s in tokens.split(",") if s.strip()]
@@ -402,12 +411,14 @@ class PogoLayoutView(ui.LayoutView):
         chunk: list[dict],
         bot: commands.Bot,
         token: str,
+        show_coords: bool = False,
         timeout: float = 600.0,
     ):
         super().__init__(timeout=timeout)
         self.chunk = chunk
         self.bot = bot
         self.token = token
+        self.show_coords = show_coords
 
         container_children = []
         for i, item in enumerate(chunk):
@@ -415,18 +426,21 @@ class PogoLayoutView(ui.LayoutView):
                 container_children.append(
                     ui.Separator(spacing=SeparatorSpacing.large)
                 )
-            btn = RevealButton(reveal_code=item.get("reveal_code"), token=token)
-            sec_text = self.build_section_text(item, bot)
-            section = ui.Section(
-                ui.TextDisplay(sec_text),
-                accessory=btn,
-            )
-            container_children.append(section)
+            sec_text = self.build_section_text(item, bot, show_coords=show_coords)
+            if show_coords:
+                container_children.append(ui.TextDisplay(sec_text))
+            else:
+                btn = RevealButton(reveal_code=item.get("reveal_code"), token=token)
+                section = ui.Section(
+                    ui.TextDisplay(sec_text),
+                    accessory=btn,
+                )
+                container_children.append(section)
 
         self.add_item(ui.Container(*container_children))
 
     @staticmethod
-    def build_section_text(result: dict, bot: commands.Bot) -> str:
+    def build_section_text(result: dict, bot: commands.Bot, show_coords: bool = False) -> str:
         name = result.get("pokemon_name", "Unknown")
         shiny = result.get("shiny", False)
         iv_pct = result.get("iv_percent", 0.0) or 0.0
@@ -473,7 +487,13 @@ class PogoLayoutView(ui.LayoutView):
         location = result.get("location", "Unknown")
         line5 = f"🌍 {location}"
 
-        return f"{line1}\n{line2}\n{line3}\n{line4}\n{line5}"
+        lines = [line1, line2, line3, line4, line5]
+        if show_coords:
+            coords = result.get("coords")
+            if coords:
+                lines.append(f"📍 `{coords}`")
+
+        return "\n".join(lines)
 
 
 # ---------------------------------------------------------------------------
@@ -846,24 +866,47 @@ class Pogo(commands.Cog):
                         channel = None
 
                 if channel:
+                    alert_results = new_results[:15]
+
+                    # Concurrently resolve coordinates for each new spawn to display directly in components
+                    async def _fetch_coords(session, item):
+                        rc = item.get("reveal_code")
+                        if not rc:
+                            return
+                        try:
+                            async with session.get(
+                                f"{Endpoints.Pokemon.REVEAL}/{rc}", headers=headers
+                            ) as resp:
+                                if resp.status == 200:
+                                    data = await resp.json()
+                                    item["coords"] = data.get("coords")
+                        except Exception as e:
+                            logger.debug("[Sniper] Failed to fetch coords for reveal code %s: %s", rc, e)
+
+                    try:
+                        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10)) as session:
+                            await asyncio.gather(*[_fetch_coords(session, item) for item in alert_results])
+                    except Exception as e:
+                        logger.error("[Sniper] Error resolving coordinates for sniper alert:", exc_info=e)
+
                     CHUNK_SIZE = 5
                     chunks = [
-                        new_results[i : i + CHUNK_SIZE]
-                        for i in range(0, len(new_results), CHUNK_SIZE)
+                        alert_results[i : i + CHUNK_SIZE]
+                        for i in range(0, len(alert_results), CHUNK_SIZE)
                     ]
                     # Send user ping notification with found spawn names
                     found_names = list(
                         dict.fromkeys(
                             r.get("pokemon_name") or f"Pokémon #{r.get('pokemon_id', '?')}"
-                            for r in new_results
+                            for r in alert_results
                         )
                     )
                     bold_names = [f"**{name}**" for name in found_names]
                     header = f"🎯 <@{user_id}> **Found:** {', '.join(bold_names)}"
                     await channel.send(header)
 
-                    for chunk in chunks[:3]:  # Up to 3 containers (15 spawns max)
-                        view = PogoLayoutView(chunk, bot=self.client, token=user_token)
+                    for chunk in chunks:
+                        view = PogoLayoutView(chunk, bot=self.client, token=user_token, show_coords=True)
                         await channel.send(view=view)
 
                 # 5. Update seen_spawn_ids in database (capped to last 100 to avoid unbounded growth)
