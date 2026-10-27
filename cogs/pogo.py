@@ -163,7 +163,7 @@ POKESEARCH_HELP_MESSAGE = (
     "• `/pokesearch query:hundo cp:1000-2500 sort:cp`\n"
     "• `/pokesearch query:shiny snover, beldum boosted bg`\n\n"
     "🎯 **Background Spawn Sniper**\n"
-    "• `/sniper start <query>` — Monitors query every 5 mins and pings you with matches\n"
+    "• `/sniper start <query> [reveal:True/False]` — Monitors query every 5 mins and alerts on matches\n"
     "• `/sniper stop` — Stops your active sniper\n"
     "• `/sniper status` — Views your current sniper details"
 )
@@ -684,9 +684,15 @@ class Pogo(commands.Cog):
         description="Start a background sniper that pings you when matches are found.",
     )
     @app_commands.describe(
-        query="Filter query to monitor (e.g. shundo froakie, pvp great 10 swampert)"
+        query="Filter query to monitor (e.g. shundo froakie, pvp great 10 swampert)",
+        reveal="True to display coordinates directly, False to use reveal button (default: False)",
     )
-    async def sniper_start(self, interaction: discord.Interaction, query: str):
+    async def sniper_start(
+        self,
+        interaction: discord.Interaction,
+        query: str,
+        reveal: bool = False,
+    ):
         """Register or update an active spawn sniper for the invoking user."""
         if query.strip().lower() in ("help", "h", "--help", "-h"):
             await interaction.response.send_message(POKESEARCH_HELP_MESSAGE, ephemeral=True)
@@ -717,6 +723,7 @@ class Pogo(commands.Cog):
                     "channel_id": interaction.channel_id,
                     "guild_id": interaction.guild_id,
                     "query": query.strip(),
+                    "reveal": reveal,
                     "seen_spawn_ids": [],
                     "created_at": now,
                     "last_checked_at": now,
@@ -725,9 +732,11 @@ class Pogo(commands.Cog):
             upsert=True,
         )
 
+        reveal_label = "Direct Coordinates" if reveal else "Reveal Button"
         await interaction.response.send_message(
             f"🎯 **Sniper Activated!**\n"
             f"• **Query:** `{query.strip()}`\n"
+            f"• **Coordinates:** {reveal_label}\n"
             f"• **Channel:** <#{interaction.channel_id}>\n"
             f"• **Interval:** Every 5 minutes\n\n"
             f"I'll ping you here whenever a new matching spawn is found! Run `/sniper stop` anytime to cancel."
@@ -766,9 +775,11 @@ class Pogo(commands.Cog):
             created = doc.get("created_at")
             created_ts = int(created.timestamp()) if isinstance(created, datetime) else None
             created_str = f"<t:{created_ts}:R>" if created_ts else "Unknown"
+            reveal_label = "Direct Coordinates" if doc.get("reveal", False) else "Reveal Button"
             await interaction.response.send_message(
                 f"🎯 **Active Sniper Status**\n"
                 f"• **Query:** `{doc.get('query')}`\n"
+                f"• **Coordinates:** {reveal_label}\n"
                 f"• **Channel:** <#{doc.get('channel_id')}>\n"
                 f"• **Started:** {created_str}\n"
                 f"• **Interval:** Every 5 minutes\n\n"
@@ -840,8 +851,11 @@ class Pogo(commands.Cog):
                 if not results:
                     continue
 
-                # 3. Filter out previously alerted spawns
-                seen_spawn_ids = set(sniper.get("seen_spawn_ids") or [])
+                reveal = sniper.get("reveal", False)
+
+                # 3. Filter out previously alerted spawns using FIFO ordered list
+                seen_list = sniper.get("seen_spawn_ids") or []
+                seen_set = set(seen_list)
                 new_results = []
                 new_seen_ids = []
                 for r in results:
@@ -850,7 +864,7 @@ class Pogo(commands.Cog):
                         if r.get("encounter_id")
                         else f"{r.get('pokemon_id')}_{r.get('cp')}_{r.get('despawn_at')}"
                     )
-                    if spawn_key not in seen_spawn_ids:
+                    if spawn_key not in seen_set:
                         new_results.append(r)
                         new_seen_ids.append(spawn_key)
 
@@ -868,26 +882,27 @@ class Pogo(commands.Cog):
                 if channel:
                     alert_results = new_results[:15]
 
-                    # Concurrently resolve coordinates for each new spawn to display directly in components
-                    async def _fetch_coords(session, item):
-                        rc = item.get("reveal_code")
-                        if not rc:
-                            return
-                        try:
-                            async with session.get(
-                                f"{Endpoints.Pokemon.REVEAL}/{rc}", headers=headers
-                            ) as resp:
-                                if resp.status == 200:
-                                    data = await resp.json()
-                                    item["coords"] = data.get("coords")
-                        except Exception as e:
-                            logger.debug("[Sniper] Failed to fetch coords for reveal code %s: %s", rc, e)
+                    # Concurrently resolve coordinates if reveal=True
+                    if reveal:
+                        async def _fetch_coords(session, item):
+                            rc = item.get("reveal_code")
+                            if not rc:
+                                return
+                            try:
+                                async with session.get(
+                                    f"{Endpoints.Pokemon.REVEAL}/{rc}", headers=headers
+                                ) as resp:
+                                    if resp.status == 200:
+                                        data = await resp.json()
+                                        item["coords"] = data.get("coords")
+                            except Exception as e:
+                                logger.debug("[Sniper] Failed to fetch coords for reveal code %s: %s", rc, e)
 
-                    try:
-                        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10)) as session:
-                            await asyncio.gather(*[_fetch_coords(session, item) for item in alert_results])
-                    except Exception as e:
-                        logger.error("[Sniper] Error resolving coordinates for sniper alert:", exc_info=e)
+                        try:
+                            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10)) as session:
+                                await asyncio.gather(*[_fetch_coords(session, item) for item in alert_results])
+                        except Exception as e:
+                            logger.error("[Sniper] Error resolving coordinates for sniper alert:", exc_info=e)
 
                     CHUNK_SIZE = 5
                     chunks = [
@@ -906,11 +921,11 @@ class Pogo(commands.Cog):
                     await channel.send(header)
 
                     for chunk in chunks:
-                        view = PogoLayoutView(chunk, bot=self.client, token=user_token, show_coords=True)
+                        view = PogoLayoutView(chunk, bot=self.client, token=user_token, show_coords=reveal)
                         await channel.send(view=view)
 
-                # 5. Update seen_spawn_ids in database (capped to last 100 to avoid unbounded growth)
-                updated_seen = list(seen_spawn_ids.union(new_seen_ids))[-100:]
+                # 5. Update seen_spawn_ids in database using ordered FIFO list (capped to last 1000 items)
+                updated_seen = list(dict.fromkeys(seen_list + new_seen_ids))[-1000:]
                 await col_snipers.update_one(
                     {"_id": user_id},
                     {
