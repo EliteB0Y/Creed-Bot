@@ -115,7 +115,7 @@ class BoxView(discord.ui.View):
             op = [
                 i["name"] + " " + i["gender"] + " - Level: " + str(i["level"])
                 for i in self.results["data"]["pokemon"]
-                if i["loan"] == "0" and any(i["name"].startswith(x) for x in coloreds)
+                if not int(i["loan"]) and any(i["name"].startswith(x) for x in coloreds)
             ]
             self.pkcount = len(op)
 
@@ -354,7 +354,7 @@ class PokemonCreed(commands.Cog):
         findrates = []
 
         for poke in result["data"]["pokemon"]:
-            if poke["loan"] == "0" and any(poke["name"].startswith(x) for x in coloreds):
+            if not int(poke["loan"]) and any(poke["name"].startswith(x) for x in coloreds):
                 if poke["name"] not in findrates:
                     findrates.append(poke["name"])
 
