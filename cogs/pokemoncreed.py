@@ -258,30 +258,58 @@ class PokemonCreed(commands.Cog):
             magnitude += 1
             num = round(num / 1000.0, round_to)
         return '{:.2f}{}'.format(num, ['', 'k', 'm', 'g', 't', 'p'][magnitude])
-    
+
+    async def _safe_api_get(self, session, url):
+        """GET *url* and return parsed JSON, or None on any failure.
+
+        Handles:
+        - Non-2xx HTTP status codes
+        - Non-JSON / HTML response bodies (e.g. after a PHP upgrade that
+          returns an error page instead of JSON)
+        - Network / timeout errors (caller must wrap the session itself in a
+          try/except asyncio.TimeoutError as needed)
+        """
+        try:
+            async with session.get(url) as r:
+                if r.status != 200:
+                    logger.warning("API GET %s returned HTTP %s", url, r.status)
+                    return None
+                data = await r.text()
+                return json.loads(data)
+        except json.JSONDecodeError:
+            logger.error("API GET %s returned a non-JSON body (server may be returning an HTML error page)", url)
+            return None
+        except Exception as e:
+            logger.error("API GET %s failed unexpectedly", url, exc_info=e)
+            return None
+
     async def findRate(self, pokename):
-        """"Fetch rate of a pokemon and returns the result"""
+        """Fetch rate of a pokemon and return the result string, or "" on failure."""
         if pokename in self.client.rate_cache:
             return self.client.rate_cache[pokename]
-        
+
         try:
             timeout = aiohttp.ClientTimeout(total=15)
             async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(f"https://pokemoncreed.net/ajax/pokedex.php?pokemon={pokename}") as r:
-                    if r.status != 200:
-                        logger.warning("Pokedex API failed for '%s': HTTP %s", pokename, r.status)
-                        return ""
-                    data = await r.text()
-            result = json.loads(data)
-            if result["success"]:
+                result = await self._safe_api_get(
+                    session,
+                    f"https://pokemoncreed.net/ajax/pokedex.php?pokemon={pokename}"
+                )
+            if result is None:
+                return ""
+            if result.get("success"):
                 rate = result["rating"]
                 self.client.rate_cache[pokename] = rate
             else:
                 rate = ""
             return rate
-        except Exception as e:
-            logger.error("findRate failed for '%s'", pokename, exc_info=e)
+        except asyncio.TimeoutError:
+            logger.warning("findRate timed out for '%s'", pokename)
             return ""
+        except Exception as e:
+            logger.error("findRate failed unexpectedly for '%s'", pokename, exc_info=e)
+            return ""
+
     
     async def calculate_box_rating(self, userName):
         """Fetch a user's box from Pokemon Creed and calculate the total colored-pokemon rating.
@@ -293,20 +321,28 @@ class PokemonCreed(commands.Cog):
             - total_rating_formatted (str)
             - colored_count (int)
             - paste_url (str)
-        Returns None with an "error" key on failure, e.g.:
-            {"error": "username_not_found"} or {"error": "timeout"} or {"error": "no_colored"}
+        Returns a dict with an "error" key on failure, e.g.:
+            {"error": "username_not_found"} or {"error": "timeout"} or {"error": "no_colored"} or {"error": "api_error"}
         """
         # 1. Fetch box data
         timeout = aiohttp.ClientTimeout(total=15)
         try:
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(f"https://pokemoncreed.net/ajax/box.php?user={userName}") as r:
+                    if r.status != 200:
+                        logger.warning("Box API returned HTTP %s for user '%s'", r.status, userName)
+                        return {"error": "api_error"}
                     data = await r.text()
         except asyncio.TimeoutError:
             return {"error": "timeout"}
 
-        result = json.loads(data)
-        if not result["success"]:
+        try:
+            result = json.loads(data)
+        except Exception:
+            logger.error("Box API returned a non-JSON body for user '%s' (server may be returning an HTML error page)", userName)
+            return {"error": "api_error"}
+
+        if not result.get("success"):
             return {"error": "username_not_found"}
 
         uname = result["data"]["name"]
@@ -418,6 +454,10 @@ class PokemonCreed(commands.Cog):
 
         if rating.get("error") == "timeout":
             embed.description = "`Request timed out. The site may be down — please try again later.`"
+            await zzz.edit(embed=embed)
+            return
+        elif rating.get("error") == "api_error":
+            embed.description = "`The Pokemon Creed API is currently unavailable or returned an unexpected response. Please try again later.`"
             await zzz.edit(embed=embed)
             return
         elif rating.get("error") == "username_not_found":
@@ -602,12 +642,21 @@ class PokemonCreed(commands.Cog):
         try:
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(f"https://pokemoncreed.net/ajax/pokedex.php?pokemon={pokemon}") as r:
+                    if r.status != 200:
+                        logger.warning("Pokedex API returned HTTP %s for '%s'", r.status, pokemon)
+                        await ctx.send("`The Pokemon Creed API is currently unavailable. Please try again later.`")
+                        return
                     data = await r.text()
         except asyncio.TimeoutError:
             await ctx.send("`Request timed out. The site may be down — please try again later.`")
             return
-        result = json.loads(data)
-        if result["success"]:
+        try:
+            result = json.loads(data)
+        except Exception:
+            logger.error("Pokedex API returned a non-JSON body for '%s' (server may be returning an HTML error page)", pokemon)
+            await ctx.send("`Received an unexpected response from the server. The site may be down or the API has changed.`")
+            return
+        if result.get("success"):
             self.client.rate_cache[result["name"]] = result["rating"]
             embed = discord.Embed(title = result["name"],
                                   url = "https://pokemoncreed.net/search_pokemon.php?pokemon=" + result[
@@ -637,12 +686,22 @@ class PokemonCreed(commands.Cog):
         try:
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(url) as r:
+                    if r.status != 200:
+                        logger.warning("Box API returned HTTP %s for user '%s'", r.status, uname)
+                        await ctx.send("`The Pokemon Creed API is currently unavailable. Please try again later.`")
+                        return
                     data = await r.text()
         except asyncio.TimeoutError:
             await ctx.send("`Request timed out. The site may be down — please try again later.`")
             return
 
-        result = json.loads(data)
+        try:
+            result = json.loads(data)
+        except Exception:
+            logger.error("Box API returned a non-JSON body for user '%s' (server may be returning an HTML error page)", uname)
+            await ctx.send("`Received an unexpected response from the server. The site may be down or the API has changed.`")
+            return
+
         bv = BoxView(ctx, result)
         await bv.start()
 
@@ -680,9 +739,14 @@ class PokemonCreed(commands.Cog):
                     logger.warning("pokerate fetch failed for '%s': %s", pk, e)
                     not_considered.append(pk)
                     continue
-                result = json.loads(data)
+                try:
+                    result = json.loads(data)
+                except Exception:
+                    logger.warning("pokerate: non-JSON response for '%s' (server may be returning an HTML error page)", pk)
+                    not_considered.append(pk)
+                    continue
 
-                if result["success"]:
+                if result.get("success"):
                     self.client.rate_cache[result["name"]] = result["rating"]
                     pk = result["name"].strip()
                     try:
