@@ -109,7 +109,7 @@ class BoxView(discord.ui.View):
     async def cleanResults(self):
         if self.results and self.results.get("success"):
             self.uname = self.results["data"]["name"]
-            self.uid = self.results["data"]["id"]
+            self.uid = str(self.results["data"]["id"])
             self.desc = ""
             coloreds = ["Ancient", "Cursed", "Glitter", "Golden", "Luminous", "Rainbow", "Shadow"]
             op = [
@@ -346,7 +346,7 @@ class PokemonCreed(commands.Cog):
             return {"error": "username_not_found"}
 
         uname = result["data"]["name"]
-        uid = result["data"]["id"]
+        uid = str(result["data"]["id"])
 
         # 2. Categorize colored pokemon
         coloreds = ["Cursed", "Glitter", "Golden", "Luminous", "Rainbow", "Shadow"]
